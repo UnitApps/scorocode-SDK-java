@@ -10,14 +10,14 @@ import java.util.HashMap;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import ru.profit_group.scorocodesdk.Objects.Doc;
-import ru.profit_group.scorocodesdk.Responses.ResponseAppStatistic;
-import ru.profit_group.scorocodesdk.Responses.ResponseDefault;
+import ru.profit_group.scorocode_sdk.Responses.ResponseAppStatistic;
+import ru.profit_group.scorocode_sdk.Responses.ResponseDefault;
+import ru.profit_group.scorocode_sdk.ScorocodeSdk;
 
 public class TestActivity extends AppCompatActivity {
 
-    public static final String APP_ID = "83121fb3e1b1af31780206af003fc34d";
-    public static final String CLIENT_KEY = "6b5b3a41eb77c728c3f7f4ecfb51662f";
+    public static final String APP_ID = "305ffd6cc32832f6819bf4e4f4707848";
+    public static final String CLIENT_KEY = "962066371eefc0d1850a76c7ab14c1dc";
     public static final String ACCESS_KEY = "383499df2748bb4560745d5da67f5e41";
     private static final String TAG = "SCOROCODE_SDK_TEST";
 
@@ -27,7 +27,7 @@ public class TestActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         testGetStatistic();
-        testRegisterUser();
+//        testRegisterUser();
         testLoginUser();
     }
 
