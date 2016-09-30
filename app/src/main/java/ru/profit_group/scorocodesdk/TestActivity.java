@@ -10,8 +10,8 @@ import java.util.HashMap;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import ru.profit_group.scorocode_sdk.Responses.ResponseAppStatistic;
-import ru.profit_group.scorocode_sdk.Responses.ResponseDefault;
+import ru.profit_group.scorocode_sdk.Responses.statistic.ResponseAppStatistic;
+import ru.profit_group.scorocode_sdk.Responses.ResponseCodes;
 import ru.profit_group.scorocode_sdk.ScorocodeSdk;
 
 public class TestActivity extends AppCompatActivity {
@@ -41,14 +41,14 @@ public class TestActivity extends AppCompatActivity {
         doc.put("anotherExampleField", "Не знаю, что и сказать. Когда-то я хотел быть астрофизиком. К сожалению, это правда.");
 
         ScorocodeSdk.registerUser(APP_ID, CLIENT_KEY, "PeterStaranchukTest1", "petr.staranchukTest1@gmail.com", "qwertyTest1", doc,
-                new Callback<ResponseDefault>() {
+                new Callback<ResponseCodes>() {
                     @Override
-                    public void onResponse(Call<ResponseDefault> call, Response<ResponseDefault> response) {
+                    public void onResponse(Call<ResponseCodes> call, Response<ResponseCodes> response) {
                         Log.d(TAG, "REGISTER USER: SUCCESS");
                     }
 
                     @Override
-                    public void onFailure(Call<ResponseDefault> call, Throwable t) {
+                    public void onFailure(Call<ResponseCodes> call, Throwable t) {
                         Log.d(TAG, "REGISTER USER: FAILURE");
                     }
                 });
