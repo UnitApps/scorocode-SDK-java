@@ -1,11 +1,11 @@
-package ru.profit_group.scorocodesdk.pojo_statistic;
+package ru.profit_group.scorocodesdk.Responses;
 
 /**
  * Created by peter on 20/09/16.
  */
 
 //POJO object
-public class AppStatistic {
+public class ResponseAppStatistic {
     public boolean error;
     public Result result;
 
@@ -23,5 +23,12 @@ public class AppStatistic {
 
     public void setResult(Result result) {
         this.result = result;
+    }
+
+    private class Result {
+        public long dataSize;
+        public long filesSize;
+        public long indexSize;
+        public double store;
     }
 }

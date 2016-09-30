@@ -1,9 +1,7 @@
-package ru.profit_group.scorocodesdk.InboundRequests;
-
-import retrofit2.http.Field;
+package ru.profit_group.scorocodesdk.Requests;
 
 /**
- * Created by peter on 21/09/16
+ * Created by peter staranchuk on 21/09/16
  */
 public class RequestStatistic {
 
