@@ -1,12 +1,12 @@
 package ru.profit_group.scorocode_sdk.Responses;
 
 /**
- * Created by peter on 21/09/16.
+ * Created by Peter Staranchuk on 5/10/16
  */
-public class ResponseDefault {
-    boolean error;
-    String errCode;
-    String errMsg;
+public class ResponseCodes {
+    protected boolean error;
+    protected String errCode;
+    protected String errMsg;
 
     public boolean isError() {
         return error;

@@ -1,21 +1,14 @@
-package ru.profit_group.scorocode_sdk.Responses;
+package ru.profit_group.scorocode_sdk.Responses.statistic;
+
+import ru.profit_group.scorocode_sdk.Responses.ResponseCodes;
 
 /**
- * Created by peter on 20/09/16.
+ * Created by Peter Staranchuk on 5/10/16
  */
 
 //POJO object
-public class ResponseAppStatistic {
-    public boolean error;
+public class ResponseAppStatistic extends ResponseCodes{
     public Result result;
-
-    public boolean isError() {
-        return error;
-    }
-
-    public void setError(boolean error) {
-        this.error = error;
-    }
 
     public Result getResult() {
         return result;
