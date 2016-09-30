@@ -1,9 +1,12 @@
-package ru.profit_group.scorocode_sdk.Requests;
+package ru.profit_group.scorocode_sdk.Requests.data;
+
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.HashMap;
 
 /**
- * Created by peter staranchuk on 21/09/16.
+ * Created by Peter Staranchuk on 5/10/16
  */
 public class RequestInsert {
     private String app;
@@ -13,7 +16,13 @@ public class RequestInsert {
     private String coll;
     private HashMap<String, String> doc;
 
-    public RequestInsert(String appId, String clientId, String accsessKey, String sessionId, String collectionName, HashMap<String, String> doc) {
+    public RequestInsert(
+            @NonNull String appId,
+            @NonNull String clientId,
+            @Nullable String accsessKey,
+            @NonNull String sessionId,
+            @NonNull String collectionName,
+            @Nullable HashMap<String, String> doc) {
         this.app = appId;
         this.cli = clientId;
         this.acc = accsessKey;

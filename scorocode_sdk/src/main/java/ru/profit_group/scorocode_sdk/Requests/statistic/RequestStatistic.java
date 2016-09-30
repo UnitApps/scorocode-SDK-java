@@ -1,7 +1,7 @@
-package ru.profit_group.scorocode_sdk.Requests;
+package ru.profit_group.scorocode_sdk.Requests.statistic;
 
 /**
- * Created by peter staranchuk on 21/09/16
+ * Created by Peter Staranchuk on 5/10/16
  */
 public class RequestStatistic {
 

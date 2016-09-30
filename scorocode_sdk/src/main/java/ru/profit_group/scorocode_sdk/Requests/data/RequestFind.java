@@ -1,4 +1,4 @@
-package ru.profit_group.scorocode_sdk.Requests;
+package ru.profit_group.scorocode_sdk.Requests.data;
 
 
 import android.support.annotation.NonNull;
@@ -8,7 +8,7 @@ import ru.profit_group.scorocode_sdk.Objects.Query;
 import ru.profit_group.scorocode_sdk.Objects.Sort;
 
 /**
- * Created by peter on 25/09/16.
+ * Created by Peter Staranchuk on 5/10/16
  */
 public class RequestFind {
     private String app;

@@ -1,4 +1,4 @@
-package ru.profit_group.scorocode_sdk.Requests;
+package ru.profit_group.scorocode_sdk.Requests.data;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,7 +8,7 @@ import java.util.HashMap;
 import ru.profit_group.scorocode_sdk.Objects.Query;
 
 /**
- * Created by peter on 25/09/16.
+ * Created by Peter Staranchuk on 5/10/16
  */
 public class RequestUpdateById {
     private String appId;

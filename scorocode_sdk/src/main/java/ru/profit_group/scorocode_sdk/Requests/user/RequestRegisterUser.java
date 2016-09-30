@@ -1,11 +1,9 @@
-package ru.profit_group.scorocode_sdk.Requests;
+package ru.profit_group.scorocode_sdk.Requests.user;
 
 import java.util.HashMap;
 
-import ru.profit_group.scorocode_sdk.Objects.Doc;
-
 /**
- * Created by peter staranchuk on 21/09/16.
+ * Created by Peter Staranchuk on 5/10/16
  */
 public class RequestRegisterUser {
     private String app;
