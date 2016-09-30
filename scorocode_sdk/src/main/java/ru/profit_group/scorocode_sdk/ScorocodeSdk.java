@@ -15,28 +15,28 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.profit_group.scorocode_sdk.Objects.Query;
 import ru.profit_group.scorocode_sdk.Objects.Sort;
-import ru.profit_group.scorocode_sdk.Requests.RequestCount;
-import ru.profit_group.scorocode_sdk.Requests.RequestFind;
-import ru.profit_group.scorocode_sdk.Requests.RequestInsert;
-import ru.profit_group.scorocode_sdk.Requests.RequestLoginUser;
-import ru.profit_group.scorocode_sdk.Requests.RequestLogoutUser;
-import ru.profit_group.scorocode_sdk.Requests.RequestRegisterUser;
-import ru.profit_group.scorocode_sdk.Requests.RequestRemove;
-import ru.profit_group.scorocode_sdk.Requests.RequestStatistic;
-import ru.profit_group.scorocode_sdk.Requests.RequestUpdate;
-import ru.profit_group.scorocode_sdk.Requests.RequestUpdateById;
-import ru.profit_group.scorocode_sdk.Responses.ResponseCount;
-import ru.profit_group.scorocode_sdk.Responses.ResponseDefault;
-import ru.profit_group.scorocode_sdk.Responses.ResponseAppStatistic;
-import ru.profit_group.scorocode_sdk.Responses.ResponseFind;
-import ru.profit_group.scorocode_sdk.Responses.ResponseInsert;
-import ru.profit_group.scorocode_sdk.Responses.ResponseLogin;
-import ru.profit_group.scorocode_sdk.Responses.ResponseRemove;
-import ru.profit_group.scorocode_sdk.Responses.ResponseUpdate;
-import ru.profit_group.scorocode_sdk.Responses.ResponseUpdateById;
+import ru.profit_group.scorocode_sdk.Requests.data.RequestCount;
+import ru.profit_group.scorocode_sdk.Requests.data.RequestFind;
+import ru.profit_group.scorocode_sdk.Requests.data.RequestInsert;
+import ru.profit_group.scorocode_sdk.Requests.user.RequestLoginUser;
+import ru.profit_group.scorocode_sdk.Requests.user.RequestLogoutUser;
+import ru.profit_group.scorocode_sdk.Requests.user.RequestRegisterUser;
+import ru.profit_group.scorocode_sdk.Requests.data.RequestRemove;
+import ru.profit_group.scorocode_sdk.Requests.statistic.RequestStatistic;
+import ru.profit_group.scorocode_sdk.Requests.data.RequestUpdate;
+import ru.profit_group.scorocode_sdk.Requests.data.RequestUpdateById;
+import ru.profit_group.scorocode_sdk.Responses.ResponseString;
+import ru.profit_group.scorocode_sdk.Responses.data.ResponseCount;
+import ru.profit_group.scorocode_sdk.Responses.ResponseCodes;
+import ru.profit_group.scorocode_sdk.Responses.statistic.ResponseAppStatistic;
+import ru.profit_group.scorocode_sdk.Responses.data.ResponseInsert;
+import ru.profit_group.scorocode_sdk.Responses.user.ResponseLogin;
+import ru.profit_group.scorocode_sdk.Responses.data.ResponseRemove;
+import ru.profit_group.scorocode_sdk.Responses.data.ResponseUpdate;
+import ru.profit_group.scorocode_sdk.Responses.data.ResponseUpdateById;
 
 /**
- * Created by peter on 12/09/16.
+ * Created by Peter Staranchuk on 5/10/16
  */
 public class ScorocodeSdk {
 
@@ -59,9 +59,9 @@ public class ScorocodeSdk {
             @NonNull String userEmail,
             @NonNull String userPassword,
             @Nullable HashMap<String, String>  doc,
-            @NonNull Callback<ResponseDefault> callback) {
+            @NonNull Callback<ResponseCodes> callback) {
 
-        Call<ResponseDefault> registerUserCall = getScorocodeApi().register(new RequestRegisterUser(appId, clientKey, userName, userEmail, userPassword, doc));
+        Call<ResponseCodes> registerUserCall = getScorocodeApi().register(new RequestRegisterUser(appId, clientKey, userName, userEmail, userPassword, doc));
         registerUserCall.enqueue(callback);
     }
 
@@ -80,9 +80,9 @@ public class ScorocodeSdk {
             @NonNull String appId,
             @NonNull String clientKey,
             @NonNull String sessionId,
-            @NonNull Callback<ResponseDefault> callback) {
+            @NonNull Callback<ResponseCodes> callback) {
 
-        Call<ResponseDefault> logoutUserCall = getScorocodeApi().logout(new RequestLogoutUser(appId, clientKey, sessionId));
+        Call<ResponseCodes> logoutUserCall = getScorocodeApi().logout(new RequestLogoutUser(appId, clientKey, sessionId));
         logoutUserCall.enqueue(callback);
     }
 
@@ -153,9 +153,9 @@ public class ScorocodeSdk {
             @Nullable String[] fieldsNamesToFind,
             @Nullable Integer limit,
             @Nullable Integer skip,
-            Callback<ResponseFind> callback) {
+            Callback<ResponseString> callback) {
 
-        Call<ResponseFind> findCall = getScorocodeApi().find(new RequestFind(appId, clientKey, accessKey, sessionId, collectionName, query, sort, fieldsNamesToFind, limit, skip));
+        Call<ResponseString> findCall = getScorocodeApi().find(new RequestFind(appId, clientKey, accessKey, sessionId, collectionName, query, sort, fieldsNamesToFind, limit, skip));
         findCall.enqueue(callback);
     }
 

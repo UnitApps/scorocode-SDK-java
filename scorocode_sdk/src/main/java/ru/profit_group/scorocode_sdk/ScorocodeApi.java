@@ -1,31 +1,41 @@
 package ru.profit_group.scorocode_sdk;
 
+import android.support.annotation.NonNull;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
-import ru.profit_group.scorocode_sdk.Requests.RequestCount;
-import ru.profit_group.scorocode_sdk.Requests.RequestFind;
-import ru.profit_group.scorocode_sdk.Requests.RequestInsert;
-import ru.profit_group.scorocode_sdk.Requests.RequestLoginUser;
-import ru.profit_group.scorocode_sdk.Requests.RequestLogoutUser;
-import ru.profit_group.scorocode_sdk.Requests.RequestRegisterUser;
-import ru.profit_group.scorocode_sdk.Requests.RequestRemove;
-import ru.profit_group.scorocode_sdk.Requests.RequestStatistic;
-import ru.profit_group.scorocode_sdk.Requests.RequestUpdate;
-import ru.profit_group.scorocode_sdk.Requests.RequestUpdateById;
-import ru.profit_group.scorocode_sdk.Responses.ResponseCount;
-import ru.profit_group.scorocode_sdk.Responses.ResponseDefault;
-import ru.profit_group.scorocode_sdk.Responses.ResponseFind;
-import ru.profit_group.scorocode_sdk.Responses.ResponseInsert;
-import ru.profit_group.scorocode_sdk.Responses.ResponseLogin;
-import ru.profit_group.scorocode_sdk.Responses.ResponseAppStatistic;
-import ru.profit_group.scorocode_sdk.Responses.ResponseRemove;
-import ru.profit_group.scorocode_sdk.Responses.ResponseUpdate;
-import ru.profit_group.scorocode_sdk.Responses.ResponseUpdateById;
+import retrofit2.http.Query;
+import ru.profit_group.scorocode_sdk.Requests.data.RequestCount;
+import ru.profit_group.scorocode_sdk.Requests.data.RequestFind;
+import ru.profit_group.scorocode_sdk.Requests.data.RequestInsert;
+import ru.profit_group.scorocode_sdk.Requests.files.RequestFile;
+import ru.profit_group.scorocode_sdk.Requests.files.RequestUpload;
+import ru.profit_group.scorocode_sdk.Requests.messages.RequestSendEmail;
+import ru.profit_group.scorocode_sdk.Requests.messages.RequestSendPush;
+import ru.profit_group.scorocode_sdk.Requests.messages.RequestSendSms;
+import ru.profit_group.scorocode_sdk.Requests.scripts.RequestSendScriptTask;
+import ru.profit_group.scorocode_sdk.Requests.user.RequestLoginUser;
+import ru.profit_group.scorocode_sdk.Requests.user.RequestLogoutUser;
+import ru.profit_group.scorocode_sdk.Requests.user.RequestRegisterUser;
+import ru.profit_group.scorocode_sdk.Requests.data.RequestRemove;
+import ru.profit_group.scorocode_sdk.Requests.statistic.RequestStatistic;
+import ru.profit_group.scorocode_sdk.Requests.data.RequestUpdate;
+import ru.profit_group.scorocode_sdk.Requests.data.RequestUpdateById;
+import ru.profit_group.scorocode_sdk.Responses.data.ResponseCount;
+import ru.profit_group.scorocode_sdk.Responses.ResponseCodes;
+import ru.profit_group.scorocode_sdk.Responses.data.ResponseInsert;
+import ru.profit_group.scorocode_sdk.Responses.ResponseString;
+import ru.profit_group.scorocode_sdk.Responses.user.ResponseLogin;
+import ru.profit_group.scorocode_sdk.Responses.statistic.ResponseAppStatistic;
+import ru.profit_group.scorocode_sdk.Responses.data.ResponseRemove;
+import ru.profit_group.scorocode_sdk.Responses.data.ResponseUpdate;
+import ru.profit_group.scorocode_sdk.Responses.data.ResponseUpdateById;
 
 /**
- * Created by Peter Staranchuk on 20/09/16
+ * Created by Peter Staranchuk on 5/10/16
  */
 public interface ScorocodeApi {
 
@@ -35,7 +45,7 @@ public interface ScorocodeApi {
 
     @Headers({"Content-Type: application/json"})
     @POST("api/v1/register")
-    Call<ResponseDefault> register(@Body RequestRegisterUser requestRegisterUser);
+    Call<ResponseCodes> register(@Body RequestRegisterUser requestRegisterUser);
 
     @Headers({"Content-Type: application/json"})
     @POST("api/v1/login")
@@ -43,7 +53,7 @@ public interface ScorocodeApi {
 
     @Headers({"Content-Type: application/json"})
     @POST("api/v1/logout")
-    Call<ResponseDefault> logout(@Body RequestLogoutUser requestLogoutUser);
+    Call<ResponseCodes> logout(@Body RequestLogoutUser requestLogoutUser);
 
     @Headers({"Content-Type: application/json"})
     @POST("api/v1/data/insert")
@@ -63,9 +73,46 @@ public interface ScorocodeApi {
 
     @Headers({"Content-Type: application/json"})
     @POST("api/v1/data/find")
-    Call<ResponseFind> find(@Body RequestFind requestFind);
+    Call<ResponseString> find(@Body RequestFind requestFind);
 
     @Headers({"Content-Type: application/json"})
     @POST("api/v1/data/count")
     Call<ResponseCount> count(@Body RequestCount requestCount);
+
+    @Headers({"Content-Type: application/json"})
+    @POST("api/v1/upload")
+    Call<ResponseCodes> upload(@Body RequestUpload requestUpload);
+
+    @GET("api/v1/getfile/{app}/{coll}/{field}/{docId}/{file}")
+    Call<ResponseCodes> getFile(
+            @NonNull @Query("app") String app,
+            @NonNull @Query("coll") String coll,
+            @NonNull @Query("field") String field,
+            @NonNull @Query("docId") String docId,
+            @NonNull @Query("file") String file);
+
+    @Headers({"Content-Type: application/json"})
+    @POST("api/v1/getfilelink")
+    Call<ResponseString> getFileLink(@Body RequestFile requestGetFileLink);
+
+    @Headers({"Content-Type: application/json"})
+    @POST("api/v1/deletefile")
+    Call<ResponseString> deleteFile(@Body RequestFile requestDeleteFile);
+
+    @Headers({"Content-Type: application/json"})
+    @POST("api/v1/sendemail")
+    Call<ResponseCodes> sendEmail(@Body RequestSendEmail requestSendEmail);
+
+    @Headers({"Content-Type: application/json"})
+    @POST("api/v1/sendpush")
+    Call<ResponseCodes> sendPush(@Body RequestSendPush requestSendPush);
+
+    @Headers({"Content-Type: application/json"})
+    @POST("api/v1/sendsms")
+    Call<ResponseCodes> sendSms(@Body RequestSendSms requestSendSms);
+
+    @Headers({"Content-Type: application/json"})
+    @POST("api/v1/scripts")
+    Call<ResponseCodes> sendScriptTask(@Body RequestSendScriptTask requestSendScriptTask);
 }
+
