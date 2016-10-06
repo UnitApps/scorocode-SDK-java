@@ -9,6 +9,12 @@ public class MessageEmail {
     private String text;
     private String from;
 
+    public MessageEmail(String from, String subject, String text) {
+        this.subject = subject;
+        this.text = text;
+        this.from = from;
+    }
+
     public String getSubject() {
         return subject;
     }

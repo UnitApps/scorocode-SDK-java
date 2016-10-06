@@ -10,6 +10,11 @@ public class MessagePush {
     private String text;
     private HashMap<String, String> data;
 
+    public MessagePush(String text, HashMap<String, String> data) {
+        this.text = text;
+        this.data = data;
+    }
+
     public String getText() {
         return text;
     }

@@ -7,6 +7,10 @@ package ru.profit_group.scorocode_sdk.Objects;
 public class MessageSms {
     private String text;
 
+    public MessageSms(String text) {
+        this.text = text;
+    }
+
     public String getText() {
         return text;
     }
