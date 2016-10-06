@@ -4,25 +4,25 @@ package ru.profit_group.scorocode_sdk.Requests.user;
  * Created by Peter Staranchuk on 5/10/16
  */
 public class RequestLogoutUser {
-    private String appId;
-    private String clientKey;
-    private String sessionId;
+    private String app;
+    private String cli;
+    private String sess;
 
     public RequestLogoutUser(String appId, String clientKey, String sessionId) {
-        this.appId = appId;
-        this.clientKey = clientKey;
-        this.sessionId = sessionId;
+        this.app = appId;
+        this.cli = clientKey;
+        this.sess = sessionId;
     }
 
-    public String getAppId() {
-        return appId;
+    public String getApp() {
+        return app;
     }
 
-    public String getClientKey() {
-        return clientKey;
+    public String getCli() {
+        return cli;
     }
 
-    public String getSessionId() {
-        return sessionId;
+    public String getSess() {
+        return sess;
     }
 }

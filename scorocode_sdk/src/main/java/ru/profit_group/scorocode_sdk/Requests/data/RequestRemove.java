@@ -11,12 +11,12 @@ import ru.profit_group.scorocode_sdk.Objects.Query;
  * Created by Peter Staranchuk on 5/10/16
  */
 public class RequestRemove {
-    private String appId;
-    private String clientKey;
-    private String accessKey;
-    private String sessionId;
-    private String collectionName;
-    private Query query;
+    private String app;
+    private String cli;
+    private String acc;
+    private String sess;
+    private String coll;
+    private HashMap<String, HashMap<String, String>> query;
     private Integer limit;
 
     public RequestRemove(
@@ -25,38 +25,38 @@ public class RequestRemove {
             @Nullable String accessKey,
             @NonNull String sessionId,
             @NonNull String collectionName,
-            @Nullable Query query,
+            @Nullable HashMap<String, HashMap<String, String>> query,
             @Nullable Integer limit) {
-        this.appId = appId;
-        this.clientKey = clientKey;
-        this.accessKey = accessKey;
-        this.sessionId = sessionId;
-        this.collectionName = collectionName;
+        this.app = appId;
+        this.cli = clientKey;
+        this.acc = accessKey;
+        this.sess = sessionId;
+        this.coll = collectionName;
         this.query = query;
         this.limit = limit;
     }
 
-    public String getAppId() {
-        return appId;
+    public String getApp() {
+        return app;
     }
 
-    public String getClientKey() {
-        return clientKey;
+    public String getCli() {
+        return cli;
     }
 
-    public String getAccessKey() {
-        return accessKey;
+    public String getAcc() {
+        return acc;
     }
 
-    public String getSessionId() {
-        return sessionId;
+    public String getSess() {
+        return sess;
     }
 
-    public String getCollectionName() {
-        return collectionName;
+    public String getColl() {
+        return coll;
     }
 
-    public Query getQuery() {
+    public HashMap<String, HashMap<String, String>> getQuery() {
         return query;
     }
 
