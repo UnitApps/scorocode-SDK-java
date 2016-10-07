@@ -8,13 +8,13 @@ import ru.profit_group.scorocode_sdk.Responses.ResponseCodes;
  * Created by Peter Staranchuk on 5/10/16
  */
 public class ResponseInsert extends ResponseCodes {
-    private HashMap<String, String> result;
+    private HashMap<String, Object> result;
 
-    public HashMap<String, String> getResult() {
+    public HashMap<String, Object> getResult() {
         return result;
     }
 
-    public void setResult(HashMap<String, String> result) {
+    public void setResult(HashMap<String, Object> result) {
         this.result = result;
     }
 }

@@ -8,17 +8,17 @@ import ru.profit_group.scorocode_sdk.Responses.ResponseCodes;
  * Created by Peter Staranchuk on 5/10/16
  */
 public class ResponseUpdateById extends ResponseCodes{
-    private Result result;
+    private  HashMap<String, Object> result;
 
-    public Result getResult() {
+    public  HashMap<String, Object> getResult() {
         return result;
     }
 
-    public void setResult(Result result) {
+    public void setResult( HashMap<String, Object> result) {
         this.result = result;
     }
 
-    private class Result {
-        HashMap<String, String> doc;
-    }
+//    private class Result {
+//        HashMap<String, Object> docs;
+//    }
 }

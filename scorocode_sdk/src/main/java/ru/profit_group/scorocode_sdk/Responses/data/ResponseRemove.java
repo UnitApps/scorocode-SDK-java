@@ -1,5 +1,7 @@
 package ru.profit_group.scorocode_sdk.Responses.data;
 
+import java.util.List;
+
 import ru.profit_group.scorocode_sdk.Responses.ResponseCodes;
 
 /**
@@ -18,7 +20,7 @@ public class ResponseRemove extends ResponseCodes {
 
     private class Result {
         private int count;
-        private String docs;
+        private List<String> docs;
 
         public int getCount() {
             return count;
@@ -28,11 +30,11 @@ public class ResponseRemove extends ResponseCodes {
             this.count = count;
         }
 
-        public String getDocs() {
+        public List<String> getDocs() {
             return docs;
         }
 
-        public void setDocs(String docs) {
+        public void setDocs(List<String> docs) {
             this.docs = docs;
         }
     }
