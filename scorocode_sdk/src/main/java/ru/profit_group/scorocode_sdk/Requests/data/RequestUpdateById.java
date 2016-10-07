@@ -5,19 +5,17 @@ import android.support.annotation.Nullable;
 
 import java.util.HashMap;
 
-import ru.profit_group.scorocode_sdk.Objects.Query;
-
 /**
  * Created by Peter Staranchuk on 5/10/16
  */
 public class RequestUpdateById {
-    private String appId;
-    private String clientKey;
-    private String accountKey;
-    private String sessionId;
-    private String collectionName;
-    private Query query;
-    private HashMap<String, String> doc;
+    private String app;
+    private String cli;
+    private String acc;
+    private String sess;
+    private String coll;
+    private HashMap<String, String> query;
+    private HashMap<String, HashMap<String,String>> doc;
 
     public RequestUpdateById(
             @NonNull String appId,
@@ -25,42 +23,42 @@ public class RequestUpdateById {
             @Nullable String accountKey,
             @NonNull String sessionId,
             @NonNull String collectionName,
-            @Nullable Query query,
-            @NonNull HashMap<String, String> doc) {
-        this.appId = appId;
-        this.clientKey = clientKey;
-        this.accountKey = accountKey;
-        this.sessionId = sessionId;
-        this.collectionName = collectionName;
+            @NonNull HashMap<String, String> query,
+            @NonNull HashMap<String, HashMap<String,String>> doc) {
+        this.app = appId;
+        this.cli = clientKey;
+        this.acc = accountKey;
+        this.sess = sessionId;
+        this.coll = collectionName;
         this.query = query;
         this.doc = doc;
     }
 
-    public String getAppId() {
-        return appId;
+    public String getApp() {
+        return app;
     }
 
-    public String getClientKey() {
-        return clientKey;
+    public String getCli() {
+        return cli;
     }
 
-    public String getAccountKey() {
-        return accountKey;
+    public String getAcc() {
+        return acc;
     }
 
-    public String getSessionId() {
-        return sessionId;
+    public String getSess() {
+        return sess;
     }
 
-    public String getCollectionName() {
-        return collectionName;
+    public String getColl() {
+        return coll;
     }
 
-    public Query getQuery() {
+    public HashMap<String, String> getQuery() {
         return query;
     }
 
-    public HashMap<String, String> getDoc() {
+    public HashMap<String, HashMap<String,String>> getDoc() {
         return doc;
     }
 }
