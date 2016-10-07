@@ -7,6 +7,7 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 import ru.profit_group.scorocode_sdk.Requests.data.RequestCount;
 import ru.profit_group.scorocode_sdk.Requests.data.RequestFind;
@@ -68,7 +69,7 @@ public interface ScorocodeApi {
     Call<ResponseUpdate> update(@Body RequestUpdate requestUpdate);
 
     @Headers({"Content-Type: application/json"})
-    @POST("api/v1/data/updateById")
+    @POST("api/v1/data/updatebyid")
     Call<ResponseUpdateById> updateById(@Body RequestUpdateById requestUpdateById);
 
     @Headers({"Content-Type: application/json"})
@@ -85,15 +86,11 @@ public interface ScorocodeApi {
 
     @GET("api/v1/getfile/{app}/{coll}/{field}/{docId}/{file}")
     Call<ResponseCodes> getFile(
-            @NonNull @Query("app") String app,
-            @NonNull @Query("coll") String coll,
-            @NonNull @Query("field") String field,
-            @NonNull @Query("docId") String docId,
-            @NonNull @Query("file") String file);
-
-    @Headers({"Content-Type: application/json"})
-    @POST("api/v1/getfilelink")
-    Call<ResponseString> getFileLink(@Body RequestFile requestGetFileLink);
+            @NonNull @Path("app") String app,
+            @NonNull @Path("coll") String coll,
+            @NonNull @Path("field") String field,
+            @NonNull @Path("docId") String docId,
+            @NonNull @Path("file") String file);
 
     @Headers({"Content-Type: application/json"})
     @POST("api/v1/deletefile")
