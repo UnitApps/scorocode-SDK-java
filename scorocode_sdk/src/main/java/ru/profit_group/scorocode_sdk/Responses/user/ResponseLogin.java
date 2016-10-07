@@ -2,6 +2,7 @@ package ru.profit_group.scorocode_sdk.Responses.user;
 
 import java.util.HashMap;
 
+import ru.profit_group.scorocode_sdk.Objects.User;
 import ru.profit_group.scorocode_sdk.Responses.ResponseCodes;
 
 /**
@@ -18,8 +19,24 @@ public class ResponseLogin extends ResponseCodes {
         this.result = result;
     }
 
-    private class Result {
-        String sessionId;
-        HashMap<String, String> user;
+    public class Result {
+         String sessionId;
+         User user;
+
+        public String getSessionId() {
+            return sessionId;
+        }
+
+        public void setSessionId(String sessionId) {
+            this.sessionId = sessionId;
+        }
+
+        public User getUser() {
+            return user;
+        }
+
+        public void setUser(User user) {
+            this.user = user;
+        }
     }
 }
