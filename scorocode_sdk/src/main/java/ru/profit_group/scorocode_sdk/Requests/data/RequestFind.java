@@ -4,6 +4,9 @@ package ru.profit_group.scorocode_sdk.Requests.data;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import java.util.HashMap;
+import java.util.List;
+
 import ru.profit_group.scorocode_sdk.Objects.Query;
 import ru.profit_group.scorocode_sdk.Objects.Sort;
 
@@ -16,9 +19,9 @@ public class RequestFind {
     private String acc;
     private String sess;
     private String coll;
-    private Query query;
-    private Sort sort;
-    private String[] fields;
+    private HashMap<String, HashMap<String,String>> query;
+    private HashMap<String, Integer> sort;
+    private List<String> fields;
     private Integer limit;
     private Integer skip;
 
@@ -28,9 +31,9 @@ public class RequestFind {
             @Nullable String acc,
             @NonNull String sess,
             @NonNull String coll,
-            @Nullable Query query,
-            @Nullable Sort sort,
-            @Nullable String[] fields,
+            @Nullable HashMap<String, HashMap<String,String>> query,
+            @Nullable HashMap<String, Integer> sort,
+            @Nullable List<String> fields,
             @Nullable Integer limit,
             @Nullable Integer skip) {
         this.app = app;
@@ -65,15 +68,15 @@ public class RequestFind {
         return coll;
     }
 
-    public Query getQuery() {
+    public HashMap<String, HashMap<String,String>> getQuery() {
         return query;
     }
 
-    public Sort getSort() {
+    public HashMap<String, Integer> getSort() {
         return sort;
     }
 
-    public String[] getFields() {
+    public List<String> getFields() {
         return fields;
     }
 

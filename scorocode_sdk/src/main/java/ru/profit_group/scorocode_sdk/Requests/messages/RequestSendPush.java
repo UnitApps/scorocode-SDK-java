@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import ru.profit_group.scorocode_sdk.Objects.MessagePush;
+import ru.profit_group.scorocode_sdk.Objects.Query;
 
 /**
  * Created by Peter Staranchuk on 5/10/2016
@@ -15,7 +16,7 @@ public class RequestSendPush {
     private String acc;
     private String sess;
     private String coll;
-    private String query;
+    private Query query;
     private MessagePush msg;
 
     public RequestSendPush(
@@ -24,7 +25,7 @@ public class RequestSendPush {
             @NonNull String acc,
             @NonNull String sess,
             @NonNull String coll,
-            @Nullable String query,
+            @Nullable Query query,
             @NonNull MessagePush msg) {
         this.app = app;
         this.cli = cli;
@@ -55,7 +56,7 @@ public class RequestSendPush {
         return coll;
     }
 
-    public String getQuery() {
+    public Query getQuery() {
         return query;
     }
 
