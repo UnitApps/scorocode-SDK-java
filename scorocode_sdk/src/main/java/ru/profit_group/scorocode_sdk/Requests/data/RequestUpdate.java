@@ -5,6 +5,8 @@ import android.support.annotation.Nullable;
 
 import java.util.HashMap;
 
+import ru.profit_group.scorocode_sdk.scorocode_objects.Query;
+
 /**
  * Created by Peter Staranchuk on 5/10/16
  */
@@ -14,9 +16,9 @@ public class RequestUpdate {
     private String acc;
     private String sess;
     private String coll;
-    private HashMap<String, HashMap<String,String>> query;
-    private HashMap<String, HashMap<String, String>> doc;
-    private Long limit;
+    private Query query;
+    private HashMap<String, HashMap<String, Object>> doc;
+    private Integer limit;
 
     public RequestUpdate(
             @NonNull String appId,
@@ -24,9 +26,9 @@ public class RequestUpdate {
             @Nullable String accountKey,
             @NonNull String sessionId,
             @NonNull String collectionName,
-            @Nullable HashMap<String, HashMap<String,String>> query,
-            @NonNull HashMap<String, HashMap<String, String>> doc,
-            @Nullable Long limit) {
+            @Nullable Query query,
+            @NonNull HashMap<String, HashMap<String, Object>> doc,
+            @Nullable Integer limit) {
         this.app = appId;
         this.cli = clientKey;
         this.acc = accountKey;
@@ -57,15 +59,15 @@ public class RequestUpdate {
         return coll;
     }
 
-    public HashMap<String, HashMap<String,String>> getQuery() {
+    public Query getQuery() {
         return query;
     }
 
-    public HashMap<String, HashMap<String, String>> getDoc() {
+    public HashMap<String, HashMap<String, Object>> getDoc() {
         return doc;
     }
 
-    public Long getLimit() {
+    public Integer getLimit() {
         return limit;
     }
 }

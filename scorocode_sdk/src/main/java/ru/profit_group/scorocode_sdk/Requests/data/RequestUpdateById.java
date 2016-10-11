@@ -15,7 +15,7 @@ public class RequestUpdateById {
     private String sess;
     private String coll;
     private HashMap<String, String> query;
-    private HashMap<String, HashMap<String,String>> doc;
+    private HashMap<String, HashMap<String,Object>> doc;
 
     public RequestUpdateById(
             @NonNull String appId,
@@ -24,7 +24,7 @@ public class RequestUpdateById {
             @NonNull String sessionId,
             @NonNull String collectionName,
             @NonNull HashMap<String, String> query,
-            @NonNull HashMap<String, HashMap<String,String>> doc) {
+            @NonNull HashMap<String, HashMap<String, Object>> doc) {
         this.app = appId;
         this.cli = clientKey;
         this.acc = accountKey;
@@ -58,7 +58,7 @@ public class RequestUpdateById {
         return query;
     }
 
-    public HashMap<String, HashMap<String,String>> getDoc() {
+    public HashMap<String, HashMap<String, Object>> getDoc() {
         return doc;
     }
 }
