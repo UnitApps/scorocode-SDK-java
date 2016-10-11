@@ -42,7 +42,6 @@ public class TestActivity extends AppCompatActivity {
     private static final String SCRIPT_ID = "1234565";
     public static final String MASTER_KEY = "383499df2748bb4560745d5da67f5e41";
 
-    private String _sessionId = null;
     private HashMap<String, String> _doc;
     private Query _query;
     private HashMap<String, HashMap<String, Object>> _doc_set;
@@ -54,6 +53,8 @@ public class TestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ScorocodeSdk.initWith(APP_ID, CLIENT_KEY, MASTER_KEY, null, null, null);
 
         setTestDoc();
         setTestQuery();
@@ -116,7 +117,7 @@ public class TestActivity extends AppCompatActivity {
                 Log.d(TAG, "REGISTER USER: SUCCESS");
 
                 if(response != null && response.body() != null && response.body().getResult() != null) {
-                    _sessionId = response.body().getResult().getSessionId();
+                    ScorocodeSdk.setSessionId(response.body().getResult().getSessionId());
 //                    testLogoutUser();
 //                    testInsertDocument();
 //                    testRemoveDocument();
