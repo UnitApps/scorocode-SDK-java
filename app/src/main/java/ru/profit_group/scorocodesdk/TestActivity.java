@@ -85,7 +85,7 @@ public class TestActivity extends AppCompatActivity {
 
     private void setTestQuery() {
         _query = new Query(COLLECTION_NAME);
-        HashMap<String, String> request = new HashMap<>();
+        HashMap<String, Object> request = new HashMap<>();
         request.put("$eq", "Сегодня 2010 июня, и это день рождения Мюриэл! Мюриэл сейчас 105. С днём рождения, Мюриэл!");
         _query.put("exampleField", request);
     }

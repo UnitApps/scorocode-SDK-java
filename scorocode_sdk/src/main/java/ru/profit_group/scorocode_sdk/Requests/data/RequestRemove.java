@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 
 import java.util.HashMap;
 
+import ru.profit_group.scorocode_sdk.scorocode_objects.Query;
 import ru.profit_group.scorocode_sdk.scorocode_objects.ScorocodeSdkStateHolder;
 
 /**
@@ -16,13 +17,13 @@ public class RequestRemove {
     private String acc;
     private String sess;
     private String coll;
-    private HashMap<String, HashMap<String, String>> query;
+    private Query query;
     private Integer limit;
 
     public RequestRemove(
             @NonNull ScorocodeSdkStateHolder stateHolder,
             @NonNull String collectionName,
-            @Nullable HashMap<String, HashMap<String, String>> query,
+            @Nullable Query query,
             @Nullable Integer limit) {
         this.app = stateHolder.getApplicationId();
         this.cli = stateHolder.getClientKey();
@@ -53,7 +54,7 @@ public class RequestRemove {
         return coll;
     }
 
-    public HashMap<String, HashMap<String, String>> getQuery() {
+    public Query getQuery() {
         return query;
     }
 

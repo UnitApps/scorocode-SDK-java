@@ -3,7 +3,7 @@ package ru.profit_group.scorocode_sdk.scorocode_objects;
 import java.util.HashMap;
 
 /**
- * Created by peter on 25/09/16.
+ * Created by Peter Staranchuk on 25/09/16
  */
 public class Sort extends HashMap<String, Integer>{
     private HashMap<String, String> values;

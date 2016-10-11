@@ -7,7 +7,9 @@ import android.support.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
 
+import ru.profit_group.scorocode_sdk.scorocode_objects.Query;
 import ru.profit_group.scorocode_sdk.scorocode_objects.ScorocodeSdkStateHolder;
+import ru.profit_group.scorocode_sdk.scorocode_objects.Sort;
 
 /**
  * Created by Peter Staranchuk on 5/10/16
@@ -18,7 +20,7 @@ public class RequestFind {
     private String acc;
     private String sess;
     private String coll;
-    private HashMap<String, HashMap<String,String>> query;
+    private Query query;
     private HashMap<String, Integer> sort;
     private List<String> fields;
     private Integer limit;
@@ -27,8 +29,8 @@ public class RequestFind {
     public RequestFind(
             @NonNull ScorocodeSdkStateHolder stateHolder,
             @NonNull String coll,
-            @Nullable HashMap<String, HashMap<String,String>> query,
-            @Nullable HashMap<String, Integer> sort,
+            @Nullable Query query,
+            @Nullable Sort sort,
             @Nullable List<String> fields,
             @Nullable Integer limit,
             @Nullable Integer skip) {
@@ -65,7 +67,7 @@ public class RequestFind {
         return coll;
     }
 
-    public HashMap<String, HashMap<String,String>> getQuery() {
+    public Query getQuery() {
         return query;
     }
 
