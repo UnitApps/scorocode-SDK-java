@@ -12,11 +12,11 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import ru.profit_group.scorocode_sdk.Objects.MessageEmail;
-import ru.profit_group.scorocode_sdk.Objects.MessagePush;
-import ru.profit_group.scorocode_sdk.Objects.MessageSms;
-import ru.profit_group.scorocode_sdk.Objects.Query;
-import ru.profit_group.scorocode_sdk.Objects.Sort;
+import ru.profit_group.scorocode_sdk.Requests.messages.MessageEmail;
+import ru.profit_group.scorocode_sdk.Requests.messages.MessagePush;
+import ru.profit_group.scorocode_sdk.Requests.messages.MessageSms;
+import ru.profit_group.scorocode_sdk.scorocode_objects.Query;
+import ru.profit_group.scorocode_sdk.scorocode_objects.Sort;
 import ru.profit_group.scorocode_sdk.Responses.ResponseString;
 import ru.profit_group.scorocode_sdk.Responses.data.ResponseCount;
 import ru.profit_group.scorocode_sdk.Responses.data.ResponseInsert;
@@ -45,7 +45,7 @@ public class TestActivity extends AppCompatActivity {
     private String _sessionId = null;
     private HashMap<String, String> _doc;
     private Query _query;
-    private HashMap<String, HashMap<String, String>> _doc_set;
+    private HashMap<String, HashMap<String, Object>> _doc_set;
     private String _documentId;
     private String _fieldName;
     private String _fileName;
@@ -76,13 +76,13 @@ public class TestActivity extends AppCompatActivity {
 
     private void setTestDocSetRequest() {
         _doc_set = new HashMap<>();
-        HashMap<String, String> request = new HashMap<>();
+        HashMap<String, Object> request = new HashMap<>();
         request.put("exampleField", "Сегодня 2011 июня, и это день рождения Мюриэл! Мюриэл сейчас 105. С днём рождения, Мюриэл!");
         _doc_set.put("$set", request);
     }
 
     private void setTestQuery() {
-        _query = new Query();
+        _query = new Query(COLLECTION_NAME);
         HashMap<String, String> request = new HashMap<>();
         request.put("$eq", "Сегодня 18 июня, и это день рождения Мюриэл! Мюриэл сейчас 20. С днём рождения, Мюриэл!");
         _query.put("exampleField", request);
@@ -122,7 +122,7 @@ public class TestActivity extends AppCompatActivity {
 //                    testRemoveDocument();
 //                    testUpdateDocument();
 //                    testUpdateDocumentById();
-//                    testFindDocument();
+                    testFindDocument();
 //                    testCountDocument();
 //                    testUploadDocument();
 //                    testGetFileLink();
@@ -170,7 +170,7 @@ public class TestActivity extends AppCompatActivity {
     }
 
     private void testRemoveDocument() {
-        Query local_query = new Query("exampleField", "$eq", "Сегодня 2010 июня, и это день рождения Мюриэл! Мюриэл сейчас 105. С днём рождения, Мюриэл!");
+        Query local_query = Query.getSimpleQuery("exampleField", "$eq", "Сегодня 2010 июня, и это день рождения Мюриэл! Мюриэл сейчас 105. С днём рождения, Мюриэл!");
 
         ScorocodeSdk.removeDocument(APP_ID, CLIENT_KEY, ACCESS_KEY, _sessionId, COLLECTION_NAME, local_query, 1, new Callback<ResponseRemove>() {
             @Override
@@ -186,7 +186,7 @@ public class TestActivity extends AppCompatActivity {
     }
 
     private void testUpdateDocument() {
-        ScorocodeSdk.updateDocument(APP_ID, CLIENT_KEY, ACCESS_KEY, _sessionId, COLLECTION_NAME, _query, _doc_set, 1L, new Callback<ResponseUpdate>() {
+        ScorocodeSdk.updateDocument(APP_ID, CLIENT_KEY, ACCESS_KEY, _sessionId, COLLECTION_NAME, _query, _doc_set, 1, new Callback<ResponseUpdate>() {
             @Override
             public void onResponse(Call<ResponseUpdate> call, Response<ResponseUpdate> response) {
                 Log.d(TAG, "SUCCESS");
