@@ -1,4 +1,4 @@
-package ru.profit_group.scorocode_sdk.Objects;
+package ru.profit_group.scorocode_sdk.Requests.messages;
 
 /**
  * Created by peter on 30/09/2016.
