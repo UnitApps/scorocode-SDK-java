@@ -2,6 +2,8 @@ package ru.profit_group.scorocode_sdk.Requests.user;
 
 import java.util.HashMap;
 
+import ru.profit_group.scorocode_sdk.scorocode_objects.ScorocodeSdkStateHolder;
+
 /**
  * Created by Peter Staranchuk on 5/10/16
  */
@@ -13,22 +15,18 @@ public class RequestRegisterUser {
     private String password;
     private HashMap<String, String> doc;
 
-    public RequestRegisterUser(String app, String cli, String username, String email, String password) {
-        this.app = app;
-        this.cli = cli;
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.doc = null;
-    }
 
-    public RequestRegisterUser(String app, String cli, String username, String email, String password, HashMap<String, String>  doc) {
-        this.app = app;
-        this.cli = cli;
+    public RequestRegisterUser(ScorocodeSdkStateHolder stateHolder, String username, String email, String password, HashMap<String, String>  doc) {
+        this.app = stateHolder.getApplicationId();
+        this.cli = stateHolder.getClientKey();
         this.username = username;
         this.email = email;
         this.password = password;
         this.doc = doc;
+    }
+
+    public RequestRegisterUser(ScorocodeSdkStateHolder stateHolder, String username, String email, String password) {
+        this(stateHolder, username, email, password, null);
     }
 
     public String getApp() {

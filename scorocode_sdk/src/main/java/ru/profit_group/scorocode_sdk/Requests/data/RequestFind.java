@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
 
+import ru.profit_group.scorocode_sdk.scorocode_objects.ScorocodeSdkStateHolder;
+
 /**
  * Created by Peter Staranchuk on 5/10/16
  */
@@ -23,20 +25,18 @@ public class RequestFind {
     private Integer skip;
 
     public RequestFind(
-            @NonNull String app,
-            @NonNull String cli,
-            @Nullable String acc,
-            @NonNull String sess,
+            @NonNull ScorocodeSdkStateHolder stateHolder,
             @NonNull String coll,
             @Nullable HashMap<String, HashMap<String,String>> query,
             @Nullable HashMap<String, Integer> sort,
             @Nullable List<String> fields,
             @Nullable Integer limit,
             @Nullable Integer skip) {
-        this.app = app;
-        this.cli = cli;
-        this.acc = acc;
-        this.sess = sess;
+
+        this.app = stateHolder.getApplicationId();
+        this.cli = stateHolder.getClientKey();
+        this.acc = stateHolder.getMasterKey();
+        this.sess = stateHolder.getSessionId();
         this.coll = coll;
         this.query = query;
         this.sort = sort;

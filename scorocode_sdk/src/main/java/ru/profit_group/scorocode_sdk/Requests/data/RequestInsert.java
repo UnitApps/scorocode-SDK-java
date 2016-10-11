@@ -5,6 +5,8 @@ import android.support.annotation.Nullable;
 
 import java.util.HashMap;
 
+import ru.profit_group.scorocode_sdk.scorocode_objects.ScorocodeSdkStateHolder;
+
 /**
  * Created by Peter Staranchuk on 5/10/16
  */
@@ -17,16 +19,13 @@ public class RequestInsert {
     private HashMap<String, String> doc;
 
     public RequestInsert(
-            @NonNull String appId,
-            @NonNull String clientId,
-            @Nullable String accsessKey,
-            @NonNull String sessionId,
+            @NonNull ScorocodeSdkStateHolder stateHolder,
             @NonNull String collectionName,
             @Nullable HashMap<String, String> doc) {
-        this.app = appId;
-        this.cli = clientId;
-        this.acc = accsessKey;
-        this.sess = sessionId;
+        this.app = stateHolder.getApplicationId();
+        this.cli = stateHolder.getClientKey();
+        this.acc = stateHolder.getMasterKey();
+        this.sess = stateHolder.getSessionId();
         this.coll = collectionName;
         this.doc = doc;
     }

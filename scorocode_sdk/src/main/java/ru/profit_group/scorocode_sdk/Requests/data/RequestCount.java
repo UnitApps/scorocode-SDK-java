@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import ru.profit_group.scorocode_sdk.scorocode_objects.Query;
+import ru.profit_group.scorocode_sdk.scorocode_objects.ScorocodeSdkStateHolder;
 
 
 /**
@@ -18,16 +19,13 @@ public class RequestCount {
     private Query query;
 
     public RequestCount(
-            @NonNull String app,
-            @NonNull String cli,
-            @Nullable String acc,
-            @NonNull String sess,
+            @NonNull ScorocodeSdkStateHolder stateHolder,
             @NonNull String coll,
             @Nullable Query query) {
-        this.app = app;
-        this.cli = cli;
-        this.acc = acc;
-        this.sess = sess;
+        this.app = stateHolder.getApplicationId();
+        this.cli = stateHolder.getClientKey();
+        this.acc = stateHolder.getMasterKey();
+        this.sess = stateHolder.getSessionId();
         this.coll = coll;
         this.query = query;
     }

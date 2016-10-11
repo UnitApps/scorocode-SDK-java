@@ -71,16 +71,8 @@ public class Document {
     }
 
     public void uploadDocument(String fieldName, String fileName, String contenToUpload, Callback<ResponseCodes> callback) {
-        if(ScorocodeSdk.getMasterKey() == null && ScorocodeSdk.getFileKey() == null) {
-            return;
-        }
-
         ScorocodeSdk.uploadFile(_collectionName,
                 _documentId, fieldName, fileName, contenToUpload, callback);
-    }
-
-    private String getFileAccessKey() {
-        return ScorocodeSdk.getMasterKey() != null? ScorocodeSdk.getMasterKey() : ScorocodeSdk.getFileKey();
     }
 
     public String getFileLink(String fieldName, String fileName) {

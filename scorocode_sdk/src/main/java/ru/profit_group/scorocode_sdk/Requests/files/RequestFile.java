@@ -2,6 +2,8 @@ package ru.profit_group.scorocode_sdk.Requests.files;
 
 import android.support.annotation.NonNull;
 
+import ru.profit_group.scorocode_sdk.scorocode_objects.ScorocodeSdkStateHolder;
+
 /**
  * Created by Peter Staranchuk on 5/10/2016
  */
@@ -17,18 +19,16 @@ public class RequestFile {
     private String file;
 
     public RequestFile(
-            @NonNull String app,
-            @NonNull String cli,
-            @NonNull String acc,
-            @NonNull String sess,
+            @NonNull ScorocodeSdkStateHolder stateHolder,
             @NonNull String coll,
             @NonNull String docId,
             @NonNull String field,
             @NonNull String file) {
-        this.app = app;
-        this.cli = cli;
-        this.acc = acc;
-        this.sess = sess;
+
+        this.app = stateHolder.getApplicationId();
+        this.cli = stateHolder.getClientKey();
+        this.acc = stateHolder.getMasterOrFileKey();
+        this.sess = stateHolder.getSessionId();
         this.coll = coll;
         this.docId = docId;
         this.field = field;

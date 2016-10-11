@@ -18,6 +18,7 @@ import ru.profit_group.scorocode_sdk.Requests.messages.MessageEmail;
 import ru.profit_group.scorocode_sdk.Requests.messages.MessagePush;
 import ru.profit_group.scorocode_sdk.Requests.messages.MessageSms;
 import ru.profit_group.scorocode_sdk.scorocode_objects.Query;
+import ru.profit_group.scorocode_sdk.scorocode_objects.ScorocodeSdkStateHolder;
 import ru.profit_group.scorocode_sdk.scorocode_objects.Sort;
 import ru.profit_group.scorocode_sdk.Requests.data.RequestCount;
 import ru.profit_group.scorocode_sdk.Requests.data.RequestFind;
@@ -51,81 +52,27 @@ import ru.profit_group.scorocode_sdk.Responses.data.ResponseUpdateById;
 public class ScorocodeSdk {
 
     private static final String BASE_URL = "https://api.scorocode.ru";
-    private static String _applicationId;
-    private static String _clientKey;
-    private static String _masterKey;
-    private static String _fileKey;
-    private static String _messageKey;
-    private static String _sessionId;
+    private static ScorocodeSdkStateHolder stateHolder;
 
     public static void initWith(
             @NonNull String applicationId,
             @NonNull String clientKey,
             @Nullable String masterKey,
             @Nullable String fileKey,
-            @Nullable String messageKey) {
+            @Nullable String messageKey,
+            @Nullable String scriptKey) {
 
-        _applicationId = applicationId;
-        _clientKey = clientKey;
-        _masterKey = masterKey;
-        _fileKey = fileKey;
-        _messageKey = messageKey;
+        stateHolder = new ScorocodeSdkStateHolder(applicationId, clientKey, masterKey, fileKey, messageKey, scriptKey);
     }
 
-    public static String getAppId() throws IllegalStateException {
-        if(_applicationId == null) {
-            throw new IllegalStateException("you must initialize SDK first. Please use initWith(keys..) method.");
-        }
-        return _applicationId;
-    }
-
-    public static String getClientKey() throws IllegalStateException {
-        if(_clientKey == null) {
-            throw new IllegalStateException("you must initialize SDK first. Please use initWith(keys..) method.");
-        }
-        return _clientKey;
-    }
-
-    public static String getSessionId() throws IllegalStateException {
-        return _sessionId;
-    }
-
-    public static String getMasterKey() {
-        return _masterKey;
-    }
-
-    public static String getFileKey() {
-        return _fileKey;
-    }
-
-    public static String getMasterOrFileKey() {
-        if(_masterKey != null) {
-            return _masterKey;
-        } else {
-            return _fileKey;
-        }
-    }
-
-    public static String getMasterOrMessageKey() {
-        if(_masterKey != null) {
-            return _masterKey;
-        } else {
-            return _messageKey;
-        }
-    }
-
-    public static String getMessageKey() {
-        return _messageKey;
-    }
-
-    public static void setSessionId(String _sessionId) {
-        ScorocodeSdk._sessionId = _sessionId;
+    public static void initWith(@NonNull String applicationId, @NonNull String clientKey) {
+        initWith(applicationId, clientKey, null, null, null, null);
     }
 
     public static void getApplicationStatistic(
             @NonNull Callback<ResponseAppStatistic> callback) throws IOException {
 
-        Call<ResponseAppStatistic> appStatisticCall = getScorocodeApi().getAppStatistic(new RequestStatistic(getAppId(), getClientKey(), getMasterKey()));
+        Call<ResponseAppStatistic> appStatisticCall = getScorocodeApi().getAppStatistic(new RequestStatistic(stateHolder));
         appStatisticCall.enqueue(callback);
     }
 
@@ -136,7 +83,7 @@ public class ScorocodeSdk {
             @Nullable HashMap<String, String>  doc,
             @NonNull Callback<ResponseCodes> callback) {
 
-        Call<ResponseCodes> registerUserCall = getScorocodeApi().register(new RequestRegisterUser(getAppId(), getClientKey(), userName, userEmail, userPassword, doc));
+        Call<ResponseCodes> registerUserCall = getScorocodeApi().register(new RequestRegisterUser(stateHolder, userName, userEmail, userPassword, doc));
         registerUserCall.enqueue(callback);
     }
 
@@ -145,14 +92,14 @@ public class ScorocodeSdk {
             @NonNull String password,
             @NonNull Callback<ResponseLogin> callback) {
 
-        Call<ResponseLogin> loginUserCall = getScorocodeApi().login(new RequestLoginUser(getAppId(), getClientKey(), email, password));
+        Call<ResponseLogin> loginUserCall = getScorocodeApi().login(new RequestLoginUser(stateHolder, email, password));
         loginUserCall.enqueue(callback);
     }
 
     public static void logoutUser(
             @NonNull Callback<ResponseCodes> callback) {
 
-        Call<ResponseCodes> logoutUserCall = getScorocodeApi().logout(new RequestLogoutUser(getAppId(), getClientKey(), getSessionId()));
+        Call<ResponseCodes> logoutUserCall = getScorocodeApi().logout(new RequestLogoutUser(stateHolder));
         logoutUserCall.enqueue(callback);
     }
 
@@ -161,7 +108,7 @@ public class ScorocodeSdk {
             @Nullable HashMap<String, String> doc,
             @NonNull Callback<ResponseInsert> callback) {
 
-        Call<ResponseInsert> insertCall = getScorocodeApi().insert(new RequestInsert(getAppId(), getClientKey(), getMasterKey(), getSessionId(), collectionName, doc));
+        Call<ResponseInsert> insertCall = getScorocodeApi().insert(new RequestInsert(stateHolder, collectionName, doc));
         insertCall.enqueue(callback);
     }
 
@@ -171,7 +118,7 @@ public class ScorocodeSdk {
             @Nullable Integer limit,
             Callback<ResponseRemove> callback) {
 
-        Call<ResponseRemove> removeCall = getScorocodeApi().remove(new RequestRemove(getAppId(), getClientKey(), getMasterKey(), getSessionId(), collectionName, query, limit));
+        Call<ResponseRemove> removeCall = getScorocodeApi().remove(new RequestRemove(stateHolder, collectionName, query, limit));
         removeCall.enqueue(callback);
     }
 
@@ -182,7 +129,7 @@ public class ScorocodeSdk {
             @Nullable Integer limit,
             Callback<ResponseUpdate> callback) {
 
-        Call<ResponseUpdate> updateCall = getScorocodeApi().update(new RequestUpdate(getAppId(), getClientKey(), getMasterKey(), getSessionId(), collectionName, query, doc, limit));
+        Call<ResponseUpdate> updateCall = getScorocodeApi().update(new RequestUpdate(stateHolder, collectionName, query, doc, limit));
         updateCall.enqueue(callback);
     }
 
@@ -192,7 +139,7 @@ public class ScorocodeSdk {
             @NonNull HashMap<String, HashMap<String,Object>> doc,
             Callback<ResponseUpdateById> callback) {
 
-        Call<ResponseUpdateById> updateByIdCall = getScorocodeApi().updateById(new RequestUpdateById(getAppId(), getClientKey(), getMasterKey(), getSessionId(), collectionName, query, doc));
+        Call<ResponseUpdateById> updateByIdCall = getScorocodeApi().updateById(new RequestUpdateById(stateHolder, collectionName, query, doc));
         updateByIdCall.enqueue(callback);
     }
 
@@ -205,7 +152,7 @@ public class ScorocodeSdk {
             @Nullable Integer skip,
             Callback<ResponseString> callback) {
 
-        Call<ResponseString> findCall = getScorocodeApi().find(new RequestFind(getAppId(), getClientKey(), getMasterKey(), getSessionId(), collectionName, query, sort, fieldsNamesToFind, limit, skip));
+        Call<ResponseString> findCall = getScorocodeApi().find(new RequestFind(stateHolder, collectionName, query, sort, fieldsNamesToFind, limit, skip));
         findCall.enqueue(callback);
     }
 
@@ -214,7 +161,7 @@ public class ScorocodeSdk {
             @Nullable Query query,
             Callback<ResponseCount> callback) {
 
-        Call<ResponseCount> callCount = getScorocodeApi().count(new RequestCount(getAppId(), getClientKey(), getMasterKey(), getSessionId(), collectionName, query));
+        Call<ResponseCount> callCount = getScorocodeApi().count(new RequestCount(stateHolder, collectionName, query));
         callCount.enqueue(callback);
     }
 
@@ -226,7 +173,7 @@ public class ScorocodeSdk {
             @NonNull String contentToUpload,
             @NonNull Callback<ResponseCodes> callback) {
 
-        Call<ResponseCodes> uploadFileCall = getScorocodeApi().upload(new RequestUpload(getAppId(), getClientKey(), getMasterOrFileKey(), getSessionId(), collectionName, documentId, fieldName, fileName, contentToUpload));
+        Call<ResponseCodes> uploadFileCall = getScorocodeApi().upload(new RequestUpload(stateHolder, collectionName, documentId, fieldName, fileName, contentToUpload));
         uploadFileCall.enqueue(callback);
     }
 
@@ -236,7 +183,7 @@ public class ScorocodeSdk {
             @NonNull String docId,
             @NonNull String fileName) {
 
-        Call<ResponseCodes> getFileCallback = getScorocodeApi().getFile(getAppId(), collectionName, fieldName, docId, fileName);
+        Call<ResponseCodes> getFileCallback = getScorocodeApi().getFile(stateHolder.getApplicationId(), collectionName, fieldName, docId, fileName);
         return getFileCallback.request().url().url().toString();
     }
 
@@ -247,7 +194,7 @@ public class ScorocodeSdk {
             @NonNull String fileName,
             @NonNull Callback<ResponseString> callback) {
 
-        Call<ResponseString> deleteFileCall = getScorocodeApi().deleteFile(new RequestFile(getAppId(), getClientKey(), getMasterOrFileKey(), getSessionId(), collenctionName, docId, fieldName, fileName));
+        Call<ResponseString> deleteFileCall = getScorocodeApi().deleteFile(new RequestFile(stateHolder, collenctionName, docId, fieldName, fileName));
         deleteFileCall.enqueue(callback);
     }
 
@@ -257,7 +204,7 @@ public class ScorocodeSdk {
             @NonNull MessageEmail msg,
             @NonNull Callback<ResponseCodes> callback) {
 
-        Call<ResponseCodes> sendEmailCall = getScorocodeApi().sendEmail(new RequestSendEmail(getAppId(), getClientKey(), getMasterOrFileKey(), getSessionId(), collectionName, query, msg));
+        Call<ResponseCodes> sendEmailCall = getScorocodeApi().sendEmail(new RequestSendEmail(stateHolder, collectionName, query, msg));
         sendEmailCall.enqueue(callback);
     }
 
@@ -267,7 +214,7 @@ public class ScorocodeSdk {
             @NonNull MessagePush msg,
             @NonNull Callback<ResponseCodes> callback) {
 
-        Call<ResponseCodes> sendPushCall = getScorocodeApi().sendPush(new RequestSendPush(getAppId(), getClientKey(), getMasterOrMessageKey(), getSessionId(), collectionName, query, msg));
+        Call<ResponseCodes> sendPushCall = getScorocodeApi().sendPush(new RequestSendPush(stateHolder, collectionName, query, msg));
         sendPushCall.enqueue(callback);
     }
 
@@ -277,7 +224,7 @@ public class ScorocodeSdk {
             @NonNull MessageSms msg,
             @NonNull Callback<ResponseCodes> callback) {
 
-        Call<ResponseCodes> sendSmsCall = getScorocodeApi().sendSms(new RequestSendSms(getAppId(), getClientKey(), getMasterOrMessageKey(), getSessionId(), collectionName, query, msg));
+        Call<ResponseCodes> sendSmsCall = getScorocodeApi().sendSms(new RequestSendSms(stateHolder, collectionName, query, msg));
         sendSmsCall.enqueue(callback);
     }
 
@@ -286,7 +233,7 @@ public class ScorocodeSdk {
             @NonNull HashMap<String, String> dataPoolForScript,
             @NonNull Callback<ResponseCodes> callback) {
 
-        Call<ResponseCodes> sendScriptTask = getScorocodeApi().sendScriptTask(new RequestSendScriptTask(getAppId(), getClientKey(), getMasterOrMessageKey(), getSessionId(), scriptId, dataPoolForScript));
+        Call<ResponseCodes> sendScriptTask = getScorocodeApi().sendScriptTask(new RequestSendScriptTask(stateHolder, scriptId, dataPoolForScript));
         sendScriptTask.enqueue(callback);
     }
 
@@ -310,7 +257,10 @@ public class ScorocodeSdk {
                 .build();
     }
 
-    public static String getAccountKey() {
-        return getMasterKey() != null? getMasterKey() : getMessageKey();
+    public static void setSessionId(@NonNull String sessionId) {
+        if(stateHolder != null) {
+            stateHolder.setSessionId(sessionId);
+        }
     }
+
 }

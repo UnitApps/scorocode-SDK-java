@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import java.util.HashMap;
 
 import ru.profit_group.scorocode_sdk.scorocode_objects.Query;
+import ru.profit_group.scorocode_sdk.scorocode_objects.ScorocodeSdkStateHolder;
 
 /**
  * Created by Peter Staranchuk on 5/10/16
@@ -21,18 +22,16 @@ public class RequestUpdate {
     private Integer limit;
 
     public RequestUpdate(
-            @NonNull String appId,
-            @NonNull String clientKey,
-            @Nullable String accountKey,
-            @NonNull String sessionId,
+            @NonNull ScorocodeSdkStateHolder stateHolder,
             @NonNull String collectionName,
             @Nullable Query query,
             @NonNull HashMap<String, HashMap<String, Object>> doc,
             @Nullable Integer limit) {
-        this.app = appId;
-        this.cli = clientKey;
-        this.acc = accountKey;
-        this.sess = sessionId;
+
+        this.app = stateHolder.getApplicationId();
+        this.cli = stateHolder.getClientKey();
+        this.acc = stateHolder.getMasterKey();
+        this.sess = stateHolder.getSessionId();
         this.coll = collectionName;
         this.query = query;
         this.doc = doc;

@@ -5,6 +5,8 @@ import android.support.annotation.Nullable;
 
 import java.util.HashMap;
 
+import ru.profit_group.scorocode_sdk.scorocode_objects.ScorocodeSdkStateHolder;
+
 /**
  * Created by Peter Staranchuk on 5/10/16
  */
@@ -18,17 +20,14 @@ public class RequestRemove {
     private Integer limit;
 
     public RequestRemove(
-            @NonNull String appId,
-            @NonNull String clientKey,
-            @Nullable String accessKey,
-            @NonNull String sessionId,
+            @NonNull ScorocodeSdkStateHolder stateHolder,
             @NonNull String collectionName,
             @Nullable HashMap<String, HashMap<String, String>> query,
             @Nullable Integer limit) {
-        this.app = appId;
-        this.cli = clientKey;
-        this.acc = accessKey;
-        this.sess = sessionId;
+        this.app = stateHolder.getApplicationId();
+        this.cli = stateHolder.getClientKey();
+        this.acc = stateHolder.getMasterKey();
+        this.sess = stateHolder.getSessionId();
         this.coll = collectionName;
         this.query = query;
         this.limit = limit;
