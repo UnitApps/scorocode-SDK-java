@@ -15,18 +15,15 @@ public class Message {
 
     public void sendEmail(Query query, MessageEmail messageEmail, CollectionName collectionName, Callback<ResponseCodes> callback) throws IllegalStateException {
 
-        ScorocodeSdk.sendEmail(ScorocodeSdk.getAppId(), ScorocodeSdk.getClientKey(),
-                ScorocodeSdk.getAccountKey(), ScorocodeSdk.getSessionId(), collectionName.getCollectionName(), query, messageEmail, callback);
+        ScorocodeSdk.sendEmail(collectionName.getCollectionName(), query, messageEmail, callback);
     }
 
     public void sendPush(Query query, MessagePush messagePush, CollectionName collectionName, Callback<ResponseCodes> callback) throws IllegalStateException {
-        ScorocodeSdk.sendPush(ScorocodeSdk.getAppId(), ScorocodeSdk.getClientKey(),
-                ScorocodeSdk.getAccountKey(), ScorocodeSdk.getSessionId(), collectionName.getCollectionName(), query, messagePush, callback);
+        ScorocodeSdk.sendPush(collectionName.getCollectionName(), query, messagePush, callback);
     }
 
     public void sendSms(Query query, MessageSms messageSms, CollectionName collectionName, Callback<ResponseCodes> callback) throws IllegalStateException {
-        ScorocodeSdk.sendSms(ScorocodeSdk.getAppId(), ScorocodeSdk.getClientKey(),
-                ScorocodeSdk.getAccountKey(), ScorocodeSdk.getSessionId(), collectionName.getCollectionName(), query, messageSms, callback);
+        ScorocodeSdk.sendSms(collectionName.getCollectionName(), query, messageSms, callback);
     }
 
 }

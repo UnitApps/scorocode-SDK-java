@@ -98,6 +98,22 @@ public class ScorocodeSdk {
         return _fileKey;
     }
 
+    public static String getMasterOrFileKey() {
+        if(_masterKey != null) {
+            return _masterKey;
+        } else {
+            return _fileKey;
+        }
+    }
+
+    public static String getMasterOrMessageKey() {
+        if(_masterKey != null) {
+            return _masterKey;
+        } else {
+            return _messageKey;
+        }
+    }
+
     public static String getMessageKey() {
         return _messageKey;
     }
@@ -107,110 +123,80 @@ public class ScorocodeSdk {
     }
 
     public static void getApplicationStatistic(
-            @NonNull String appId,
-            @NonNull String clientKey,
-            @NonNull String accessKey,
             @NonNull Callback<ResponseAppStatistic> callback) throws IOException {
 
-        Call<ResponseAppStatistic> appStatisticCall = getScorocodeApi().getAppStatistic(new RequestStatistic(appId, clientKey, accessKey));
+        Call<ResponseAppStatistic> appStatisticCall = getScorocodeApi().getAppStatistic(new RequestStatistic(getAppId(), getClientKey(), getMasterKey()));
         appStatisticCall.enqueue(callback);
     }
 
     public static void registerUser(
-            @NonNull String appId,
-            @NonNull String clientKey,
             @NonNull String userName,
             @NonNull String userEmail,
             @NonNull String userPassword,
             @Nullable HashMap<String, String>  doc,
             @NonNull Callback<ResponseCodes> callback) {
 
-        Call<ResponseCodes> registerUserCall = getScorocodeApi().register(new RequestRegisterUser(appId, clientKey, userName, userEmail, userPassword, doc));
+        Call<ResponseCodes> registerUserCall = getScorocodeApi().register(new RequestRegisterUser(getAppId(), getClientKey(), userName, userEmail, userPassword, doc));
         registerUserCall.enqueue(callback);
     }
 
     public static void loginUser(
-            @NonNull String appId,
-            @NonNull String clientKet,
             @NonNull String email,
             @NonNull String password,
             @NonNull Callback<ResponseLogin> callback) {
 
-        Call<ResponseLogin> loginUserCall = getScorocodeApi().login(new RequestLoginUser(appId, clientKet, email, password));
+        Call<ResponseLogin> loginUserCall = getScorocodeApi().login(new RequestLoginUser(getAppId(), getClientKey(), email, password));
         loginUserCall.enqueue(callback);
     }
 
     public static void logoutUser(
-            @NonNull String appId,
-            @NonNull String clientKey,
-            @NonNull String sessionId,
             @NonNull Callback<ResponseCodes> callback) {
 
-        Call<ResponseCodes> logoutUserCall = getScorocodeApi().logout(new RequestLogoutUser(appId, clientKey, sessionId));
+        Call<ResponseCodes> logoutUserCall = getScorocodeApi().logout(new RequestLogoutUser(getAppId(), getClientKey(), getSessionId()));
         logoutUserCall.enqueue(callback);
     }
 
     public static void insertDocument(
-            @NonNull String appId,
-            @NonNull String clientId,
-            @Nullable String accsessKey,
-            @NonNull String sessionId,
             @NonNull String collectionName,
             @Nullable HashMap<String, String> doc,
             @NonNull Callback<ResponseInsert> callback) {
 
-        Call<ResponseInsert> insertCall = getScorocodeApi().insert(new RequestInsert(appId, clientId, accsessKey, sessionId, collectionName, doc));
+        Call<ResponseInsert> insertCall = getScorocodeApi().insert(new RequestInsert(getAppId(), getClientKey(), getMasterKey(), getSessionId(), collectionName, doc));
         insertCall.enqueue(callback);
     }
 
     public static void removeDocument(
-            @NonNull String appId,
-            @NonNull String clientKey,
-            @Nullable String accessKey,
-            @NonNull String sessionId,
             @NonNull String collectionName,
             @Nullable Query query,
             @Nullable Integer limit,
             Callback<ResponseRemove> callback) {
 
-        Call<ResponseRemove> removeCall = getScorocodeApi().remove(new RequestRemove(appId, clientKey, accessKey, sessionId, collectionName, query, limit));
+        Call<ResponseRemove> removeCall = getScorocodeApi().remove(new RequestRemove(getAppId(), getClientKey(), getMasterKey(), getSessionId(), collectionName, query, limit));
         removeCall.enqueue(callback);
     }
 
     public static void updateDocument(
-            @NonNull String appId,
-            @NonNull String clientKey,
-            @Nullable String accountKey,
-            @NonNull String sessionId,
             @NonNull String collectionName,
             @Nullable Query query,
             @NonNull HashMap<String, HashMap<String, Object>> doc,
             @Nullable Integer limit,
             Callback<ResponseUpdate> callback) {
 
-        Call<ResponseUpdate> updateCall = getScorocodeApi().update(new RequestUpdate(appId, clientKey, accountKey, sessionId, collectionName, query, doc, limit));
+        Call<ResponseUpdate> updateCall = getScorocodeApi().update(new RequestUpdate(getAppId(), getClientKey(), getMasterKey(), getSessionId(), collectionName, query, doc, limit));
         updateCall.enqueue(callback);
     }
 
     public static void updateDocumentById(
-            @NonNull String appId,
-            @NonNull String clientKey,
-            @Nullable String accountKey,
-            @NonNull String sessionId,
             @NonNull String collectionName,
             @NonNull HashMap<String, String> query,
             @NonNull HashMap<String, HashMap<String,Object>> doc,
             Callback<ResponseUpdateById> callback) {
 
-        Call<ResponseUpdateById> updateByIdCall = getScorocodeApi().updateById(new RequestUpdateById(appId, clientKey, accountKey, sessionId, collectionName, query, doc));
+        Call<ResponseUpdateById> updateByIdCall = getScorocodeApi().updateById(new RequestUpdateById(getAppId(), getClientKey(), getMasterKey(), getSessionId(), collectionName, query, doc));
         updateByIdCall.enqueue(callback);
     }
 
     public static void findDocument(
-            @NonNull String appId,
-            @NonNull String clientKey,
-            @Nullable String accessKey,
-            @NonNull String sessionId,
             @NonNull String collectionName,
             @Nullable Query query,
             @Nullable Sort sort,
@@ -219,28 +205,20 @@ public class ScorocodeSdk {
             @Nullable Integer skip,
             Callback<ResponseString> callback) {
 
-        Call<ResponseString> findCall = getScorocodeApi().find(new RequestFind(appId, clientKey, accessKey, sessionId, collectionName, query, sort, fieldsNamesToFind, limit, skip));
+        Call<ResponseString> findCall = getScorocodeApi().find(new RequestFind(getAppId(), getClientKey(), getMasterKey(), getSessionId(), collectionName, query, sort, fieldsNamesToFind, limit, skip));
         findCall.enqueue(callback);
     }
 
     public static void getDocumentsCount(
-            @NonNull String appId,
-            @NonNull String clientKey,
-            @Nullable String accsessKey,
-            @NonNull String sessionId,
             @NonNull String collectionName,
             @Nullable Query query,
             Callback<ResponseCount> callback) {
 
-        Call<ResponseCount> callCount = getScorocodeApi().count(new RequestCount(appId, clientKey, accsessKey, sessionId, collectionName, query));
+        Call<ResponseCount> callCount = getScorocodeApi().count(new RequestCount(getAppId(), getClientKey(), getMasterKey(), getSessionId(), collectionName, query));
         callCount.enqueue(callback);
     }
 
     public static void uploadFile(
-            @NonNull String appId,
-            @NonNull String clientKey,
-            @NonNull String accessKey,
-            @NonNull String sessionId,
             @NonNull String collectionName,
             @NonNull String documentId,
             @NonNull String fieldName,
@@ -248,88 +226,67 @@ public class ScorocodeSdk {
             @NonNull String contentToUpload,
             @NonNull Callback<ResponseCodes> callback) {
 
-        Call<ResponseCodes> uploadFileCall = getScorocodeApi().upload(new RequestUpload(appId, clientKey, accessKey, sessionId, collectionName, documentId, fieldName, fileName, contentToUpload));
+        Call<ResponseCodes> uploadFileCall = getScorocodeApi().upload(new RequestUpload(getAppId(), getClientKey(), getMasterOrFileKey(), getSessionId(), collectionName, documentId, fieldName, fileName, contentToUpload));
         uploadFileCall.enqueue(callback);
     }
 
     public static String getFileLink(
-            @NonNull String appId,
             @NonNull String collectionName,
             @NonNull String fieldName,
             @NonNull String docId,
             @NonNull String fileName) {
 
-        Call<ResponseCodes> getFileCallback = getScorocodeApi().getFile(appId, collectionName, fieldName, docId, fileName);
+        Call<ResponseCodes> getFileCallback = getScorocodeApi().getFile(getAppId(), collectionName, fieldName, docId, fileName);
         return getFileCallback.request().url().url().toString();
     }
 
     public static void deleteFile(
-            @NonNull String appId,
-            @NonNull String clientKey,
-            @NonNull String accountKey,
-            @NonNull String sessionId,
             @NonNull String collenctionName,
             @NonNull String docId,
             @NonNull String fieldName,
             @NonNull String fileName,
             @NonNull Callback<ResponseString> callback) {
 
-        Call<ResponseString> deleteFileCall = getScorocodeApi().deleteFile(new RequestFile(appId, clientKey, accountKey, sessionId, collenctionName, docId, fieldName, fileName));
+        Call<ResponseString> deleteFileCall = getScorocodeApi().deleteFile(new RequestFile(getAppId(), getClientKey(), getMasterOrFileKey(), getSessionId(), collenctionName, docId, fieldName, fileName));
         deleteFileCall.enqueue(callback);
     }
 
     public static void sendEmail(
-            @NonNull String appId,
-            @NonNull String clientKey,
-            @NonNull String accountKey,
-            @NonNull String sessionId,
             @NonNull String collectionName,
             @Nullable Query query,
             @NonNull MessageEmail msg,
             @NonNull Callback<ResponseCodes> callback) {
 
-        Call<ResponseCodes> sendEmailCall = getScorocodeApi().sendEmail(new RequestSendEmail(appId, clientKey, accountKey, sessionId, collectionName, query, msg));
+        Call<ResponseCodes> sendEmailCall = getScorocodeApi().sendEmail(new RequestSendEmail(getAppId(), getClientKey(), getMasterOrFileKey(), getSessionId(), collectionName, query, msg));
         sendEmailCall.enqueue(callback);
     }
 
     public static void sendPush(
-            @NonNull String appId,
-            @NonNull String clientKey,
-            @NonNull String accountKey,
-            @NonNull String sessionId,
             @NonNull String collectionName,
             @Nullable Query query,
             @NonNull MessagePush msg,
             @NonNull Callback<ResponseCodes> callback) {
 
-        Call<ResponseCodes> sendPushCall = getScorocodeApi().sendPush(new RequestSendPush(appId, clientKey, accountKey, sessionId, collectionName, query, msg));
+        Call<ResponseCodes> sendPushCall = getScorocodeApi().sendPush(new RequestSendPush(getAppId(), getClientKey(), getMasterOrMessageKey(), getSessionId(), collectionName, query, msg));
         sendPushCall.enqueue(callback);
     }
 
     public static void sendSms(
-            @NonNull String appId,
-            @NonNull String clientKey,
-            @NonNull String accountKey,
-            @NonNull String sessionId,
             @NonNull String collectionName,
             @Nullable Query query,
             @NonNull MessageSms msg,
             @NonNull Callback<ResponseCodes> callback) {
 
-        Call<ResponseCodes> sendSmsCall = getScorocodeApi().sendSms(new RequestSendSms(appId, clientKey, accountKey, sessionId, collectionName, query, msg));
+        Call<ResponseCodes> sendSmsCall = getScorocodeApi().sendSms(new RequestSendSms(getAppId(), getClientKey(), getMasterOrMessageKey(), getSessionId(), collectionName, query, msg));
         sendSmsCall.enqueue(callback);
     }
 
     public static void sendScriptTask(
-            @NonNull String appId,
-            @NonNull String clientId,
-            @NonNull String accessKey,
-            @NonNull String sessionId,
             @NonNull String scriptId,
             @NonNull HashMap<String, String> dataPoolForScript,
             @NonNull Callback<ResponseCodes> callback) {
 
-        Call<ResponseCodes> sendScriptTask = getScorocodeApi().sendScriptTask(new RequestSendScriptTask(appId, clientId, accessKey, sessionId, scriptId, dataPoolForScript));
+        Call<ResponseCodes> sendScriptTask = getScorocodeApi().sendScriptTask(new RequestSendScriptTask(getAppId(), getClientKey(), getMasterOrMessageKey(), getSessionId(), scriptId, dataPoolForScript));
         sendScriptTask.enqueue(callback);
     }
 

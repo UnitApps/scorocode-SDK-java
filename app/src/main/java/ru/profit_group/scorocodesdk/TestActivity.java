@@ -95,7 +95,7 @@ public class TestActivity extends AppCompatActivity {
     }
 
     private void testRegisterUser() {
-        ScorocodeSdk.registerUser(APP_ID, CLIENT_KEY, "PeterStaranchukTest11", EMAIL, PASSWORD, _doc,
+        ScorocodeSdk.registerUser("PeterStaranchukTest11", EMAIL, PASSWORD, _doc,
                 new Callback<ResponseCodes>() {
                     @Override
                     public void onResponse(Call<ResponseCodes> call, Response<ResponseCodes> response) {
@@ -110,7 +110,7 @@ public class TestActivity extends AppCompatActivity {
     }
 
     private void testLoginUser() {
-        ScorocodeSdk.loginUser(APP_ID, CLIENT_KEY, EMAIL, PASSWORD, new Callback<ResponseLogin>() {
+        ScorocodeSdk.loginUser(EMAIL, PASSWORD, new Callback<ResponseLogin>() {
             @Override
             public void onResponse(Call<ResponseLogin> call, Response<ResponseLogin> response) {
                 Log.d(TAG, "REGISTER USER: SUCCESS");
@@ -122,11 +122,11 @@ public class TestActivity extends AppCompatActivity {
 //                    testRemoveDocument();
 //                    testUpdateDocument();
 //                    testUpdateDocumentById();
-                    testFindDocument();
+//                    testFindDocument();
 //                    testCountDocument();
 //                    testUploadDocument();
 //                    testGetFileLink();
-//                    testDeleteFile(); // TODO fix - serverside error
+//                    testDeleteFile(); // TODO - serverside error
 //                    testSendEmail();
 //                    testSendSms();
 //                    testSendPush();
@@ -142,7 +142,7 @@ public class TestActivity extends AppCompatActivity {
     }
 
     private void testLogoutUser() {
-        ScorocodeSdk.logoutUser(APP_ID, CLIENT_KEY, _sessionId, new Callback<ResponseCodes>() {
+        ScorocodeSdk.logoutUser(new Callback<ResponseCodes>() {
             @Override
             public void onResponse(Call<ResponseCodes> call, Response<ResponseCodes> response) {
                 Log.d(TAG, "REGISTER USER: SUCCESS");
@@ -156,7 +156,7 @@ public class TestActivity extends AppCompatActivity {
     }
 
     private void testInsertDocument() {
-        ScorocodeSdk.insertDocument(APP_ID, CLIENT_KEY, ACCESS_KEY, _sessionId, COLLECTION_NAME, _doc, new Callback<ResponseInsert>() {
+        ScorocodeSdk.insertDocument(COLLECTION_NAME, _doc, new Callback<ResponseInsert>() {
             @Override
             public void onResponse(Call<ResponseInsert> call, Response<ResponseInsert> response) {
                 Log.d(TAG, "REGISTER USER: SUCCESS");
@@ -172,7 +172,7 @@ public class TestActivity extends AppCompatActivity {
     private void testRemoveDocument() {
         Query local_query = Query.getSimpleQuery("exampleField", "$eq", "Сегодня 2010 июня, и это день рождения Мюриэл! Мюриэл сейчас 105. С днём рождения, Мюриэл!");
 
-        ScorocodeSdk.removeDocument(APP_ID, CLIENT_KEY, ACCESS_KEY, _sessionId, COLLECTION_NAME, local_query, 1, new Callback<ResponseRemove>() {
+        ScorocodeSdk.removeDocument(COLLECTION_NAME, local_query, 1, new Callback<ResponseRemove>() {
             @Override
             public void onResponse(Call<ResponseRemove> call, Response<ResponseRemove> response) {
                 Log.d(TAG, "REGISTER USER: SUCCESS");
@@ -186,7 +186,7 @@ public class TestActivity extends AppCompatActivity {
     }
 
     private void testUpdateDocument() {
-        ScorocodeSdk.updateDocument(APP_ID, CLIENT_KEY, ACCESS_KEY, _sessionId, COLLECTION_NAME, _query, _doc_set, 1, new Callback<ResponseUpdate>() {
+        ScorocodeSdk.updateDocument(COLLECTION_NAME, _query, _doc_set, 1, new Callback<ResponseUpdate>() {
             @Override
             public void onResponse(Call<ResponseUpdate> call, Response<ResponseUpdate> response) {
                 Log.d(TAG, "SUCCESS");
@@ -203,7 +203,7 @@ public class TestActivity extends AppCompatActivity {
         HashMap<String, String> updateQuery = new HashMap<>();
         updateQuery.put("_id", "lThEkcUoDZ");
 
-        ScorocodeSdk.updateDocumentById(APP_ID, CLIENT_KEY, ACCESS_KEY, _sessionId, COLLECTION_NAME, updateQuery, _doc_set, new Callback<ResponseUpdateById>() {
+        ScorocodeSdk.updateDocumentById(COLLECTION_NAME, updateQuery, _doc_set, new Callback<ResponseUpdateById>() {
             @Override
             public void onResponse(Call<ResponseUpdateById> call, Response<ResponseUpdateById> response) {
                 Log.d(TAG, "SUCCESS");
@@ -223,7 +223,7 @@ public class TestActivity extends AppCompatActivity {
         List<String> fieldsList = new ArrayList<>();
         fieldsList.add("exampleField");
 
-        ScorocodeSdk.findDocument(APP_ID, CLIENT_KEY, ACCESS_KEY, _sessionId, COLLECTION_NAME, _query, sort, fieldsList, 1, null, new Callback<ResponseString>() {
+        ScorocodeSdk.findDocument(COLLECTION_NAME, _query, sort, fieldsList, 1, null, new Callback<ResponseString>() {
             @Override
             public void onResponse(Call<ResponseString> call, Response<ResponseString> response) {
                 Log.d(TAG, "SUCCESS");
@@ -237,7 +237,7 @@ public class TestActivity extends AppCompatActivity {
     }
 
     private void testCountDocument() {
-        ScorocodeSdk.getDocumentsCount(APP_ID, CLIENT_KEY, ACCESS_KEY, _sessionId, COLLECTION_NAME, null, new Callback<ResponseCount>() {
+        ScorocodeSdk.getDocumentsCount(COLLECTION_NAME, null, new Callback<ResponseCount>() {
             @Override
             public void onResponse(Call<ResponseCount> call, Response<ResponseCount> response) {
                 Log.d(TAG, "SUCCESS");
@@ -256,7 +256,7 @@ public class TestActivity extends AppCompatActivity {
         String fileName = "file.txt";
         String content = "VEhJUyBJUyBGSUxFLUUtRS1FLUUtRS1FIQ==";
 
-        ScorocodeSdk.uploadFile(APP_ID, CLIENT_KEY, ACCESS_KEY, _sessionId, COLLECTION_NAME, documentId, fieldName, fileName, content, new Callback<ResponseCodes>() {
+        ScorocodeSdk.uploadFile(COLLECTION_NAME, documentId, fieldName, fileName, content, new Callback<ResponseCodes>() {
             @Override
             public void onResponse(Call<ResponseCodes> call, Response<ResponseCodes> response) {
                 Log.d(TAG, "SUCCESS");
@@ -270,12 +270,12 @@ public class TestActivity extends AppCompatActivity {
     }
 
     private void testGetFileLink() {
-       String fileLink = ScorocodeSdk.getFileLink(APP_ID, CLIENT_KEY, _fieldName, _documentId, _fileName);
+       String fileLink = ScorocodeSdk.getFileLink(COLLECTION_NAME, _fieldName, _documentId, _fileName);
        Log.d(TAG, "SUCCESS");
     }
 
     private void testDeleteFile() {
-        ScorocodeSdk.deleteFile(APP_ID, CLIENT_KEY, MASTER_KEY, _sessionId, COLLECTION_NAME, _documentId, _fieldName, _fileName, new Callback<ResponseString>() {
+        ScorocodeSdk.deleteFile(COLLECTION_NAME, _documentId, _fieldName, _fileName, new Callback<ResponseString>() {
             @Override
             public void onResponse(Call<ResponseString> call, Response<ResponseString> response) {
                 Log.d(TAG, "SUCCESS");
@@ -291,7 +291,7 @@ public class TestActivity extends AppCompatActivity {
     private void testSendEmail() {
         MessageEmail messageEmail = new MessageEmail("Peter", "Hello", "Hello world");
         String collection = "users"; //users or roles
-        ScorocodeSdk.sendEmail(APP_ID, CLIENT_KEY, ACCESS_KEY, _sessionId, collection, null, messageEmail, new Callback<ResponseCodes>() {
+        ScorocodeSdk.sendEmail(collection, null, messageEmail, new Callback<ResponseCodes>() {
             @Override
             public void onResponse(Call<ResponseCodes> call, Response<ResponseCodes> response) {
                 Log.d(TAG, "SUCCESS");
@@ -308,7 +308,7 @@ public class TestActivity extends AppCompatActivity {
         MessageSms messageSms = new MessageSms("Hello world");
         String collection = "users"; //users or roles
 
-        ScorocodeSdk.sendSms(APP_ID, CLIENT_KEY, ACCESS_KEY, _sessionId, collection, null, messageSms, new Callback<ResponseCodes>() {
+        ScorocodeSdk.sendSms(collection, null, messageSms, new Callback<ResponseCodes>() {
             @Override
             public void onResponse(Call<ResponseCodes> call, Response<ResponseCodes> response) {
                 Log.d(TAG, "SUCCESS");
@@ -328,7 +328,7 @@ public class TestActivity extends AppCompatActivity {
         String collection = "users"; //users or roles
 
         MessagePush messagePush = new MessagePush("Hello World", data);
-        ScorocodeSdk.sendPush(APP_ID, CLIENT_KEY, ACCESS_KEY, _sessionId, collection, null, messagePush, new Callback<ResponseCodes>() {
+        ScorocodeSdk.sendPush(collection, null, messagePush, new Callback<ResponseCodes>() {
             @Override
             public void onResponse(Call<ResponseCodes> call, Response<ResponseCodes> response) {
                 Log.d(TAG, "SUCCESS");
@@ -347,7 +347,7 @@ public class TestActivity extends AppCompatActivity {
         pool.put("key", "exampleField");
         pool.put("val", "Сегодня 18 июня, и это день рождения Мюриэл! Мюриэл сейчас 20. С днём рождения, Мюриэл!");
 
-        ScorocodeSdk.sendScriptTask(APP_ID, CLIENT_KEY, ACCESS_KEY, _sessionId, SCRIPT_ID, pool, new Callback<ResponseCodes>() {
+        ScorocodeSdk.sendScriptTask(SCRIPT_ID, pool, new Callback<ResponseCodes>() {
             @Override
             public void onResponse(Call<ResponseCodes> call, Response<ResponseCodes> response) {
                 Log.d(TAG, "SUCCESS");
@@ -362,8 +362,7 @@ public class TestActivity extends AppCompatActivity {
 
     private void testGetStatistic() {
         try {
-            ScorocodeSdk.getApplicationStatistic(APP_ID, CLIENT_KEY, ACCESS_KEY,
-                    new Callback<ResponseAppStatistic>() {
+            ScorocodeSdk.getApplicationStatistic(new Callback<ResponseAppStatistic>() {
                         @Override
                         public void onResponse(Call<ResponseAppStatistic> call, Response<ResponseAppStatistic> response) {
                             Log.d(TAG, "REGISTER USER: SUCCESS");

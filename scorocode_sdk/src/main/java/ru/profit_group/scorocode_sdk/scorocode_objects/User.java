@@ -18,15 +18,15 @@ public class User extends Document{
     }
 
     public void login(String email, String password, Callback<ResponseLogin> callback) {
-        ScorocodeSdk.loginUser(ScorocodeSdk.getAppId(), ScorocodeSdk.getClientKey(), email, password, callback);
+        ScorocodeSdk.loginUser(email, password, callback);
     }
 
     public void logout(Callback<ResponseCodes> callback) {
-        ScorocodeSdk.logoutUser(ScorocodeSdk.getAppId(), ScorocodeSdk.getClientKey(), ScorocodeSdk.getSessionId(), callback);
+        ScorocodeSdk.logoutUser(callback);
     }
 
     public void register(String username, String email, String password, HashMap<String,String> doc, Callback<ResponseCodes> callback) {
-        ScorocodeSdk.registerUser(ScorocodeSdk.getAppId(), ScorocodeSdk.getClientKey(), username, email, password, doc, callback);
+        ScorocodeSdk.registerUser(username, email, password, doc, callback);
     }
 
     public void register(String username, String email, String password, Callback<ResponseCodes> callback) {

@@ -40,26 +40,21 @@ public class Query extends HashMap<String, HashMap<String,String>> {
     }
 
     public void findDocuments(Callback<ResponseString> callback) {
-        ScorocodeSdk.findDocument(ScorocodeSdk.getAppId(), ScorocodeSdk.getClientKey(),
-                ScorocodeSdk.getMasterKey(), ScorocodeSdk.getSessionId(),
-                _collectionName, this, null, null, _limit, _skip, callback);
+        ScorocodeSdk.findDocument(_collectionName, this, null, null, _limit, _skip, callback);
     //TODO write decoding for BSON response
     }
 
     public void countDocuments(Callback<ResponseCount> callback) {
-        ScorocodeSdk.getDocumentsCount(ScorocodeSdk.getAppId(), ScorocodeSdk.getClientKey(),
-                ScorocodeSdk.getMasterKey(), ScorocodeSdk.getSessionId(), _collectionName, this, callback);
+        ScorocodeSdk.getDocumentsCount(_collectionName, this, callback);
     }
 
     public void updateDocument(Update update, Callback<ResponseUpdate> callback) {
         HashMap<String, HashMap<String,Object>> doc = update.getUpdateInfo();
-        ScorocodeSdk.updateDocument(ScorocodeSdk.getAppId(), ScorocodeSdk.getClientKey(),
-                ScorocodeSdk.getMasterKey(), ScorocodeSdk.getSessionId(), _collectionName, this, doc, _limit, callback);
+        ScorocodeSdk.updateDocument(_collectionName, this, doc, _limit, callback);
     }
 
     public void removeDocument(Callback<ResponseRemove> callback) {
-        ScorocodeSdk.removeDocument(ScorocodeSdk.getAppId(), ScorocodeSdk.getClientKey(),
-                ScorocodeSdk.getMasterKey(), ScorocodeSdk.getSessionId(), _collectionName, this, _limit, callback);
+        ScorocodeSdk.removeDocument(_collectionName, this, _limit, callback);
     }
 
     public void setLimit(Integer limit) {

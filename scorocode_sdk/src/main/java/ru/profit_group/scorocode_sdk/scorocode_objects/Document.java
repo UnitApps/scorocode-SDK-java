@@ -29,8 +29,7 @@ public class Document {
     public void getDocumentById(String collName, final String documentId, final Callback<ResponseString> callback) throws Exception {
         Query query = new Query("id", "$eq", documentId);
 
-        ScorocodeSdk.findDocument(ScorocodeSdk.getAppId(), ScorocodeSdk.getClientKey(), ScorocodeSdk.getMasterKey(), ScorocodeSdk.getSessionId(),
-                collName, query, null, null, null, null, new Callback<ResponseString>() {
+        ScorocodeSdk.findDocument(collName, query, null, null, null, null, new Callback<ResponseString>() {
                     @Override
                     public void onResponse(Call<ResponseString> call, Response<ResponseString> response) {
                         _documentId = documentId;
@@ -47,9 +46,7 @@ public class Document {
 
     public void saveDocument(Callback callback) {
         if(_documentId == null) {
-            ScorocodeSdk.insertDocument(
-                    ScorocodeSdk.getAppId(), ScorocodeSdk.getClientKey(), ScorocodeSdk.getMasterKey(),
-                    ScorocodeSdk.getSessionId(), _collectionName, _docToInsert, callback);
+            ScorocodeSdk.insertDocument(_collectionName, _docToInsert, callback);
         } else {
             HashMap<String, String> query = new HashMap<>();
             query.put("_id", _documentId); // TODO relocate all string constants in one file
@@ -57,14 +54,12 @@ public class Document {
             HashMap<String, HashMap<String, Object>> doc = new HashMap<>();
             //TODO add logic which construct doc object.
 
-            ScorocodeSdk.updateDocumentById(ScorocodeSdk.getAppId(), ScorocodeSdk.getClientKey(), ScorocodeSdk.getMasterKey(),
-                    ScorocodeSdk.getSessionId(), _collectionName, query, doc, callback);
+            ScorocodeSdk.updateDocumentById(_collectionName, query, doc, callback);
         }
     }
 
     public void removeDocument(Callback<ResponseRemove> callback) {
-        ScorocodeSdk.removeDocument(ScorocodeSdk.getAppId(), ScorocodeSdk.getClientKey(), ScorocodeSdk.getMasterKey(),
-                ScorocodeSdk.getSessionId(), _collectionName, null, null, callback);
+        ScorocodeSdk.removeDocument(_collectionName, null, null, callback);
     }
 
     public String getField(String field) {
@@ -80,7 +75,7 @@ public class Document {
             return;
         }
 
-        ScorocodeSdk.uploadFile(ScorocodeSdk.getAppId(), ScorocodeSdk.getClientKey(), getFileAccessKey(), ScorocodeSdk.getSessionId(), _collectionName,
+        ScorocodeSdk.uploadFile(_collectionName,
                 _documentId, fieldName, fileName, contenToUpload, callback);
     }
 
@@ -89,12 +84,11 @@ public class Document {
     }
 
     public String getFileLink(String fieldName, String fileName) {
-        return ScorocodeSdk.getFileLink(ScorocodeSdk.getAppId(), _collectionName, fieldName, _documentId, fileName);
+        return ScorocodeSdk.getFileLink(_collectionName, fieldName, _documentId, fileName);
     }
 
     public void deleteFile(String fieldName, String fileName, Callback<ResponseString> callback) {
-        ScorocodeSdk.deleteFile(ScorocodeSdk.getAppId(), ScorocodeSdk.getClientKey(), getFileAccessKey(), ScorocodeSdk.getSessionId(),
-                _collectionName, _documentId, fieldName, fileName, callback);
+        ScorocodeSdk.deleteFile(_collectionName, _documentId, fieldName, fileName, callback);
     }
 
     public Update updateDocument() {
