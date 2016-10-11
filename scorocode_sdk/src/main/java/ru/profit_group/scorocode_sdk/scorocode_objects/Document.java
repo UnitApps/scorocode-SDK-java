@@ -1,6 +1,11 @@
 package ru.profit_group.scorocode_sdk.scorocode_objects;
 
+import org.bson.BSON;
+import org.bson.BSONObject;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -26,22 +31,22 @@ public class Document {
         _update = new Update();
     }
 
-    public void getDocumentById(String collName, final String documentId, final Callback<ResponseString> callback) throws Exception {
+    public void getDocumentById(String collName, final String documentId, final CallbackFindDocument callbackFindDocument) throws Exception {
         Query query = new Query("id", "$eq", documentId);
 
-        ScorocodeSdk.findDocument(collName, query, null, null, null, null, new Callback<ResponseString>() {
-                    @Override
-                    public void onResponse(Call<ResponseString> call, Response<ResponseString> response) {
-                        _documentId = documentId;
-                        callback.onResponse(call, response);
-                    }
+        ScorocodeSdk.findDocument(collName, query, null, null, null, null, new CallbackFindDocument() {
+            @Override
+            public void documentFound(List<String> documentIds) {
+                _documentId = documentId;
+                callbackFindDocument.documentFound(documentIds);
+            }
 
-                    @Override
-                    public void onFailure(Call<ResponseString> call, Throwable t) {
-                        _documentId = null;
-                        callback.onFailure(call, t);
-                    }
-                });
+            @Override
+            public void documentNotFound() {
+                _documentId = null;
+                callbackFindDocument.documentNotFound();
+            }
+        });
     }
 
     public void saveDocument(Callback callback) {
@@ -85,5 +90,31 @@ public class Document {
 
     public Update updateDocument() {
         return _update;
+    }
+
+    public static List<String> decodeDocumentsList(String base64data) {
+
+        try {
+            byte[] bson = android.util.Base64.decode(base64data, android.util.Base64.DEFAULT);
+            BSONObject bsonObject = BSON.decode(bson);
+
+            HashMap<Integer, HashMap<String, String>> documentMap = (HashMap<Integer, HashMap<String, String>>) bsonObject.toMap();
+
+            List<String> documentsIds = new ArrayList<>();
+            for(int i = 0; i < documentMap.size(); i++) {
+                HashMap<String, String> document = documentMap.get(String.valueOf(i));
+                documentsIds.add(document.get("_id"));
+            }
+
+            return documentsIds;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public interface CallbackFindDocument {
+        void documentFound(List<String> documentIds);
+        void documentNotFound();
     }
 }

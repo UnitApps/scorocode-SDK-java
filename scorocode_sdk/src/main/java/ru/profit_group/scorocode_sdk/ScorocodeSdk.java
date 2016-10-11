@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -11,12 +12,14 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.profit_group.scorocode_sdk.Requests.messages.MessageEmail;
 import ru.profit_group.scorocode_sdk.Requests.messages.MessagePush;
 import ru.profit_group.scorocode_sdk.Requests.messages.MessageSms;
+import ru.profit_group.scorocode_sdk.scorocode_objects.Document;
 import ru.profit_group.scorocode_sdk.scorocode_objects.Query;
 import ru.profit_group.scorocode_sdk.scorocode_objects.ScorocodeSdkStateHolder;
 import ru.profit_group.scorocode_sdk.scorocode_objects.Sort;
@@ -150,10 +153,25 @@ public class ScorocodeSdk {
             @Nullable List<String> fieldsNamesToFind,
             @Nullable Integer limit,
             @Nullable Integer skip,
-            Callback<ResponseString> callback) {
+            final Document.CallbackFindDocument callback) {
 
         Call<ResponseString> findCall = getScorocodeApi().find(new RequestFind(stateHolder, collectionName, query, sort, fieldsNamesToFind, limit, skip));
-        findCall.enqueue(callback);
+        findCall.enqueue(new Callback<ResponseString>() {
+            @Override
+            public void onResponse(Call<ResponseString> call, Response<ResponseString> response) {
+                if(response != null && response.body() != null) {
+                    String base64data = response.body().getResult();
+                    callback.documentFound(Document.decodeDocumentsList(base64data));
+                } else {
+                    callback.documentFound(new ArrayList<String>());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseString> call, Throwable t) {
+                callback.documentNotFound();
+            }
+        });
     }
 
     public static void getDocumentsCount(

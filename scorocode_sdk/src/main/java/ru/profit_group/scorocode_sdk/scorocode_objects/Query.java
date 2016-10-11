@@ -39,9 +39,8 @@ public class Query extends HashMap<String, HashMap<String,String>> {
         this.put(field, query);
     }
 
-    public void findDocuments(Callback<ResponseString> callback) {
+    public void findDocuments(Document.CallbackFindDocument callback) {
         ScorocodeSdk.findDocument(_collectionName, this, null, null, _limit, _skip, callback);
-    //TODO write decoding for BSON response
     }
 
     public void countDocuments(Callback<ResponseCount> callback) {

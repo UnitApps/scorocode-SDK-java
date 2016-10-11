@@ -15,6 +15,7 @@ import retrofit2.Response;
 import ru.profit_group.scorocode_sdk.Requests.messages.MessageEmail;
 import ru.profit_group.scorocode_sdk.Requests.messages.MessagePush;
 import ru.profit_group.scorocode_sdk.Requests.messages.MessageSms;
+import ru.profit_group.scorocode_sdk.scorocode_objects.Document;
 import ru.profit_group.scorocode_sdk.scorocode_objects.Query;
 import ru.profit_group.scorocode_sdk.scorocode_objects.Sort;
 import ru.profit_group.scorocode_sdk.Responses.ResponseString;
@@ -85,7 +86,7 @@ public class TestActivity extends AppCompatActivity {
     private void setTestQuery() {
         _query = new Query(COLLECTION_NAME);
         HashMap<String, String> request = new HashMap<>();
-        request.put("$eq", "Сегодня 18 июня, и это день рождения Мюриэл! Мюриэл сейчас 20. С днём рождения, Мюриэл!");
+        request.put("$eq", "Сегодня 2010 июня, и это день рождения Мюриэл! Мюриэл сейчас 105. С днём рождения, Мюриэл!");
         _query.put("exampleField", request);
     }
 
@@ -100,12 +101,12 @@ public class TestActivity extends AppCompatActivity {
                 new Callback<ResponseCodes>() {
                     @Override
                     public void onResponse(Call<ResponseCodes> call, Response<ResponseCodes> response) {
-                        Log.d(TAG, "REGISTER USER: SUCCESS");
+                        Log.d(TAG, "SUCCESS");
                     }
 
                     @Override
                     public void onFailure(Call<ResponseCodes> call, Throwable t) {
-                        Log.d(TAG, "REGISTER USER: FAILURE");
+                        Log.d(TAG, "FAILURE");
                     }
                 });
     }
@@ -114,7 +115,7 @@ public class TestActivity extends AppCompatActivity {
         ScorocodeSdk.loginUser(EMAIL, PASSWORD, new Callback<ResponseLogin>() {
             @Override
             public void onResponse(Call<ResponseLogin> call, Response<ResponseLogin> response) {
-                Log.d(TAG, "REGISTER USER: SUCCESS");
+                Log.d(TAG, "SUCCESS");
 
                 if(response != null && response.body() != null && response.body().getResult() != null) {
                     ScorocodeSdk.setSessionId(response.body().getResult().getSessionId());
@@ -123,7 +124,7 @@ public class TestActivity extends AppCompatActivity {
 //                    testRemoveDocument();
 //                    testUpdateDocument();
 //                    testUpdateDocumentById();
-//                    testFindDocument();
+                    testFindDocument();
 //                    testCountDocument();
 //                    testUploadDocument();
 //                    testGetFileLink();
@@ -137,7 +138,7 @@ public class TestActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ResponseLogin> call, Throwable t) {
-                Log.d(TAG, "REGISTER USER: FAILURE");
+                Log.d(TAG, "FAILURE");
             }
         });
     }
@@ -146,12 +147,12 @@ public class TestActivity extends AppCompatActivity {
         ScorocodeSdk.logoutUser(new Callback<ResponseCodes>() {
             @Override
             public void onResponse(Call<ResponseCodes> call, Response<ResponseCodes> response) {
-                Log.d(TAG, "REGISTER USER: SUCCESS");
+                Log.d(TAG, "SUCCESS");
             }
 
             @Override
             public void onFailure(Call<ResponseCodes> call, Throwable t) {
-                Log.d(TAG, "REGISTER USER: FAILURE");
+                Log.d(TAG, "  FAILURE");
             }
         });
     }
@@ -160,12 +161,12 @@ public class TestActivity extends AppCompatActivity {
         ScorocodeSdk.insertDocument(COLLECTION_NAME, _doc, new Callback<ResponseInsert>() {
             @Override
             public void onResponse(Call<ResponseInsert> call, Response<ResponseInsert> response) {
-                Log.d(TAG, "REGISTER USER: SUCCESS");
+                Log.d(TAG, "  SUCCESS");
             }
 
             @Override
             public void onFailure(Call<ResponseInsert> call, Throwable t) {
-                Log.d(TAG, "REGISTER USER: FAILURE");
+                Log.d(TAG, "  FAILURE");
             }
         });
     }
@@ -176,12 +177,12 @@ public class TestActivity extends AppCompatActivity {
         ScorocodeSdk.removeDocument(COLLECTION_NAME, local_query, 1, new Callback<ResponseRemove>() {
             @Override
             public void onResponse(Call<ResponseRemove> call, Response<ResponseRemove> response) {
-                Log.d(TAG, "REGISTER USER: SUCCESS");
+                Log.d(TAG, " SUCCESS");
             }
 
             @Override
             public void onFailure(Call<ResponseRemove> call, Throwable t) {
-                Log.d(TAG, "REGISTER USER: FAILURE");
+                Log.d(TAG, "FAILURE");
             }
         });
     }
@@ -224,14 +225,14 @@ public class TestActivity extends AppCompatActivity {
         List<String> fieldsList = new ArrayList<>();
         fieldsList.add("exampleField");
 
-        ScorocodeSdk.findDocument(COLLECTION_NAME, _query, sort, fieldsList, 1, null, new Callback<ResponseString>() {
+        ScorocodeSdk.findDocument(COLLECTION_NAME, _query, sort, fieldsList, 10, null, new Document.CallbackFindDocument() {
             @Override
-            public void onResponse(Call<ResponseString> call, Response<ResponseString> response) {
+            public void documentFound(List<String> documentIds) {
                 Log.d(TAG, "SUCCESS");
             }
 
             @Override
-            public void onFailure(Call<ResponseString> call, Throwable t) {
+            public void documentNotFound() {
                 Log.d(TAG, "FAILURE");
             }
         });
@@ -366,12 +367,12 @@ public class TestActivity extends AppCompatActivity {
             ScorocodeSdk.getApplicationStatistic(new Callback<ResponseAppStatistic>() {
                         @Override
                         public void onResponse(Call<ResponseAppStatistic> call, Response<ResponseAppStatistic> response) {
-                            Log.d(TAG, "REGISTER USER: SUCCESS");
+                            Log.d(TAG, "SUCCESS");
                         }
 
                         @Override
                         public void onFailure(Call<ResponseAppStatistic> call, Throwable t) {
-                            Log.d(TAG, "REGISTER USER: FAILURE");
+                            Log.d(TAG, "FAILURE");
                         }
                     }
             );
