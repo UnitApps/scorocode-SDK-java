@@ -69,6 +69,12 @@ public class Query extends HashMap<String, HashMap<String,Object>> {
         this.skip = skip;
     }
 
+    public void setPage(Integer page) {
+        if(page > 0) {
+            skip = (page - 1) * limit;
+        }
+    }
+
     public Query equalTo(String field, Object value) {
         this.put(field, getRecord(value, "$eq"));
         return this;
