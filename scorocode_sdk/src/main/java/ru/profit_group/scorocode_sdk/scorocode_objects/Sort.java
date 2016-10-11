@@ -1,4 +1,4 @@
-package ru.profit_group.scorocode_sdk.Objects;
+package ru.profit_group.scorocode_sdk.scorocode_objects;
 
 import java.util.HashMap;
 
