@@ -3,7 +3,7 @@ package ru.profit_group.scorocode_sdk.Requests.data;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import ru.profit_group.scorocode_sdk.Objects.Query;
+import ru.profit_group.scorocode_sdk.scorocode_objects.Query;
 
 
 /**

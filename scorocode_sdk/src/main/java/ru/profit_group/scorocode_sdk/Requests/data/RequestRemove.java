@@ -5,8 +5,6 @@ import android.support.annotation.Nullable;
 
 import java.util.HashMap;
 
-import ru.profit_group.scorocode_sdk.Objects.Query;
-
 /**
  * Created by Peter Staranchuk on 5/10/16
  */
