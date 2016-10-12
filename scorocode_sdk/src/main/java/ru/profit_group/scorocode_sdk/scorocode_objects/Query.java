@@ -8,6 +8,10 @@ import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Callback;
+import ru.profit_group.scorocode_sdk.Callbacks.CallbackCountDocument;
+import ru.profit_group.scorocode_sdk.Callbacks.CallbackFindDocument;
+import ru.profit_group.scorocode_sdk.Callbacks.CallbackRemoveDocument;
+import ru.profit_group.scorocode_sdk.Callbacks.CallbackUpdateDocument;
 import ru.profit_group.scorocode_sdk.Responses.data.ResponseCount;
 import ru.profit_group.scorocode_sdk.Responses.data.ResponseRemove;
 import ru.profit_group.scorocode_sdk.Responses.data.ResponseUpdate;
@@ -44,20 +48,20 @@ public class Query extends HashMap<String, HashMap<String,Object>> {
         this.put(field, query);
     }
 
-    public void findDocuments(Document.CallbackFindDocument callback) {
+    public void findDocuments(CallbackFindDocument callback) {
         ScorocodeSdk.findDocument(collectionName, this, sort, fieldIds, limit, skip, callback);
     }
 
-    public void countDocuments(Callback<ResponseCount> callback) {
+    public void countDocuments(CallbackCountDocument callback) {
         ScorocodeSdk.getDocumentsCount(collectionName, this, callback);
     }
 
-    public void updateDocument(Update update, Callback<ResponseUpdate> callback) {
+    public void updateDocument(Update update, CallbackUpdateDocument callback) {
         HashMap<String, HashMap<String,Object>> doc = update.getUpdateInfo();
         ScorocodeSdk.updateDocument(collectionName, this, doc, limit, callback);
     }
 
-    public void removeDocument(Callback<ResponseRemove> callback) {
+    public void removeDocument(CallbackRemoveDocument callback) {
         ScorocodeSdk.removeDocument(collectionName, this, limit, callback);
     }
 

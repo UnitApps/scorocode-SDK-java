@@ -10,9 +10,18 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import ru.profit_group.scorocode_sdk.Callbacks.CallbackDeleteFile;
+import ru.profit_group.scorocode_sdk.Callbacks.CallbackDocumentSaved;
+import ru.profit_group.scorocode_sdk.Callbacks.CallbackFindDocument;
+import ru.profit_group.scorocode_sdk.Callbacks.CallbackInsert;
+import ru.profit_group.scorocode_sdk.Callbacks.CallbackRemoveDocument;
+import ru.profit_group.scorocode_sdk.Callbacks.CallbackUpdateDocumentById;
+import ru.profit_group.scorocode_sdk.Callbacks.CallbackUploadFile;
 import ru.profit_group.scorocode_sdk.Responses.ResponseCodes;
 import ru.profit_group.scorocode_sdk.Responses.ResponseString;
+import ru.profit_group.scorocode_sdk.Responses.data.ResponseInsert;
 import ru.profit_group.scorocode_sdk.Responses.data.ResponseRemove;
+import ru.profit_group.scorocode_sdk.Responses.data.ResponseUpdateById;
 import ru.profit_group.scorocode_sdk.ScorocodeSdk;
 
 /**
@@ -36,34 +45,54 @@ public class Document {
 
         ScorocodeSdk.findDocument(collName, query, null, null, null, null, new CallbackFindDocument() {
             @Override
-            public void documentFound(List<String> documentIds) {
+            public void onDocumentFound(List<String> documentsIds) {
                 _documentId = documentId;
-                callbackFindDocument.documentFound(documentIds);
+                callbackFindDocument.onDocumentFound(documentsIds);
             }
 
             @Override
-            public void documentNotFound() {
+            public void onDocumentNotFound(String errorCode, String errorMessage) {
                 _documentId = null;
-                callbackFindDocument.documentNotFound();
+                callbackFindDocument.onDocumentNotFound(errorCode, errorMessage);
             }
         });
     }
 
-    public void saveDocument(Callback callback) {
+    public void saveDocument(final CallbackDocumentSaved callbackDocumentSaved) {
         if(_documentId == null) {
-            ScorocodeSdk.insertDocument(_collectionName, _docToInsert, callback);
+            ScorocodeSdk.insertDocument(_collectionName, _docToInsert, new CallbackInsert() {
+                @Override
+                public void onInsertSucceed(ResponseInsert responseInsert) {
+                    callbackDocumentSaved.onDocumentSaved();
+                }
+
+                @Override
+                public void onInsertFailed(String errorCode, String errorMessage) {
+                    callbackDocumentSaved.onDocumentSaveFailed(errorCode, errorMessage);
+                }
+            });
         } else {
             HashMap<String, String> query = new HashMap<>();
-            query.put("_id", _documentId); // TODO relocate all string constants in one file
+            query.put("_id", _documentId);
 
             HashMap<String, HashMap<String, Object>> doc = new HashMap<>();
             //TODO add logic which construct doc object.
 
-            ScorocodeSdk.updateDocumentById(_collectionName, query, doc, callback);
+            ScorocodeSdk.updateDocumentById(_collectionName, query, doc, new CallbackUpdateDocumentById() {
+                @Override
+                public void onUpdateByIdSucceed(ResponseUpdateById requestUpdateById) {
+                    callbackDocumentSaved.onDocumentSaved();
+                }
+
+                @Override
+                public void onUpdateByIdFailed(String errorCode, String errorMessage) {
+                    callbackDocumentSaved.onDocumentSaveFailed(errorCode, errorMessage);
+                }
+            });
         }
     }
 
-    public void removeDocument(Callback<ResponseRemove> callback) {
+    public void removeDocument(CallbackRemoveDocument callback) {
         ScorocodeSdk.removeDocument(_collectionName, null, null, callback);
     }
 
@@ -75,7 +104,7 @@ public class Document {
         _docToInsert.put(field, value);
     }
 
-    public void uploadDocument(String fieldName, String fileName, String contenToUpload, Callback<ResponseCodes> callback) {
+    public void uploadDocument(String fieldName, String fileName, String contenToUpload, CallbackUploadFile callback) {
         ScorocodeSdk.uploadFile(_collectionName,
                 _documentId, fieldName, fileName, contenToUpload, callback);
     }
@@ -84,7 +113,7 @@ public class Document {
         return ScorocodeSdk.getFileLink(_collectionName, fieldName, _documentId, fileName);
     }
 
-    public void deleteFile(String fieldName, String fileName, Callback<ResponseString> callback) {
+    public void deleteFile(String fieldName, String fileName, CallbackDeleteFile callback) {
         ScorocodeSdk.deleteFile(_collectionName, _documentId, fieldName, fileName, callback);
     }
 
@@ -111,10 +140,5 @@ public class Document {
             e.printStackTrace();
             return null;
         }
-    }
-
-    public interface CallbackFindDocument {
-        void documentFound(List<String> documentIds);
-        void documentNotFound();
     }
 }

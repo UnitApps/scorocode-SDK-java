@@ -94,7 +94,7 @@ public interface ScorocodeApi {
 
     @Headers({"Content-Type: application/json"})
     @POST("api/v1/deletefile")
-    Call<ResponseString> deleteFile(@Body RequestFile requestDeleteFile);
+    Call<ResponseCodes> deleteFile(@Body RequestFile requestDeleteFile);
 
     @Headers({"Content-Type: application/json"})
     @POST("api/v1/sendemail")

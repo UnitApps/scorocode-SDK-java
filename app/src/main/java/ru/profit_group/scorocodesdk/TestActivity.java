@@ -9,23 +9,33 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import ru.profit_group.scorocode_sdk.Callbacks.CallbackApplicationStatistic;
+import ru.profit_group.scorocode_sdk.Callbacks.CallbackCountDocument;
+import ru.profit_group.scorocode_sdk.Callbacks.CallbackDeleteFile;
+import ru.profit_group.scorocode_sdk.Callbacks.CallbackFindDocument;
+import ru.profit_group.scorocode_sdk.Callbacks.CallbackInsert;
+import ru.profit_group.scorocode_sdk.Callbacks.CallbackLoginUser;
+import ru.profit_group.scorocode_sdk.Callbacks.CallbackLogoutUser;
+import ru.profit_group.scorocode_sdk.Callbacks.CallbackRegisterUser;
+import ru.profit_group.scorocode_sdk.Callbacks.CallbackRemoveDocument;
+import ru.profit_group.scorocode_sdk.Callbacks.CallbackSendEmail;
+import ru.profit_group.scorocode_sdk.Callbacks.CallbackSendPush;
+import ru.profit_group.scorocode_sdk.Callbacks.CallbackSendScript;
+import ru.profit_group.scorocode_sdk.Callbacks.CallbackSendSms;
+import ru.profit_group.scorocode_sdk.Callbacks.CallbackUpdateDocument;
+import ru.profit_group.scorocode_sdk.Callbacks.CallbackUpdateDocumentById;
+import ru.profit_group.scorocode_sdk.Callbacks.CallbackUploadFile;
 import ru.profit_group.scorocode_sdk.Requests.messages.MessageEmail;
 import ru.profit_group.scorocode_sdk.Requests.messages.MessagePush;
 import ru.profit_group.scorocode_sdk.Requests.messages.MessageSms;
-import ru.profit_group.scorocode_sdk.scorocode_objects.Document;
 import ru.profit_group.scorocode_sdk.scorocode_objects.Query;
 import ru.profit_group.scorocode_sdk.scorocode_objects.Sort;
-import ru.profit_group.scorocode_sdk.Responses.ResponseString;
 import ru.profit_group.scorocode_sdk.Responses.data.ResponseCount;
 import ru.profit_group.scorocode_sdk.Responses.data.ResponseInsert;
 import ru.profit_group.scorocode_sdk.Responses.data.ResponseRemove;
 import ru.profit_group.scorocode_sdk.Responses.data.ResponseUpdate;
 import ru.profit_group.scorocode_sdk.Responses.data.ResponseUpdateById;
 import ru.profit_group.scorocode_sdk.Responses.statistic.ResponseAppStatistic;
-import ru.profit_group.scorocode_sdk.Responses.ResponseCodes;
 import ru.profit_group.scorocode_sdk.Responses.user.ResponseLogin;
 import ru.profit_group.scorocode_sdk.ScorocodeSdk;
 
@@ -40,7 +50,6 @@ public class TestActivity extends AppCompatActivity {
     private static final String EMAIL = "petr.staranchukTest11@gmail.com";
     private static final String PASSWORD = "qwertyTest1";
     private static final String COLLECTION_NAME = "mycollection";
-    private static final String SCRIPT_ID = "1234565";
     public static final String MASTER_KEY = "383499df2748bb4560745d5da67f5e41";
 
     private HashMap<String, String> _doc;
@@ -98,75 +107,75 @@ public class TestActivity extends AppCompatActivity {
 
     private void testRegisterUser() {
         ScorocodeSdk.registerUser("PeterStaranchukTest11", EMAIL, PASSWORD, _doc,
-                new Callback<ResponseCodes>() {
+                new CallbackRegisterUser() {
                     @Override
-                    public void onResponse(Call<ResponseCodes> call, Response<ResponseCodes> response) {
+                    public void onRegisterSucceed() {
                         Log.d(TAG, "SUCCESS");
                     }
 
                     @Override
-                    public void onFailure(Call<ResponseCodes> call, Throwable t) {
+                    public void onRegisterFailed(String errorCode, String errorMessage) {
                         Log.d(TAG, "FAILURE");
                     }
                 });
     }
 
     private void testLoginUser() {
-        ScorocodeSdk.loginUser(EMAIL, PASSWORD, new Callback<ResponseLogin>() {
-            @Override
-            public void onResponse(Call<ResponseLogin> call, Response<ResponseLogin> response) {
-                Log.d(TAG, "SUCCESS");
+        ScorocodeSdk.loginUser(EMAIL, PASSWORD, new CallbackLoginUser() {
+                    @Override
+                    public void onLoginSucceed(ResponseLogin responseLogin) {
+                        Log.d(TAG, "SUCCESS");
 
-                if(response != null && response.body() != null && response.body().getResult() != null) {
-                    ScorocodeSdk.setSessionId(response.body().getResult().getSessionId());
-//                    testLogoutUser();
-//                    testInsertDocument();
-//                    testRemoveDocument();
-//                    testUpdateDocument();
-//                    testUpdateDocumentById();
-                    testFindDocument();
-//                    testCountDocument();
-//                    testUploadDocument();
-//                    testGetFileLink();
-//                    testDeleteFile(); // TODO - serverside error
-//                    testSendEmail();
-//                    testSendSms();
-//                    testSendPush();
-//                    testSendScript();
+                            ScorocodeSdk.setSessionId(responseLogin.getResult().getSessionId());
+//                            testLogoutUser();
+//                            testInsertDocument();
+//                            testRemoveDocument();
+//                            testUpdateDocument();
+//                            testUpdateDocumentById();
+//                            testFindDocument();
+//                            testCountDocument();
+//                            testUploadFile();
+//                            testGetFileLink();
+                            testDeleteFile(); // TODO - serverside error
+                            testSendEmail();
+                            testSendSms();
+                            testSendPush();
+                            testSendScript();
+                        }
+
+
+                    @Override
+                    public void onLoginFailed(String errorCode, String errorMessage) {
+                        Log.d(TAG, "FAILURE");
+                    }
                 }
+        );
+    }
+
+    private void testLogoutUser() {
+        ScorocodeSdk.logoutUser(new CallbackLogoutUser() {
+            @Override
+            public void onLogoutSucceed() {
+                Log.d(TAG, "SUCCESS");
             }
 
             @Override
-            public void onFailure(Call<ResponseLogin> call, Throwable t) {
+            public void onLogoutFailed(String errorCode, String errorMessage) {
                 Log.d(TAG, "FAILURE");
             }
         });
     }
 
-    private void testLogoutUser() {
-        ScorocodeSdk.logoutUser(new Callback<ResponseCodes>() {
+    private void testInsertDocument() {
+        ScorocodeSdk.insertDocument(COLLECTION_NAME, _doc, new CallbackInsert() {
             @Override
-            public void onResponse(Call<ResponseCodes> call, Response<ResponseCodes> response) {
+            public void onInsertSucceed(ResponseInsert responseInsert) {
                 Log.d(TAG, "SUCCESS");
             }
 
             @Override
-            public void onFailure(Call<ResponseCodes> call, Throwable t) {
-                Log.d(TAG, "  FAILURE");
-            }
-        });
-    }
-
-    private void testInsertDocument() {
-        ScorocodeSdk.insertDocument(COLLECTION_NAME, _doc, new Callback<ResponseInsert>() {
-            @Override
-            public void onResponse(Call<ResponseInsert> call, Response<ResponseInsert> response) {
-                Log.d(TAG, "  SUCCESS");
-            }
-
-            @Override
-            public void onFailure(Call<ResponseInsert> call, Throwable t) {
-                Log.d(TAG, "  FAILURE");
+            public void onInsertFailed(String errorCode, String errorMessage) {
+                Log.d(TAG, "FAILURE");
             }
         });
     }
@@ -174,28 +183,28 @@ public class TestActivity extends AppCompatActivity {
     private void testRemoveDocument() {
         Query local_query = Query.getSimpleQuery("exampleField", "$eq", "Сегодня 2010 июня, и это день рождения Мюриэл! Мюриэл сейчас 105. С днём рождения, Мюриэл!");
 
-        ScorocodeSdk.removeDocument(COLLECTION_NAME, local_query, 1, new Callback<ResponseRemove>() {
+        ScorocodeSdk.removeDocument(COLLECTION_NAME, local_query, 1, new CallbackRemoveDocument() {
             @Override
-            public void onResponse(Call<ResponseRemove> call, Response<ResponseRemove> response) {
-                Log.d(TAG, " SUCCESS");
+            public void onRemoveSucceed(ResponseRemove responseRemove) {
+                Log.d(TAG, "SUCCESS");
             }
 
             @Override
-            public void onFailure(Call<ResponseRemove> call, Throwable t) {
+            public void onRemoveFailed(String errorCode, String errorMessage) {
                 Log.d(TAG, "FAILURE");
             }
         });
     }
 
     private void testUpdateDocument() {
-        ScorocodeSdk.updateDocument(COLLECTION_NAME, _query, _doc_set, 1, new Callback<ResponseUpdate>() {
+        ScorocodeSdk.updateDocument(COLLECTION_NAME, _query, _doc_set, 1, new CallbackUpdateDocument() {
             @Override
-            public void onResponse(Call<ResponseUpdate> call, Response<ResponseUpdate> response) {
+            public void onUpdateSucceed(ResponseUpdate responseUpdate) {
                 Log.d(TAG, "SUCCESS");
             }
 
             @Override
-            public void onFailure(Call<ResponseUpdate> call, Throwable t) {
+            public void onUpdateFailed(String errorCode, String errorMessage) {
                 Log.d(TAG, "FAILURE");
             }
         });
@@ -205,14 +214,14 @@ public class TestActivity extends AppCompatActivity {
         HashMap<String, String> updateQuery = new HashMap<>();
         updateQuery.put("_id", "lThEkcUoDZ");
 
-        ScorocodeSdk.updateDocumentById(COLLECTION_NAME, updateQuery, _doc_set, new Callback<ResponseUpdateById>() {
+        ScorocodeSdk.updateDocumentById(COLLECTION_NAME, updateQuery, _doc_set, new CallbackUpdateDocumentById() {
             @Override
-            public void onResponse(Call<ResponseUpdateById> call, Response<ResponseUpdateById> response) {
+            public void onUpdateByIdSucceed(ResponseUpdateById requestUpdateById) {
                 Log.d(TAG, "SUCCESS");
             }
 
             @Override
-            public void onFailure(Call<ResponseUpdateById> call, Throwable t) {
+            public void onUpdateByIdFailed(String errorCode, String errorMessage) {
                 Log.d(TAG, "FAILURE");
             }
         });
@@ -225,47 +234,47 @@ public class TestActivity extends AppCompatActivity {
         List<String> fieldsList = new ArrayList<>();
         fieldsList.add("exampleField");
 
-        ScorocodeSdk.findDocument(COLLECTION_NAME, _query, sort, fieldsList, 10, null, new Document.CallbackFindDocument() {
+        ScorocodeSdk.findDocument(COLLECTION_NAME, _query, sort, fieldsList, 10, null, new CallbackFindDocument() {
             @Override
-            public void documentFound(List<String> documentIds) {
+            public void onDocumentFound(List<String> documentsIds) {
                 Log.d(TAG, "SUCCESS");
             }
 
             @Override
-            public void documentNotFound() {
+            public void onDocumentNotFound(String errorCode, String errorMessage) {
                 Log.d(TAG, "FAILURE");
             }
         });
     }
 
     private void testCountDocument() {
-        ScorocodeSdk.getDocumentsCount(COLLECTION_NAME, null, new Callback<ResponseCount>() {
+        ScorocodeSdk.getDocumentsCount(COLLECTION_NAME, null, new CallbackCountDocument() {
             @Override
-            public void onResponse(Call<ResponseCount> call, Response<ResponseCount> response) {
+            public void onDocumentsCounted(ResponseCount responseCount) {
                 Log.d(TAG, "SUCCESS");
             }
 
             @Override
-            public void onFailure(Call<ResponseCount> call, Throwable t) {
+            public void onCountFailed(String errorCode, String errorMessage) {
                 Log.d(TAG, "FAILURE");
             }
         });
     }
 
-    private void testUploadDocument() {
+    private void testUploadFile() {
         String documentId = "nV0p50CDKq";
         String fieldName = "test";
         String fileName = "file.txt";
         String content = "VEhJUyBJUyBGSUxFLUUtRS1FLUUtRS1FIQ==";
 
-        ScorocodeSdk.uploadFile(COLLECTION_NAME, documentId, fieldName, fileName, content, new Callback<ResponseCodes>() {
+        ScorocodeSdk.uploadFile(COLLECTION_NAME, documentId, fieldName, fileName, content, new CallbackUploadFile() {
             @Override
-            public void onResponse(Call<ResponseCodes> call, Response<ResponseCodes> response) {
+            public void onDocumentUploaded() {
                 Log.d(TAG, "SUCCESS");
             }
 
             @Override
-            public void onFailure(Call<ResponseCodes> call, Throwable t) {
+            public void onDocumentUploadFailed(String errorCode, String errorMessage) {
                 Log.d(TAG, "FAILURE");
             }
         });
@@ -277,14 +286,14 @@ public class TestActivity extends AppCompatActivity {
     }
 
     private void testDeleteFile() {
-        ScorocodeSdk.deleteFile(COLLECTION_NAME, _documentId, _fieldName, _fileName, new Callback<ResponseString>() {
+        ScorocodeSdk.deleteFile(COLLECTION_NAME, _documentId, _fieldName, _fileName, new CallbackDeleteFile() {
             @Override
-            public void onResponse(Call<ResponseString> call, Response<ResponseString> response) {
+            public void onDocumentDeleted() {
                 Log.d(TAG, "SUCCESS");
             }
 
             @Override
-            public void onFailure(Call<ResponseString> call, Throwable t) {
+            public void onDetelionFailed(String errorCodes, String errorMessage) {
                 Log.d(TAG, "FAILURE");
             }
         });
@@ -293,14 +302,14 @@ public class TestActivity extends AppCompatActivity {
     private void testSendEmail() {
         MessageEmail messageEmail = new MessageEmail("Peter", "Hello", "Hello world");
         String collection = "users"; //users or roles
-        ScorocodeSdk.sendEmail(collection, null, messageEmail, new Callback<ResponseCodes>() {
+        ScorocodeSdk.sendEmail(collection, null, messageEmail, new CallbackSendEmail() {
             @Override
-            public void onResponse(Call<ResponseCodes> call, Response<ResponseCodes> response) {
+            public void onEmailSend() {
                 Log.d(TAG, "SUCCESS");
             }
 
             @Override
-            public void onFailure(Call<ResponseCodes> call, Throwable t) {
+            public void onEmailSendFailed(String errorCode, String errorMessage) {
                 Log.d(TAG, "FAILURE");
             }
         });
@@ -310,14 +319,14 @@ public class TestActivity extends AppCompatActivity {
         MessageSms messageSms = new MessageSms("Hello world");
         String collection = "users"; //users or roles
 
-        ScorocodeSdk.sendSms(collection, null, messageSms, new Callback<ResponseCodes>() {
+        ScorocodeSdk.sendSms(collection, null, messageSms, new CallbackSendSms() {
             @Override
-            public void onResponse(Call<ResponseCodes> call, Response<ResponseCodes> response) {
+            public void onSmsSended() {
                 Log.d(TAG, "SUCCESS");
             }
 
             @Override
-            public void onFailure(Call<ResponseCodes> call, Throwable t) {
+            public void onSmsSendFailed(String errorCode, String errorMessage) {
                 Log.d(TAG, "FAILURE");
             }
         });
@@ -330,14 +339,14 @@ public class TestActivity extends AppCompatActivity {
         String collection = "users"; //users or roles
 
         MessagePush messagePush = new MessagePush("Hello World", data);
-        ScorocodeSdk.sendPush(collection, null, messagePush, new Callback<ResponseCodes>() {
+        ScorocodeSdk.sendPush(collection, null, messagePush, new CallbackSendPush() {
             @Override
-            public void onResponse(Call<ResponseCodes> call, Response<ResponseCodes> response) {
+            public void onPushSended() {
                 Log.d(TAG, "SUCCESS");
             }
 
             @Override
-            public void onFailure(Call<ResponseCodes> call, Throwable t) {
+            public void onPushSendFailed(String errorCode, String errorMessage) {
                 Log.d(TAG, "FAILURE");
             }
         });
@@ -349,14 +358,16 @@ public class TestActivity extends AppCompatActivity {
         pool.put("key", "exampleField");
         pool.put("val", "Сегодня 18 июня, и это день рождения Мюриэл! Мюриэл сейчас 20. С днём рождения, Мюриэл!");
 
-        ScorocodeSdk.sendScriptTask(SCRIPT_ID, pool, new Callback<ResponseCodes>() {
+        final String scriptId = "57484fb91c5666544db25675";
+
+        ScorocodeSdk.sendScriptTask(scriptId, pool, new CallbackSendScript() {
             @Override
-            public void onResponse(Call<ResponseCodes> call, Response<ResponseCodes> response) {
+            public void onScriptSended() {
                 Log.d(TAG, "SUCCESS");
             }
 
             @Override
-            public void onFailure(Call<ResponseCodes> call, Throwable t) {
+            public void onScriptSendFailed(String errorCode, String errorMessage) {
                 Log.d(TAG, "FAILURE");
             }
         });
@@ -364,14 +375,15 @@ public class TestActivity extends AppCompatActivity {
 
     private void testGetStatistic() {
         try {
-            ScorocodeSdk.getApplicationStatistic(new Callback<ResponseAppStatistic>() {
+            ScorocodeSdk.getApplicationStatistic(
+                    new CallbackApplicationStatistic() {
                         @Override
-                        public void onResponse(Call<ResponseAppStatistic> call, Response<ResponseAppStatistic> response) {
+                        public void onRequestSucceed(ResponseAppStatistic appStatistic) {
                             Log.d(TAG, "SUCCESS");
                         }
 
                         @Override
-                        public void onFailure(Call<ResponseAppStatistic> call, Throwable t) {
+                        public void onRequestFailed(String errorCode, String errorMessage) {
                             Log.d(TAG, "FAILURE");
                         }
                     }

@@ -11,7 +11,7 @@ public class ScorocodeSdkStateHolder {
     private String messageKey;
     private String scriptKey;
 
-    private String _sessionId;
+    private String sessionId;
 
     public ScorocodeSdkStateHolder(String applicationId, String clientKey, String masterKey, String fileKey, String messageKey, String scriptKey) {
         this.applicationId = applicationId;
@@ -43,7 +43,7 @@ public class ScorocodeSdkStateHolder {
     }
 
     public String getSessionId() {
-        return _sessionId;
+        return sessionId;
     }
 
     public String getMasterOrFileKey() {
@@ -59,6 +59,6 @@ public class ScorocodeSdkStateHolder {
     }
 
     public void setSessionId(String sessionId) {
-        _sessionId = sessionId;
+        this.sessionId = sessionId;
     }
 }
