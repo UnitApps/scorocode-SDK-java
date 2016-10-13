@@ -156,47 +156,49 @@ public class Query  {
         return this;
     }
 
-    public Query or(String field, Query query) {
-        addQueryRule(field, "$or", query);
-//        queryInfo.put(field, getRecord(query, "$or"));
+    public Query and(String field, Query query) {
+        try {
+            List<HashMap<String, HashMap<String, Object>>> list = new ArrayList<>();
+            HashMap<String, Object> queryParam1 = (HashMap<String, Object>) query.getQueryInfo().get(field);
+            HashMap<String, Object> queryParam2 = (HashMap<String, Object>) queryInfo.get(field);
+
+            HashMap<String, HashMap<String, Object>> parameter1 = new HashMap<>();
+            parameter1.put(field, queryParam1);
+
+            HashMap<String, HashMap<String, Object>> parameter2 = new HashMap<>();
+            parameter2.put(field, queryParam2);
+
+            list.add(parameter1);
+            list.add(parameter2);
+
+            queryInfo.remove(field);
+            queryInfo.put("$and", list);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return this;
     }
 
-    public Query and(String field, Query query) {
-//        addQueryRule(field, "$and", query);
+    public Query or(String field, Query query) {
+        try {
+            List<HashMap<String, HashMap<String, Object>>> list = new ArrayList<>();
+            HashMap<String, Object> queryParam1 = (HashMap<String, Object>) query.getQueryInfo().get(field);
+            HashMap<String, Object> queryParam2 = (HashMap<String, Object>) queryInfo.get(field);
 
-//        List<HashMap<String, Object>> list = new ArrayList<>();
-//        list.add(queryInfo.get(field));
-//        list.add(query.getQueryInfo().get(field));
-//
-//        HashMap<String, List<HashMap<String, List<Object>>>> and = new HashMap<>();
-//        and.put("$and", list);
+            HashMap<String, HashMap<String, Object>> parameter1 = new HashMap<>();
+            parameter1.put(field, queryParam1);
 
-//        queryInfo.put(field, and);
+            HashMap<String, HashMap<String, Object>> parameter2 = new HashMap<>();
+            parameter2.put(field, queryParam2);
 
+            list.add(parameter1);
+            list.add(parameter2);
 
-//        Map<String, Object> query1= queryInfo.get(field);
-//        Map<String, Object> query2= query.getQueryInfo().get(field);
-//        List<HashMap<String, Object>> queries = new ArrayList<>();
-//        queries.add(query1);
-//        queries.add(query2);
-
-//        addQueryRule(field, "$and", queries);
-
-//        queryInfo.put("$and", )
-        String json = "{ \"$and\": [ { \"price\": { \"$ne\": 1.99 } }, { \"price\": { \"$exists\": true } } ] }";
-        Gson gson = new Gson();
-        Object o = gson.fromJson(json, Object.class);
-
-        Map<String, List<Map<String, Object>>> mapMap = new LinkedTreeMap<>();
-
-        List<Map<String, Object>> list = new ArrayList<>();
-//        list.add(query1);
-//        list.add(query2);
-
-        mapMap.put("$and", list);
-//        addQueryRule(field, "$and", list);
-//        queryInfo.put("$and", )
+            queryInfo.remove(field);
+            queryInfo.put("$or", list);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return this;
     }
 
@@ -215,8 +217,10 @@ public class Query  {
     }
 
     private void addQueryRule(String field, String operation, Object value) {
+        HashMap<String, Object> element = (HashMap<String, Object>) queryInfo.get(field);
+
         if(queryInfo.containsKey(field)) {
-            queryInfo.get(field).put(operation, value);
+            element.put(operation, value);
         } else {
             queryInfo.put(field, getRecord(value, operation));
         }

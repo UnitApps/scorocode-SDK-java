@@ -6,5 +6,5 @@ import java.util.Map;
 /**
  * Created by Peter Staranchuk on 10/13/16
  */
-public class QueryInfo extends HashMap<String, HashMap<String, Object>> {
+public class QueryInfo extends HashMap<String, Object> {
 }

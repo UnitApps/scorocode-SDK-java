@@ -167,7 +167,10 @@ public class TestActivity extends AppCompatActivity {
 //        testQueryClassCountDocument();
 //        testQueryClassUpdateDocument();
 //        testQueryClassWithRawJsonQuery();
+        testQueryClassTestAllQueryMethods();
+    }
 
+    private void testQueryClassTestAllQueryMethods() {
         List<Object> numbers = new ArrayList<>();
         numbers.add(1);
         numbers.add(5);
@@ -191,7 +194,7 @@ public class TestActivity extends AppCompatActivity {
         regexOptions.setRegexCaseInsenssitive();
 
         Query query = new Query(COLLECTION_NAME)
-                .equalTo("number3", 10)
+//                .equalTo("number3", 10)
 //                .notEqualTo("number3", 10)
 //                .containedIn("number3", numbers)
 //                .containsAll("array1", containsAllNumbers)
@@ -203,15 +206,13 @@ public class TestActivity extends AppCompatActivity {
 //                .exists("number2")
 //                .doesNotExist("number2")
 //                .contains("exampleField", "BC", regexOptions)
-//                .startsWith("exampleField", "ab", regexOptions)
+                .startsWith("exampleField", "ab", regexOptions)
+                .startsWith("anotherExampleField", "a", regexOptions)
 //                .endsWith("exampleField", "B", regexOptions)
                 ;
 
-        Query queryAdditional = new Query(COLLECTION_NAME)
-                .greaterThan("number3", 5);
-
-        query.and("number3", queryAdditional);
-
+//        Query queryAdditional = new Query(COLLECTION_NAME).greaterThan("number3", 500);
+//        query.and("number3", queryAdditional);
         query.findDocuments(new CallbackFindDocument() {
             @Override
             public void onDocumentFound(List<String> documentsIds) {
@@ -223,6 +224,26 @@ public class TestActivity extends AppCompatActivity {
                 Log.d("","");
             }
         });
+
+
+
+        Query query1 = new Query(COLLECTION_NAME).greaterThan("number3", 50);
+        Query query2 = new Query(COLLECTION_NAME).equalTo("number3", 1);
+
+        query1.or("number3", query2);
+
+        query1.findDocuments(new CallbackFindDocument() {
+            @Override
+            public void onDocumentFound(List<String> documentsIds) {
+                Log.d("","");
+            }
+
+            @Override
+            public void onDocumentNotFound(String errorCode, String errorMessage) {
+                Log.d("","");
+            }
+        });
+
     }
 
     private void testQueryClassWithRawJsonQuery() {
