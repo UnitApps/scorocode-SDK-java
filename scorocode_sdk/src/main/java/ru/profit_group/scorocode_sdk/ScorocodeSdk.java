@@ -186,6 +186,7 @@ public class ScorocodeSdk {
                     ResponseCodes responseCodes = response.body();
                     if(responseSuccseed(responseCodes)) {
                         callbackLogout.onLogoutSucceed();
+                        ScorocodeSdk.setSessionId(null);
                     } else {
                         callbackLogout.onLogoutFailed(responseCodes.getErrCode(), responseCodes.getErrMsg());
                     }
@@ -590,7 +591,7 @@ public class ScorocodeSdk {
         }
     }
 
-    public static void setSessionId(@NonNull String sessionId) {
+    public static void setSessionId(String sessionId) {
         if(stateHolder != null) {
             stateHolder.setSessionId(sessionId);
         }
