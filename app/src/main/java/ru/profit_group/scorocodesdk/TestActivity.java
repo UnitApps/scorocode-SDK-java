@@ -2,6 +2,7 @@ package ru.profit_group.scorocodesdk;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 
 import java.io.IOException;
@@ -12,6 +13,7 @@ import java.util.List;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackApplicationStatistic;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackCountDocument;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackDeleteFile;
+import ru.profit_group.scorocode_sdk.Callbacks.CallbackDocumentSaved;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackFindDocument;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackInsert;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackLoginUser;
@@ -28,6 +30,7 @@ import ru.profit_group.scorocode_sdk.Callbacks.CallbackUploadFile;
 import ru.profit_group.scorocode_sdk.Requests.messages.MessageEmail;
 import ru.profit_group.scorocode_sdk.Requests.messages.MessagePush;
 import ru.profit_group.scorocode_sdk.Requests.messages.MessageSms;
+import ru.profit_group.scorocode_sdk.scorocode_objects.Document;
 import ru.profit_group.scorocode_sdk.scorocode_objects.Query;
 import ru.profit_group.scorocode_sdk.scorocode_objects.Sort;
 import ru.profit_group.scorocode_sdk.Responses.data.ResponseCount;
@@ -38,6 +41,8 @@ import ru.profit_group.scorocode_sdk.Responses.data.ResponseUpdateById;
 import ru.profit_group.scorocode_sdk.Responses.statistic.ResponseAppStatistic;
 import ru.profit_group.scorocode_sdk.Responses.user.ResponseLogin;
 import ru.profit_group.scorocode_sdk.ScorocodeSdk;
+import ru.profit_group.scorocode_sdk.scorocode_objects.Update;
+import ru.profit_group.scorocode_sdk.scorocode_objects.User;
 
 public class TestActivity extends AppCompatActivity {
 
@@ -127,20 +132,23 @@ public class TestActivity extends AppCompatActivity {
                         Log.d(TAG, "SUCCESS");
 
                             ScorocodeSdk.setSessionId(responseLogin.getResult().getSessionId());
-//                            testLogoutUser();
-//                            testInsertDocument();
-//                            testRemoveDocument();
-//                            testUpdateDocument();
-//                            testUpdateDocumentById();
-//                            testFindDocument();
-//                            testCountDocument();
-//                            testUploadFile();
-//                            testGetFileLink();
+                            /*testLogoutUser();
+                            testInsertDocument();
+                            testRemoveDocument();
+                            testUpdateDocument();
+                            testUpdateDocumentById();
+                            testFindDocument();
+                            testCountDocument();
+                            testUploadFile();
+                            testGetFileLink();
                             testDeleteFile(); // TODO - serverside error
                             testSendEmail();
                             testSendSms();
                             testSendPush();
-                            testSendScript();
+                            testSendScript();*/
+
+//                            testUserClass(); //FULLY TESTED
+                            testDocumentClass();
                         }
 
 
@@ -150,6 +158,228 @@ public class TestActivity extends AppCompatActivity {
                     }
                 }
         );
+    }
+
+    private void testDocumentClass() {
+        testDocumentClassCreateAndSaveNewDocument();
+        testDocumentClassUpdateMethodWhichExist();
+        testDocumentClassGetFileLink();
+        testDocumentClassUploadNewFile();
+        testDocumentClassDeleteFile();
+        testDocumentClassRemoveDocument();
+    }
+
+    private void testDocumentClassRemoveDocument() {
+        final Document document = new Document(COLLECTION_NAME);
+        document.getDocumentById("7BOlVr1Acp", new CallbackFindDocument() {
+            @Override
+            public void onDocumentFound(List<String> documentsIds) {
+                Log.d(TAG, "");
+                document.removeDocument(new CallbackRemoveDocument() {
+                    @Override
+                    public void onRemoveSucceed(ResponseRemove responseRemove) {
+                        Log.d(TAG, "");
+                    }
+
+                    @Override
+                    public void onRemoveFailed(String errorCode, String errorMessage) {
+                        Log.d(TAG, "");
+                    }
+                });
+            }
+
+            @Override
+            public void onDocumentNotFound(String errorCode, String errorMessage) {
+                Log.d(TAG, "");
+            }
+        });
+    }
+
+    private void testDocumentClassDeleteFile() {
+        final Document document = new Document(COLLECTION_NAME);
+        document.getDocumentById("nV0p50CDKq", new CallbackFindDocument() {
+            @Override
+            public void onDocumentFound(List<String> documentsIds) {
+                document.removeFile("test", "any", new CallbackDeleteFile() {
+                    @Override
+                    public void onDocumentDeleted() {
+                        Log.d(TAG, "");
+                    }
+
+                    @Override
+                    public void onDetelionFailed(String errorCodes, String errorMessage) {
+                        Log.d(TAG, "");
+                    }
+                });
+            }
+
+            @Override
+            public void onDocumentNotFound(String errorCode, String errorMessage) {
+                Log.d(TAG, "");
+            }
+        });
+    }
+
+    private void testDocumentClassUploadNewFile() {
+        final Document document = new Document(COLLECTION_NAME);
+        document.getDocumentById("nV0p50CDKq", new CallbackFindDocument() {
+            @Override
+            public void onDocumentFound(List<String> documentsIds) {
+                document.uploadFile("test", "any.txt", Base64.encodeToString("hello world".getBytes(), Base64.DEFAULT), new CallbackUploadFile() {
+                    @Override
+                    public void onDocumentUploaded() {
+                        Log.d(TAG, "");
+                    }
+
+                    @Override
+                    public void onDocumentUploadFailed(String errorCode, String errorMessage) {
+                        Log.d(TAG, "");
+                    }
+                });
+            }
+
+            @Override
+            public void onDocumentNotFound(String errorCode, String errorMessage) {
+                Log.d(TAG, "");
+            }
+        });
+    }
+
+    private void testDocumentClassUpdateMethodWhichExist() {
+        final Document document = new Document(COLLECTION_NAME);
+        document.getDocumentById("lThEkcUoDZ", new CallbackFindDocument() {
+            @Override
+            public void onDocumentFound(List<String> documentsIds) {
+                List<Object> objectses = new ArrayList<>();
+                objectses.add("a");
+                objectses.add("b");
+
+
+                //TODO write multiple operations
+                document
+                        .updateDocument()
+                        .push("array", 1)
+                        .pull("array", 3)
+                        .pullAll("array", objectses)
+                        .addToSet("array", 3)
+                        .pop("arrayForPopFirts", Update.ItemToRemovePosition.FIRST)
+                        .set("exampleField", "random Any")
+                        .inc("numberField", 2)
+                        .currentDate("date2", Update.DateTypeSpetification.DATE)
+                        .mul("numberForMulTest", 3)
+                        .min("number2", 10)
+                        .max("number3", 10)
+                ;
+
+
+                document.saveDocument(new CallbackDocumentSaved() {
+                    @Override
+                    public void onDocumentSaved() {
+                        Log.d(TAG, "");
+                    }
+
+                    @Override
+                    public void onDocumentSaveFailed(String errorCode, String errorMessage) {
+                        Log.d(TAG, "");
+                    }
+                });
+                Log.d(TAG, "");
+            }
+
+            @Override
+            public void onDocumentNotFound(String errorCode, String errorMessage) {
+                Log.d(TAG, "");
+            }
+        });
+    }
+
+    private void testDocumentClassGetFileLink() {
+        final Document documentWithFile = new Document(COLLECTION_NAME);
+        documentWithFile.getDocumentById("nV0p50CDKq", new CallbackFindDocument() {
+            @Override
+            public void onDocumentFound(List<String> documentsIds) {
+                String fileLink = documentWithFile.getFileLink("test", "file.txt");
+            }
+
+            @Override
+            public void onDocumentNotFound(String errorCode, String errorMessage) {
+                Log.d(TAG, "");
+            }
+        });
+    }
+
+    private void testDocumentClassCreateAndSaveNewDocument() {
+        Document newDocument = new Document(COLLECTION_NAME);
+        newDocument.setField("exampleField", "any1");
+        newDocument.setField("anotherExampleField", "any2");
+        newDocument.saveDocument(new CallbackDocumentSaved() {
+            @Override
+            public void onDocumentSaved() {
+                Log.d(TAG, "");
+            }
+
+            @Override
+            public void onDocumentSaveFailed(String errorCode, String errorMessage) {
+                Log.d(TAG, "");
+            }
+        });
+    }
+
+    private void testUserClass() {
+        User user = new User();
+        user.login(EMAIL, PASSWORD, new CallbackLoginUser() {
+            @Override
+            public void onLoginSucceed(ResponseLogin responseLogin) {
+                Log.d(TAG,"");
+            }
+
+            @Override
+            public void onLoginFailed(String errorCode, String errorMessage) {
+                Log.d(TAG,"");
+            }
+        });
+
+        user.logout(new CallbackLogoutUser() {
+            @Override
+            public void onLogoutSucceed() {
+                Log.d(TAG,"");
+            }
+
+            @Override
+            public void onLogoutFailed(String errorCode, String errorMessage) {
+                Log.d(TAG,"");
+            }
+        });
+
+        user.register("anyperson11", "anyperson11@gmail.com", "test11", new CallbackRegisterUser() {
+            @Override
+            public void onRegisterSucceed() {
+                Log.d(TAG,"");
+            }
+
+            @Override
+            public void onRegisterFailed(String errorCode, String errorMessage) {
+                Log.d(TAG,"");
+            }
+        });
+
+
+        Document doc = new Document("mycollection");
+        doc.setField("testField", "test1");
+        doc.setField("anotherTestField", "test2");
+
+        user.register("anyperson111", "anyperson111@gmail.com", "test111", doc.getDocumentContent(), new CallbackRegisterUser() {
+            @Override
+            public void onRegisterSucceed() {
+                Log.d(TAG,"");
+            }
+
+            @Override
+            public void onRegisterFailed(String errorCode, String errorMessage) {
+                Log.d(TAG,"");
+            }
+        });
+
     }
 
     private void testLogoutUser() {
