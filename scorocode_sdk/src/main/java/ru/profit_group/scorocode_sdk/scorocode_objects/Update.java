@@ -20,7 +20,7 @@ public class Update {
         return this;
     }
 
-    public Update push(String field, String value) {
+    public Update push(String field, Object value) {
         updateInfo.put("$push", getRecord(field, value));
         return this;
     }
@@ -30,13 +30,18 @@ public class Update {
         return this;
     }
 
-    public Update pullAll(String field, List<String> values) {
-        updateInfo.put("$pullAll", getRecord(field, values));
+    public Update pull(String field, Object value) {
+        updateInfo.put("$pull", getRecord(field, value));
         return this;
     }
 
-    public Update addToSet(String field, String value) {
-        updateInfo.put("addToSet", getRecord(field, value));
+    public Update pullAll(String field, List<Object> value) {
+        updateInfo.put("$pullAll", getRecord(field, value));
+        return this;
+    }
+
+    public Update addToSet(String field, Object value) {
+        updateInfo.put("$addToSet", getRecord(field, value));
         return this;
     }
 
@@ -45,15 +50,10 @@ public class Update {
         return this;
     }
 
-    public Update currentDate(String field, String date) {
-        updateInfo.put("$inc", getRecord(field, date));
+    public Update currentDate(String field, DateTypeSpetification typeSpetification) {
+        updateInfo.put("$currentDate", getRecord(field, typeSpetification.getSpetificationSignature()));
         return this;
     }
-
-    public Update currentDate(String field, Date date) {
-        updateInfo.put("$inc", getRecord(field, date));
-        return this;
-    } //TODO check
 
     //multiply value by number
     public Update mul(String field, Integer value) {
@@ -82,16 +82,32 @@ public class Update {
     }
 
     public enum ItemToRemovePosition {
-        FIRST("1"), LAST("-1");
+        FIRST(-1), LAST(1);
 
-        String position;
+        int position;
 
-        ItemToRemovePosition(String position) {
+        ItemToRemovePosition(int position) {
             this.position = position;
         }
 
-        public String getPosition() {
+        public int getPosition() {
             return position;
+        }
+    }
+
+    public enum DateTypeSpetification {
+        TIMESTAMP("timestamp"), DATE("date");
+
+        String type;
+
+        DateTypeSpetification(String type) {
+            this.type = type;
+        }
+
+        public HashMap<String,String> getSpetificationSignature() {
+            HashMap<String, String> signature = new HashMap<>();
+            signature.put("$type", type);
+            return signature;
         }
     }
 }
