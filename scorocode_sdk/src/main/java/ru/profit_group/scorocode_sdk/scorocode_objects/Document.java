@@ -40,10 +40,14 @@ public class Document {
         _update = new Update();
     }
 
-    public void getDocumentById(String collName, final String documentId, final CallbackFindDocument callbackFindDocument) throws Exception {
-        Query query = new Query("id", "$eq", documentId);
+    public HashMap<String, String> getDocumentContent() {
+        return _docToInsert;
+    }
 
-        ScorocodeSdk.findDocument(collName, query, null, null, null, null, new CallbackFindDocument() {
+    public void getDocumentById(final String documentId, final CallbackFindDocument callbackFindDocument) {
+        Query query = new Query("_id", "$eq", documentId);
+
+        ScorocodeSdk.findDocument(_collectionName, query, null, null, null, null, new CallbackFindDocument() {
             @Override
             public void onDocumentFound(List<String> documentsIds) {
                 _documentId = documentId;
@@ -75,10 +79,7 @@ public class Document {
             HashMap<String, String> query = new HashMap<>();
             query.put("_id", _documentId);
 
-            HashMap<String, HashMap<String, Object>> doc = new HashMap<>();
-            //TODO add logic which construct doc object.
-
-            ScorocodeSdk.updateDocumentById(_collectionName, query, doc, new CallbackUpdateDocumentById() {
+            ScorocodeSdk.updateDocumentById(_collectionName, query, _update.getUpdateInfo(), new CallbackUpdateDocumentById() {
                 @Override
                 public void onUpdateByIdSucceed(ResponseUpdateById requestUpdateById) {
                     callbackDocumentSaved.onDocumentSaved();
