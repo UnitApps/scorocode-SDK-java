@@ -32,6 +32,7 @@ import ru.profit_group.scorocode_sdk.Requests.messages.MessagePush;
 import ru.profit_group.scorocode_sdk.Requests.messages.MessageSms;
 import ru.profit_group.scorocode_sdk.scorocode_objects.Document;
 import ru.profit_group.scorocode_sdk.scorocode_objects.Query;
+import ru.profit_group.scorocode_sdk.scorocode_objects.RegexOptions;
 import ru.profit_group.scorocode_sdk.scorocode_objects.Sort;
 import ru.profit_group.scorocode_sdk.Responses.data.ResponseCount;
 import ru.profit_group.scorocode_sdk.Responses.data.ResponseInsert;
@@ -76,12 +77,10 @@ public class TestActivity extends AppCompatActivity {
         setTestDocSetRequest();
         setTestDocumentData();
 
-        testGetStatistic();
-//        testRegisterUser();
-        testLoginUser();
+        testApiMethods();
 
-        //logout user tests inside testLoginUser
-        //insert document tests inside testLoginUser
+        //logout user tests inside testApiMethods
+        //insert document tests inside testApiMethods
     }
 
     private void setTestDocumentData() {
@@ -99,9 +98,7 @@ public class TestActivity extends AppCompatActivity {
 
     private void setTestQuery() {
         _query = new Query(COLLECTION_NAME);
-        HashMap<String, Object> request = new HashMap<>();
-        request.put("$eq", "Сегодня 2010 июня, и это день рождения Мюриэл! Мюриэл сейчас 105. С днём рождения, Мюриэл!");
-        _query.put("exampleField", request);
+        _query.equalTo("exampleField", "Сегодня 2010 июня, и это день рождения Мюриэл! Мюриэл сейчас 105. С днём рождения, Мюриэл!");
     }
 
     private void setTestDoc() {
@@ -125,13 +122,16 @@ public class TestActivity extends AppCompatActivity {
                 });
     }
 
-    private void testLoginUser() {
+    private void testApiMethods() {
         ScorocodeSdk.loginUser(EMAIL, PASSWORD, new CallbackLoginUser() {
                     @Override
                     public void onLoginSucceed(ResponseLogin responseLogin) {
                         Log.d(TAG, "SUCCESS");
 
                             ScorocodeSdk.setSessionId(responseLogin.getResult().getSessionId());
+//                        testGetStatistic();
+                        testRegisterUser();
+
                             /*testLogoutUser();
                             testInsertDocument();
                             testRemoveDocument();
@@ -148,7 +148,8 @@ public class TestActivity extends AppCompatActivity {
                             testSendScript();*/
 
 //                            testUserClass(); //FULLY TESTED
-                            testDocumentClass();
+//                            testDocumentClass(); //FULLY TESTED
+                            testQueryClass();
                         }
 
 
@@ -158,6 +159,160 @@ public class TestActivity extends AppCompatActivity {
                     }
                 }
         );
+    }
+
+    private void testQueryClass() {
+//        testQueryClassFindDocument();
+//        testQueryClassRemoveDocument();
+//        testQueryClassCountDocument();
+//        testQueryClassUpdateDocument();
+//        testQueryClassWithRawJsonQuery();
+
+        List<Object> numbers = new ArrayList<>();
+        numbers.add(1);
+        numbers.add(5);
+        numbers.add(10);
+        numbers.add(15);
+
+
+        List<Object> containsAllNumbers = new ArrayList<>();
+        containsAllNumbers.add(1);
+        containsAllNumbers.add(2);
+        containsAllNumbers.add(3);
+        containsAllNumbers.add(900);
+
+        List<Object> notContainsInList = new ArrayList<>();
+        notContainsInList.add(1);
+        notContainsInList.add(111);
+        notContainsInList.add(11);
+        notContainsInList.add(50);
+
+        RegexOptions regexOptions = new RegexOptions();
+        regexOptions.setRegexCaseInsenssitive();
+
+        Query query = new Query(COLLECTION_NAME)
+                .equalTo("number3", 10)
+//                .notEqualTo("number3", 10)
+//                .containedIn("number3", numbers)
+//                .containsAll("array1", containsAllNumbers)
+//                .notContainedIn("number3", notContainsInList)
+//                .greaterThan("number3", 5)
+//                .greaterThenOrEqualTo("number3", 10)
+//                .lessThan("number3", 50)
+//                .lessThanOrEqualTo("number3", 10)
+//                .exists("number2")
+//                .doesNotExist("number2")
+//                .contains("exampleField", "BC", regexOptions)
+//                .startsWith("exampleField", "ab", regexOptions)
+//                .endsWith("exampleField", "B", regexOptions)
+                ;
+
+        Query queryAdditional = new Query(COLLECTION_NAME)
+                .greaterThan("number3", 5);
+
+        query.and("number3", queryAdditional);
+
+        query.findDocuments(new CallbackFindDocument() {
+            @Override
+            public void onDocumentFound(List<String> documentsIds) {
+                Log.d("","");
+            }
+
+            @Override
+            public void onDocumentNotFound(String errorCode, String errorMessage) {
+                Log.d("","");
+            }
+        });
+    }
+
+    private void testQueryClassWithRawJsonQuery() {
+        Query query = new Query(COLLECTION_NAME);
+        query.raw("{\"_id\": {\"$eq\": \"W9vrMS9SuW\"}}");
+
+        query.findDocuments(new CallbackFindDocument() {
+            @Override
+            public void onDocumentFound(List<String> documentsIds) {
+                Log.d("", "");
+            }
+
+            @Override
+            public void onDocumentNotFound(String errorCode, String errorMessage) {
+                Log.d("", "");
+            }
+        });
+    }
+
+    private void testQueryClassUpdateDocument() {
+        Query query = new Query(COLLECTION_NAME);
+        query.equalTo("number3", 10);
+
+        Update update = new Update()
+                .set("number2", 199)
+                .set("numberField", 111)
+                .addToSet("array1", 900);
+
+        query.updateDocument(update, new CallbackUpdateDocument() {
+            @Override
+            public void onUpdateSucceed(ResponseUpdate responseUpdate) {
+                Log.d("","");
+            }
+
+            @Override
+            public void onUpdateFailed(String errorCode, String errorMessage) {
+                Log.d("","");
+            }
+        });
+    }
+
+    private void testQueryClassCountDocument() {
+        Query query = new Query(COLLECTION_NAME);
+        query.greaterThan("number2",1);
+
+        query.countDocuments(new CallbackCountDocument() {
+            @Override
+            public void onDocumentsCounted(ResponseCount responseCount) {
+                Log.d("","");
+            }
+
+            @Override
+            public void onCountFailed(String errorCode, String errorMessage) {
+                Log.d("","");
+            }
+        });
+    }
+
+    private void testQueryClassRemoveDocument() {
+        Query query = new Query(COLLECTION_NAME);
+        query.equalTo("_id", "aJfkipJags");
+
+        query.removeDocument(new CallbackRemoveDocument() {
+            @Override
+            public void onRemoveSucceed(ResponseRemove responseRemove) {
+                Log.d("","");
+            }
+
+            @Override
+            public void onRemoveFailed(String errorCode, String errorMessage) {
+                Log.d("","");
+            }
+        });
+    }
+
+    private void testQueryClassFindDocument() {
+        Query query = new Query(COLLECTION_NAME);
+        query.equalTo("_id","W9vrMS9SuW");
+
+        query.findDocuments(new CallbackFindDocument() {
+            @Override
+            public void onDocumentFound(List<String> documentsIds) {
+                Log.d("","");
+            }
+
+            @Override
+            public void onDocumentNotFound(String errorCode, String errorMessage) {
+                Log.d("","");
+            }
+        });
     }
 
     private void testDocumentClass() {
@@ -247,30 +402,30 @@ public class TestActivity extends AppCompatActivity {
 
     private void testDocumentClassUpdateMethodWhichExist() {
         final Document document = new Document(COLLECTION_NAME);
-        document.getDocumentById("lThEkcUoDZ", new CallbackFindDocument() {
+        document.getDocumentById("KH3JCojAyT", new CallbackFindDocument() {
             @Override
             public void onDocumentFound(List<String> documentsIds) {
                 List<Object> objectses = new ArrayList<>();
-                objectses.add("a");
-                objectses.add("b");
+                objectses.add(1);
+                objectses.add(2);
 
-
-                //TODO write multiple operations
                 document
                         .updateDocument()
-                        .push("array", 1)
-                        .pull("array", 3)
-                        .pullAll("array", objectses)
-                        .addToSet("array", 3)
-                        .pop("arrayForPopFirts", Update.ItemToRemovePosition.FIRST)
-                        .set("exampleField", "random Any")
+                        .push("array1", 1)
+                        .pull("array2", 3)
+                        .pullAll("array3", objectses)
+                        .addToSet("array4", 7)
+                        .popFirst("arrayForPopFirts")
+                        .popLast("arrayForPopLast")
+                        .set("exampleField", "random Any1")
+                        .set("anotherExampleField", "random Any2")
                         .inc("numberField", 2)
-                        .currentDate("date2", Update.DateTypeSpetification.DATE)
+                        .currentDate("date1")
+                        .currentDate("date2")
                         .mul("numberForMulTest", 3)
                         .min("number2", 10)
                         .max("number3", 10)
                 ;
-
 
                 document.saveDocument(new CallbackDocumentSaved() {
                     @Override
@@ -411,9 +566,10 @@ public class TestActivity extends AppCompatActivity {
     }
 
     private void testRemoveDocument() {
-        Query local_query = Query.getSimpleQuery("exampleField", "$eq", "Сегодня 2010 июня, и это день рождения Мюриэл! Мюриэл сейчас 105. С днём рождения, Мюриэл!");
+        Query query = new Query(COLLECTION_NAME);
+        query.equalTo("exampleField", "Сегодня 2010 июня, и это день рождения Мюриэл! Мюриэл сейчас 105. С днём рождения, Мюриэл!");
 
-        ScorocodeSdk.removeDocument(COLLECTION_NAME, local_query, 1, new CallbackRemoveDocument() {
+        ScorocodeSdk.removeDocument(COLLECTION_NAME, query, 1, new CallbackRemoveDocument() {
             @Override
             public void onRemoveSucceed(ResponseRemove responseRemove) {
                 Log.d(TAG, "SUCCESS");
@@ -609,12 +765,12 @@ public class TestActivity extends AppCompatActivity {
                     new CallbackApplicationStatistic() {
                         @Override
                         public void onRequestSucceed(ResponseAppStatistic appStatistic) {
-                            Log.d(TAG, "SUCCESS");
+                            Log.d("", "SUCCESS");
                         }
 
                         @Override
                         public void onRequestFailed(String errorCode, String errorMessage) {
-                            Log.d(TAG, "FAILURE");
+                            Log.d("", "FAILURE");
                         }
                     }
             );

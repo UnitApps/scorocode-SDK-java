@@ -39,7 +39,8 @@ public class Document {
     }
 
     public void getDocumentById(final String documentId, final CallbackFindDocument callbackFindDocument) {
-        Query query = new Query("_id", "$eq", documentId);
+        Query query = new Query(collectionName);
+        query.equalTo("_id", documentId);
 
         ScorocodeSdk.findDocument(collectionName, query, null, null, null, null, new CallbackFindDocument() {
             @Override

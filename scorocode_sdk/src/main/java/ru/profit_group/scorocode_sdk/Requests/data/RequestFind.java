@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import ru.profit_group.scorocode_sdk.scorocode_objects.Query;
+import ru.profit_group.scorocode_sdk.scorocode_objects.QueryInfo;
 import ru.profit_group.scorocode_sdk.scorocode_objects.ScorocodeSdkStateHolder;
 import ru.profit_group.scorocode_sdk.scorocode_objects.Sort;
 
@@ -20,7 +21,7 @@ public class RequestFind {
     private String acc;
     private String sess;
     private String coll;
-    private Query query;
+    private QueryInfo query;
     private HashMap<String, Integer> sort;
     private List<String> fields;
     private Integer limit;
@@ -40,7 +41,7 @@ public class RequestFind {
         this.acc = stateHolder.getMasterKey();
         this.sess = stateHolder.getSessionId();
         this.coll = coll;
-        this.query = query;
+        this.query = query.getQueryInfo();
         this.sort = sort;
         this.fields = fields;
         this.limit = limit;
@@ -67,7 +68,7 @@ public class RequestFind {
         return coll;
     }
 
-    public Query getQuery() {
+    public QueryInfo getQuery() {
         return query;
     }
 

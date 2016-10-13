@@ -15,59 +15,64 @@ public class Update {
         updateInfo = new HashMap<>();
     }
 
-    public Update set(String field, String value) {
-        updateInfo.put("$set", getRecord(field, value));
+    public Update set(String field, Object value) {
+        addUpdateInfoRule(field, "$set", value);
         return this;
     }
 
     public Update push(String field, Object value) {
-        updateInfo.put("$push", getRecord(field, value));
+        addUpdateInfoRule(field, "$push", value);
         return this;
     }
 
-    public Update pop(String field, ItemToRemovePosition itemToRemovePosition) {
-        updateInfo.put("$pop", getRecord(field, itemToRemovePosition.getPosition()));
+    public Update popFirst(String field) {
+        addUpdateInfoRule(field, "$pop", ItemToRemovePosition.FIRST.getPosition());
+        return this;
+    }
+
+    public Update popLast(String field) {
+        addUpdateInfoRule(field, "$pop", ItemToRemovePosition.LAST.getPosition());
         return this;
     }
 
     public Update pull(String field, Object value) {
-        updateInfo.put("$pull", getRecord(field, value));
+        addUpdateInfoRule(field, "$pull", value);
         return this;
     }
 
     public Update pullAll(String field, List<Object> value) {
-        updateInfo.put("$pullAll", getRecord(field, value));
+        addUpdateInfoRule(field, "$pullAll", value);
         return this;
     }
 
     public Update addToSet(String field, Object value) {
-        updateInfo.put("$addToSet", getRecord(field, value));
+        addUpdateInfoRule(field, "$addToSet", value);
         return this;
     }
 
     public Update inc(String field, Integer increaseValue) {
-        updateInfo.put("$inc", getRecord(field, increaseValue));
+        addUpdateInfoRule(field, "$inc", increaseValue);
         return this;
     }
 
-    public Update currentDate(String field, DateTypeSpetification typeSpetification) {
-        updateInfo.put("$currentDate", getRecord(field, typeSpetification.getSpetificationSignature()));
+    public Update currentDate(String field) {
+        addUpdateInfoRule(field, "$currentDate", "timestamp");
         return this;
     }
 
     //multiply value by number
     public Update mul(String field, Integer value) {
-        updateInfo.put("$mul", getRecord(field, value));
+        addUpdateInfoRule(field, "$mul", value);
         return this;
     }
 
     public Update min(String field, Integer valueToCompare) {
-        updateInfo.put("$min", getRecord(field, valueToCompare));
+        addUpdateInfoRule(field, "$min", valueToCompare);
         return this;
     }
 
     public Update max(String field, Integer valueToCompare) {
-        updateInfo.put("$max", getRecord(field, valueToCompare));
+        addUpdateInfoRule(field, "$max", valueToCompare);
         return this;
     }
 
@@ -93,21 +98,14 @@ public class Update {
         public int getPosition() {
             return position;
         }
+
     }
 
-    public enum DateTypeSpetification {
-        TIMESTAMP("timestamp"), DATE("date");
-
-        String type;
-
-        DateTypeSpetification(String type) {
-            this.type = type;
-        }
-
-        public HashMap<String,String> getSpetificationSignature() {
-            HashMap<String, String> signature = new HashMap<>();
-            signature.put("$type", type);
-            return signature;
+    private void addUpdateInfoRule(String field, String operation, Object value) {
+        if(updateInfo.containsKey(operation)) {
+            updateInfo.get(operation).put(field, value);
+        } else {
+            updateInfo.put(operation, getRecord(field, value));
         }
     }
 }
