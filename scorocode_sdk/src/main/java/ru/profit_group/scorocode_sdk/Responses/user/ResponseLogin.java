@@ -18,7 +18,7 @@ public class ResponseLogin extends ResponseCodes {
 
     public class Result {
          String sessionId;
-         PojoUser user;
+         UserData user;
 
         public String getSessionId() {
             return sessionId;
@@ -28,11 +28,11 @@ public class ResponseLogin extends ResponseCodes {
             this.sessionId = sessionId;
         }
 
-        public PojoUser getUser() {
+        public UserData getUser() {
             return user;
         }
 
-        public void setUser(PojoUser user) {
+        public void setUser(UserData user) {
             this.user = user;
         }
     }
