@@ -16,12 +16,12 @@ public class RequestSendScriptTask {
     private String acc;
     private String sess;
     private String script;
-    private HashMap<String,String> pool;
+    private HashMap<String,Object> pool;
 
     public RequestSendScriptTask(
             @NonNull ScorocodeSdkStateHolder stateHolder,
             @NonNull String scriptId,
-            @NonNull HashMap<String, String> dataPoolForScript) {
+            @NonNull HashMap<String, Object> dataPoolForScript) {
         this.app = stateHolder.getApplicationId();
         this.cli = stateHolder.getClientKey();
         this.acc = stateHolder.getMasterOrScriptKey();
@@ -50,7 +50,7 @@ public class RequestSendScriptTask {
         return script;
     }
 
-    public HashMap<String, String> getPool() {
+    public HashMap<String, Object> getPool() {
         return pool;
     }
 }

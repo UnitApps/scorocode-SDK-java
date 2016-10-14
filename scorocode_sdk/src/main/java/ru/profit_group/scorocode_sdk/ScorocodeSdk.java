@@ -235,7 +235,7 @@ public class ScorocodeSdk {
             @NonNull String collectionName,
             @Nullable Query query,
             @Nullable Integer limit,
-            final CallbackRemoveDocument callbackRemoveDocument) {
+            @NonNull final CallbackRemoveDocument callbackRemoveDocument) {
 
         Call<ResponseRemove> removeCall = getScorocodeApi().remove(new RequestRemove(stateHolder, collectionName, query, limit));
         removeCall.enqueue(new Callback<ResponseRemove>() {
@@ -265,7 +265,7 @@ public class ScorocodeSdk {
             @Nullable Query query,
             @NonNull HashMap<String, HashMap<String, Object>> doc,
             @Nullable Integer limit,
-            final CallbackUpdateDocument callbackUpdateDocument) {
+            @NonNull final CallbackUpdateDocument callbackUpdateDocument) {
 
         Call<ResponseUpdate> updateCall = getScorocodeApi().update(new RequestUpdate(stateHolder, collectionName, query, doc, limit));
         updateCall.enqueue(new Callback<ResponseUpdate>() {
@@ -294,7 +294,7 @@ public class ScorocodeSdk {
             @NonNull String collectionName,
             @NonNull HashMap<String, String> query,
             @NonNull HashMap<String, HashMap<String,Object>> doc,
-            final CallbackUpdateDocumentById callbackUpdateDocumentById) {
+            @NonNull final CallbackUpdateDocumentById callbackUpdateDocumentById) {
 
         Call<ResponseUpdateById> updateByIdCall = getScorocodeApi().updateById(new RequestUpdateById(stateHolder, collectionName, query, doc));
         updateByIdCall.enqueue(new Callback<ResponseUpdateById>() {
@@ -326,7 +326,7 @@ public class ScorocodeSdk {
             @Nullable List<String> fieldsNamesToFind,
             @Nullable Integer limit,
             @Nullable Integer skip,
-            final CallbackFindDocument callbackFindDocument) {
+            @NonNull final CallbackFindDocument callbackFindDocument) {
 
         Call<ResponseString> findCall = getScorocodeApi().find(new RequestFind(stateHolder, collectionName, query, sort, fieldsNamesToFind, limit, skip));
         findCall.enqueue(new Callback<ResponseString>() {
@@ -355,7 +355,7 @@ public class ScorocodeSdk {
     public static void getDocumentsCount(
             @NonNull String collectionName,
             @Nullable Query query,
-            final CallbackCountDocument callbackCountDocument) {
+            @NonNull final CallbackCountDocument callbackCountDocument) {
 
         Call<ResponseCount> callCount = getScorocodeApi().count(new RequestCount(stateHolder, collectionName, query));
         callCount.enqueue(new Callback<ResponseCount>() {
@@ -539,9 +539,9 @@ public class ScorocodeSdk {
         });
     }
 
-    public static void sendScriptTask(
+    public static void runScript(
             @NonNull String scriptId,
-            @NonNull HashMap<String, String> dataPoolForScript,
+            @Nullable HashMap<String, Object> dataPoolForScript,
             @NonNull final CallbackSendScript callbackSendScript) {
 
         Call<ResponseCodes> sendScriptTask = getScorocodeApi().sendScriptTask(new RequestSendScriptTask(stateHolder, scriptId, dataPoolForScript));

@@ -30,9 +30,12 @@ import ru.profit_group.scorocode_sdk.Callbacks.CallbackUploadFile;
 import ru.profit_group.scorocode_sdk.Requests.messages.MessageEmail;
 import ru.profit_group.scorocode_sdk.Requests.messages.MessagePush;
 import ru.profit_group.scorocode_sdk.Requests.messages.MessageSms;
+import ru.profit_group.scorocode_sdk.scorocode_objects.CollectionName;
 import ru.profit_group.scorocode_sdk.scorocode_objects.Document;
+import ru.profit_group.scorocode_sdk.scorocode_objects.Message;
 import ru.profit_group.scorocode_sdk.scorocode_objects.Query;
 import ru.profit_group.scorocode_sdk.scorocode_objects.RegexOptions;
+import ru.profit_group.scorocode_sdk.scorocode_objects.Script;
 import ru.profit_group.scorocode_sdk.scorocode_objects.Sort;
 import ru.profit_group.scorocode_sdk.Responses.data.ResponseCount;
 import ru.profit_group.scorocode_sdk.Responses.data.ResponseInsert;
@@ -149,8 +152,11 @@ public class TestActivity extends AppCompatActivity {
 
 //                            testUserClass(); //FULLY TESTED
 //                            testDocumentClass(); //FULLY TESTED
-                            testQueryClass();
-                        }
+//                            testQueryClass();//FULLY TESTED
+//                        testMessageClass();//FULLY TESTED
+                        testScriptClass();//FULLY TESTED
+
+                    }
 
 
                     @Override
@@ -161,13 +167,76 @@ public class TestActivity extends AppCompatActivity {
         );
     }
 
+    private void testMessageClass() {
+        Message message = new Message();
+        CollectionName collectionName = CollectionName.USERS;
+        Query query = new Query(collectionName.getCollectionName());
+        query.equalTo("_id", "XukL1FrVoL");
+
+        MessageEmail messageEmail = new MessageEmail("Peter", "Any subject", "Any text");
+        message.sendEmail(messageEmail, collectionName, null, new CallbackSendEmail() {
+            @Override
+            public void onEmailSend() {
+                Log.d("","");
+            }
+
+            @Override
+            public void onEmailSendFailed(String errorCode, String errorMessage) {
+                Log.d("","");
+            }
+        });
+
+
+        MessagePush messagePush = new MessagePush("Any text", null);
+        message.sendPush(messagePush, collectionName, null, new CallbackSendPush() {
+            @Override
+            public void onPushSended() {
+                Log.d("","");
+            }
+
+            @Override
+            public void onPushSendFailed(String errorCode, String errorMessage) {
+                Log.d("","");
+            }
+        });
+
+        MessageSms messageSms = new MessageSms("Hello world");
+        message.sendSms(messageSms, collectionName, null, new CallbackSendSms() {
+            @Override
+            public void onSmsSended() {
+                Log.d("","");
+            }
+
+            @Override
+            public void onSmsSendFailed(String errorCode, String errorMessage) {
+                Log.d("","");
+            }
+        });
+
+    }
+
     private void testQueryClass() {
 //        testQueryClassFindDocument();
 //        testQueryClassRemoveDocument();
 //        testQueryClassCountDocument();
 //        testQueryClassUpdateDocument();
 //        testQueryClassWithRawJsonQuery();
-        testQueryClassTestAllQueryMethods();
+//        testQueryClassTestAllQueryMethods();
+    }
+
+    private void testScriptClass() {
+        Script script = new Script();
+        script.runScript("57e1503b48e5f54441189790", new CallbackSendScript() {
+            @Override
+            public void onScriptSended() {
+                Log.d("", "");
+            }
+
+            @Override
+            public void onScriptSendFailed(String errorCode, String errorMessage) {
+                Log.d("", "");
+            }
+        });
     }
 
     private void testQueryClassTestAllQueryMethods() {
@@ -760,14 +829,14 @@ public class TestActivity extends AppCompatActivity {
     }
 
     private void testSendScript() {
-        HashMap<String, String> pool = new HashMap<>();
+        HashMap<String, Object> pool = new HashMap<>();
         pool.put("collname", "mycollection");
         pool.put("key", "exampleField");
         pool.put("val", "Сегодня 18 июня, и это день рождения Мюриэл! Мюриэл сейчас 20. С днём рождения, Мюриэл!");
 
-        final String scriptId = "57484fb91c5666544db25675";
+        final String scriptId = "57e1503b48e5f54441189790";
 
-        ScorocodeSdk.sendScriptTask(scriptId, pool, new CallbackSendScript() {
+        ScorocodeSdk.runScript(scriptId, pool, new CallbackSendScript() {
             @Override
             public void onScriptSended() {
                 Log.d(TAG, "SUCCESS");
