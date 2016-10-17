@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 
 import java.util.HashMap;
 
+import ru.profit_group.scorocode_sdk.scorocode_objects.DocumentInfo;
 import ru.profit_group.scorocode_sdk.scorocode_objects.ScorocodeSdkStateHolder;
 
 /**
@@ -16,12 +17,12 @@ public class RequestInsert {
     private String acc;
     private String sess;
     private String coll;
-    private HashMap<String, String> doc;
+    private DocumentInfo doc;
 
     public RequestInsert(
             @NonNull ScorocodeSdkStateHolder stateHolder,
             @NonNull String collectionName,
-            @Nullable HashMap<String, String> doc) {
+            @Nullable DocumentInfo doc) {
         this.app = stateHolder.getApplicationId();
         this.cli = stateHolder.getClientKey();
         this.acc = stateHolder.getMasterKey();
@@ -50,7 +51,7 @@ public class RequestInsert {
         return coll;
     }
 
-    public HashMap<String, String> getDoc() {
+    public DocumentInfo getDoc() {
         return doc;
     }
 }

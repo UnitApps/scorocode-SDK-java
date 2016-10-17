@@ -25,7 +25,7 @@ public class User extends Document{
         ScorocodeSdk.logoutUser(callback);
     }
 
-    public void register(String username, String email, String password, HashMap<String,String> documentContent, CallbackRegisterUser callback) {
+    public void register(String username, String email, String password, DocumentInfo documentContent, CallbackRegisterUser callback) {
         ScorocodeSdk.registerUser(username, email, password, documentContent, callback);
     }
 

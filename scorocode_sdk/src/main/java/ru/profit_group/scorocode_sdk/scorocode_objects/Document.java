@@ -6,6 +6,7 @@ import org.bson.BSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackDeleteFile;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackDocumentSaved;
@@ -25,16 +26,16 @@ import ru.profit_group.scorocode_sdk.ScorocodeSdk;
 public class Document {
     private String collectionName;
     private String _documentId;
-    private HashMap<String, String> _docToInsert;
+    private DocumentInfo _docToInsert;
     private Update _update;
 
     public Document(String collectionName) {
         this.collectionName = collectionName;
-        _docToInsert = new HashMap<>();
+        _docToInsert = new DocumentInfo();
         _update = new Update();
     }
 
-    public HashMap<String, String> getDocumentContent() {
+    public DocumentInfo getDocumentContent() {
         return _docToInsert;
     }
 
@@ -44,9 +45,9 @@ public class Document {
 
         ScorocodeSdk.findDocument(collectionName, query, null, null, null, null, new CallbackFindDocument() {
             @Override
-            public void onDocumentFound(List<String> documentsIds) {
+            public void onDocumentFound(List<DocumentInfo> documentInfos) {
                 _documentId = documentId;
-                callbackFindDocument.onDocumentFound(documentsIds);
+                callbackFindDocument.onDocumentFound(documentInfos);
             }
 
             @Override
@@ -95,7 +96,7 @@ public class Document {
         ScorocodeSdk.removeDocument(collectionName, query, null, callback);
     }
 
-    public String getField(String field) {
+    public Object getField(String field) {
         return _docToInsert.get(field);
     }
 
@@ -120,7 +121,7 @@ public class Document {
         return _update;
     }
 
-    public static List<String> decodeDocumentsList(String base64data) {
+    public static List<DocumentInfo> decodeDocumentsList(String base64data) {
 
         try {
             byte[] bson = android.util.Base64.decode(base64data, android.util.Base64.DEFAULT);
@@ -128,13 +129,19 @@ public class Document {
 
             HashMap<Integer, HashMap<String, String>> documentMap = (HashMap<Integer, HashMap<String, String>>) bsonObject.toMap();
 
-            List<String> documentsIds = new ArrayList<>();
+            List<DocumentInfo> documentInfos = new ArrayList<>();
             for(int i = 0; i < documentMap.size(); i++) {
                 HashMap<String, String> document = documentMap.get(String.valueOf(i));
-                documentsIds.add(document.get("_id"));
+
+                DocumentInfo documentInfo = new DocumentInfo();
+                for(String key : document.keySet()) {
+                    documentInfo.put(key, document.get(key));
+                }
+
+                documentInfos.add(documentInfo);
             }
 
-            return documentsIds;
+            return documentInfos;
         } catch (Exception e) {
             e.printStackTrace();
             return null;

@@ -2,6 +2,7 @@ package ru.profit_group.scorocode_sdk.Requests.user;
 
 import java.util.HashMap;
 
+import ru.profit_group.scorocode_sdk.scorocode_objects.DocumentInfo;
 import ru.profit_group.scorocode_sdk.scorocode_objects.ScorocodeSdkStateHolder;
 
 /**
@@ -13,10 +14,10 @@ public class RequestRegisterUser {
     private String username;
     private String email;
     private String password;
-    private HashMap<String, String> doc;
+    private DocumentInfo doc;
 
 
-    public RequestRegisterUser(ScorocodeSdkStateHolder stateHolder, String username, String email, String password, HashMap<String, String>  doc) {
+    public RequestRegisterUser(ScorocodeSdkStateHolder stateHolder, String username, String email, String password, DocumentInfo  doc) {
         this.app = stateHolder.getApplicationId();
         this.cli = stateHolder.getClientKey();
         this.username = username;
@@ -49,9 +50,9 @@ public class RequestRegisterUser {
         return password;
     }
 
-    public HashMap<String, String>  getDoc() {
+    public DocumentInfo getDocumentInfo() {
         if(doc == null) {
-            return new HashMap<>();
+            return new DocumentInfo();
         }
         return doc;
     }
