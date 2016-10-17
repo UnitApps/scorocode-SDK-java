@@ -1,1 +1,1 @@
-include ':app', ':scorocode_sdk'
+include ':scorocode_sdk'
