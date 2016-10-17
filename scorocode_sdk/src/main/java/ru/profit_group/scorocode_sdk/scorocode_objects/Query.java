@@ -48,7 +48,7 @@ public class Query  {
     }
 
     public void updateDocument(Update update, CallbackUpdateDocument callback) {
-        HashMap<String, HashMap<String,Object>> doc = update.getUpdateInfo();
+        UpdateInfo doc = update.getUpdateInfo();
         ScorocodeSdk.updateDocument(collectionName, this, doc, limit, callback);
     }
 

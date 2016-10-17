@@ -9,10 +9,10 @@ import java.util.List;
  */
 
 public class Update {
-    HashMap<String, HashMap<String, Object>> updateInfo;
+    UpdateInfo updateInfo;
 
     public Update() {
-        updateInfo = new HashMap<>();
+        updateInfo = new UpdateInfo();
     }
 
     public Update set(String field, Object value) {
@@ -82,7 +82,7 @@ public class Update {
         return record;
     }
 
-    public HashMap<String, HashMap<String, Object>> getUpdateInfo() {
+    public UpdateInfo getUpdateInfo() {
         return updateInfo;
     }
 

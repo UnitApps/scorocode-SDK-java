@@ -2,7 +2,6 @@ package ru.profit_group.scorocode_sdk;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -36,6 +35,7 @@ import ru.profit_group.scorocode_sdk.Requests.messages.MessageEmail;
 import ru.profit_group.scorocode_sdk.Requests.messages.MessagePush;
 import ru.profit_group.scorocode_sdk.Requests.messages.MessageSms;
 import ru.profit_group.scorocode_sdk.scorocode_objects.Document;
+import ru.profit_group.scorocode_sdk.scorocode_objects.DocumentInfo;
 import ru.profit_group.scorocode_sdk.scorocode_objects.Query;
 import ru.profit_group.scorocode_sdk.scorocode_objects.ScorocodeSdkStateHolder;
 import ru.profit_group.scorocode_sdk.scorocode_objects.Sort;
@@ -64,6 +64,7 @@ import ru.profit_group.scorocode_sdk.Responses.user.ResponseLogin;
 import ru.profit_group.scorocode_sdk.Responses.data.ResponseRemove;
 import ru.profit_group.scorocode_sdk.Responses.data.ResponseUpdate;
 import ru.profit_group.scorocode_sdk.Responses.data.ResponseUpdateById;
+import ru.profit_group.scorocode_sdk.scorocode_objects.UpdateInfo;
 
 /**
  * Created by Peter Staranchuk on 5/10/16
@@ -75,8 +76,11 @@ public class ScorocodeSdk {
     public static final String ERROR_CODE_GENERAL = "-1";
 
     private static ScorocodeSdkStateHolder stateHolder;
-    private static Retrofit retrofitInstance; //Singleton
+    private static ScorocodeApi scorocodeApiInstance; //Singleton
 
+    /**
+     * Init Scorocode sdk with Keys
+     */
     public static void initWith(
             @NonNull String applicationId,
             @NonNull String clientKey,
@@ -88,6 +92,9 @@ public class ScorocodeSdk {
         stateHolder = new ScorocodeSdkStateHolder(applicationId, clientKey, masterKey, fileKey, messageKey, scriptKey);
     }
 
+    /**
+     * Init Scorocode sdk with Keys
+     */
     public static void initWith(@NonNull String applicationId, @NonNull String clientKey) {
         initWith(applicationId, clientKey, null, null, null, null);
     }
@@ -101,7 +108,7 @@ public class ScorocodeSdk {
             public void onResponse(Call<ResponseAppStatistic> call, Response<ResponseAppStatistic> response) {
                 if(response != null && response.body() != null) {
                     ResponseAppStatistic responseAppStatistic = response.body();
-                    if(responseSuccseed(responseAppStatistic)) {
+                    if(responseSucceed(responseAppStatistic)) {
                         callbackApplicationStatistic.onRequestSucceed(responseAppStatistic);
                     } else {
                         callbackApplicationStatistic.onRequestFailed(responseAppStatistic.getErrCode(), responseAppStatistic.getErrMsg());
@@ -118,11 +125,19 @@ public class ScorocodeSdk {
         });
     }
 
+    /**
+     * register new user
+     * @param userName Username of new user
+     * @param userEmail Email of new user
+     * @param userPassword Password of new user
+     * @param doc information to insert about new user in form (fieldName, Value) (field must exist)
+     * @param callbackRegisterUser callback which will be invoked after request
+     */
     public static void registerUser(
             @NonNull String userName,
             @NonNull String userEmail,
             @NonNull String userPassword,
-            @Nullable HashMap<String, String>  doc,
+            @Nullable DocumentInfo  doc,
             @NonNull final CallbackRegisterUser callbackRegisterUser) {
 
         Call<ResponseCodes> registerUserCall = getScorocodeApi().register(new RequestRegisterUser(stateHolder, userName, userEmail, userPassword, doc));
@@ -131,7 +146,7 @@ public class ScorocodeSdk {
             public void onResponse(Call<ResponseCodes> call, Response<ResponseCodes> response) {
                 if(response != null && response.body() != null) {
                     ResponseCodes responseCodes = response.body();
-                    if(responseSuccseed(responseCodes)) {
+                    if(responseSucceed(responseCodes)) {
                         callbackRegisterUser.onRegisterSucceed();
                     } else {
                         callbackRegisterUser.onRegisterFailed(responseCodes.getErrCode(), responseCodes.getErrMsg());
@@ -148,6 +163,13 @@ public class ScorocodeSdk {
         });
     }
 
+    /**
+     * login user, initialize new session
+     * user must exist
+     * @param email email of user
+     * @param password password of user
+     * @param callbackLogin callback which will be invoked after request
+     */
     public static void loginUser(
             @NonNull String email,
             @NonNull String password,
@@ -159,7 +181,7 @@ public class ScorocodeSdk {
             public void onResponse(Call<ResponseLogin> call, Response<ResponseLogin> response) {
                 if(response != null && response.body() != null) {
                     ResponseLogin responseLogin = response.body();
-                    if(responseSuccseed(responseLogin)) {
+                    if(responseSucceed(responseLogin)) {
                         callbackLogin.onLoginSucceed(responseLogin);
                     } else {
                         callbackLogin.onLoginFailed(responseLogin.getErrCode(), responseLogin.getErrMsg());
@@ -176,6 +198,11 @@ public class ScorocodeSdk {
         });
     }
 
+    /**
+     * logout user
+     * clear current session
+     * @param callbackLogout callback which will be invoked after request
+     */
     public static void logoutUser(
             @NonNull final CallbackLogoutUser callbackLogout) {
 
@@ -185,7 +212,7 @@ public class ScorocodeSdk {
             public void onResponse(Call<ResponseCodes> call, Response<ResponseCodes> response) {
                 if(response != null && response.body() != null) {
                     ResponseCodes responseCodes = response.body();
-                    if(responseSuccseed(responseCodes)) {
+                    if(responseSucceed(responseCodes)) {
                         callbackLogout.onLogoutSucceed();
                         ScorocodeSdk.setSessionId(null);
                     } else {
@@ -203,9 +230,15 @@ public class ScorocodeSdk {
         });
     }
 
+    /**
+     * insert document in collection
+     * @param collectionName Collection name in which file will be inserted
+     * @param doc document in format (field, value)
+     * @param callbackInsert callback which will be invoked after request
+     */
     public static void insertDocument(
             @NonNull String collectionName,
-            @Nullable HashMap<String, String> doc,
+            @Nullable DocumentInfo doc,
             @NonNull final CallbackInsert callbackInsert) {
 
         Call<ResponseInsert> insertCall = getScorocodeApi().insert(new RequestInsert(stateHolder, collectionName, doc));
@@ -214,7 +247,7 @@ public class ScorocodeSdk {
             public void onResponse(Call<ResponseInsert> call, Response<ResponseInsert> response) {
                 if(response != null && response.body() != null) {
                     ResponseInsert responseInsert = response.body();
-                    if(responseSuccseed(responseInsert)) {
+                    if(responseSucceed(responseInsert)) {
                         callbackInsert.onInsertSucceed(responseInsert);
                     } else {
                         callbackInsert.onInsertFailed(responseInsert.getErrCode(), responseInsert.getErrMsg());
@@ -231,6 +264,13 @@ public class ScorocodeSdk {
         });
     }
 
+    /**
+     * remove document from collection
+     * @param collectionName Name of collection in which document will be inserted
+     * @param query query to find document
+     * @param limit limit of documents which will be removed (can't be more than 1000. Default is 1)
+     * @param callbackRemoveDocument callback which will be invoked after request
+     */
     public static void removeDocument(
             @NonNull String collectionName,
             @Nullable Query query,
@@ -243,7 +283,7 @@ public class ScorocodeSdk {
             public void onResponse(Call<ResponseRemove> call, Response<ResponseRemove> response) {
                 if(response != null && response.body() != null) {
                     ResponseRemove responseRemove = response.body();
-                    if(responseSuccseed(responseRemove)) {
+                    if(responseSucceed(responseRemove)) {
                         callbackRemoveDocument.onRemoveSucceed(responseRemove);
                     } else {
                         callbackRemoveDocument.onRemoveFailed(responseRemove.getErrCode(), responseRemove.getErrMsg());
@@ -260,20 +300,29 @@ public class ScorocodeSdk {
         });
     }
 
+    /**
+     * update any number of documents in collection
+     * document must exist
+     * @param collectionName name of collection in which document will be updated
+     * @param query query to find document
+     * @param updateInfo update info. You can get this info using getUpdateInfo() method of Update class
+     * @param limit of documents which will be updated
+     * @param callbackUpdateDocument callback which will be invoked after request
+     */
     public static void updateDocument(
             @NonNull String collectionName,
             @Nullable Query query,
-            @NonNull HashMap<String, HashMap<String, Object>> doc,
+            @NonNull UpdateInfo updateInfo,
             @Nullable Integer limit,
             @NonNull final CallbackUpdateDocument callbackUpdateDocument) {
 
-        Call<ResponseUpdate> updateCall = getScorocodeApi().update(new RequestUpdate(stateHolder, collectionName, query, doc, limit));
+        Call<ResponseUpdate> updateCall = getScorocodeApi().update(new RequestUpdate(stateHolder, collectionName, query, updateInfo, limit));
         updateCall.enqueue(new Callback<ResponseUpdate>() {
             @Override
             public void onResponse(Call<ResponseUpdate> call, Response<ResponseUpdate> response) {
                 if(response != null && response.body() != null) {
                     ResponseUpdate responseUpdate = response.body();
-                    if(responseSuccseed(responseUpdate)) {
+                    if(responseSucceed(responseUpdate)) {
                         callbackUpdateDocument.onUpdateSucceed(responseUpdate);
                     } else {
                         callbackUpdateDocument.onUpdateFailed(responseUpdate.getErrCode(), responseUpdate.getErrMsg());
@@ -290,19 +339,26 @@ public class ScorocodeSdk {
         });
     }
 
+    /**
+     *  update document by it's id.
+     *  @param collectionName collection in which document will be updated
+     *  @param query query to find document by it's id (use equalTo method "_id" : "documentId" ).
+     *  @param updateInfo for document to insert. You can get this info using getUpdateInfo() method of Update class
+     *  @param callbackUpdateDocumentById callback which will be invoked after request
+     */
     public static void updateDocumentById(
             @NonNull String collectionName,
             @NonNull HashMap<String, String> query,
-            @NonNull HashMap<String, HashMap<String,Object>> doc,
+            @NonNull UpdateInfo updateInfo,
             @NonNull final CallbackUpdateDocumentById callbackUpdateDocumentById) {
 
-        Call<ResponseUpdateById> updateByIdCall = getScorocodeApi().updateById(new RequestUpdateById(stateHolder, collectionName, query, doc));
+        Call<ResponseUpdateById> updateByIdCall = getScorocodeApi().updateById(new RequestUpdateById(stateHolder, collectionName, query, updateInfo));
         updateByIdCall.enqueue(new Callback<ResponseUpdateById>() {
             @Override
             public void onResponse(Call<ResponseUpdateById> call, Response<ResponseUpdateById> response) {
                 if(response != null && response.body() != null) {
                     ResponseUpdateById responseUpdateById = response.body();
-                    if(responseSuccseed(responseUpdateById)) {
+                    if(responseSucceed(responseUpdateById)) {
                         callbackUpdateDocumentById.onUpdateByIdSucceed(responseUpdateById);
                     } else {
                         callbackUpdateDocumentById.onUpdateByIdFailed(responseUpdateById.getErrCode(), responseUpdateById.getErrMsg());
@@ -319,6 +375,16 @@ public class ScorocodeSdk {
         });
     }
 
+    /**
+     * search for documents which match query
+     * @param collectionName name of collection where document will be searching
+     * @param query query to find document
+     * @param sort parameter to sort returned document
+     * @param fieldsNamesToFind field's names which will be returned with document; //TODO add logic
+     * @param limit max number of documents which request return
+     * @param skip number of documents which method skip in search
+     * @param callbackFindDocument callback which will be invoked after request
+     */
     public static void findDocument(
             @NonNull String collectionName,
             @Nullable Query query,
@@ -334,7 +400,7 @@ public class ScorocodeSdk {
             public void onResponse(Call<ResponseString> call, Response<ResponseString> response) {
                 if(response != null && response.body() != null) {
                     ResponseString responseFindDocument = response.body();
-                    if(responseSuccseed(responseFindDocument)) {
+                    if(responseSucceed(responseFindDocument)) {
                         String base64data = response.body().getResult();
                         callbackFindDocument.onDocumentFound(Document.decodeDocumentsList(base64data));
                     } else {
@@ -352,6 +418,12 @@ public class ScorocodeSdk {
         });
     }
 
+    /**
+     * get number of documents which match query
+     * @param collectionName name of collection in which documents will be counting
+     * @param query to select documents
+     * @param callbackCountDocument which will be invoked after request
+     */
     public static void getDocumentsCount(
             @NonNull String collectionName,
             @Nullable Query query,
@@ -363,7 +435,7 @@ public class ScorocodeSdk {
             public void onResponse(Call<ResponseCount> call, Response<ResponseCount> response) {
                 if(response != null && response.body() != null) {
                     ResponseCount responseCount = response.body();
-                    if(responseSuccseed(responseCount)) {
+                    if(responseSucceed(responseCount)) {
                         callbackCountDocument.onDocumentsCounted(responseCount);
                     } else {
                         callbackCountDocument.onCountFailed(responseCount.getErrCode(), responseCount.getErrMsg());
@@ -380,6 +452,15 @@ public class ScorocodeSdk {
         });
     }
 
+    /**
+     * upload file in document of collection
+     * @param collectionName name of collection with document
+     * @param documentId document in which file will be upload
+     * @param fieldName name of field in which file will be upload (must have file type)
+     * @param fileName name of file to upload
+     * @param contentToUpload content to upload in file in base64 format
+     * @param callbackUploadFile which will be invoked after request
+     */
     public static void uploadFile(
             @NonNull String collectionName,
             @NonNull String documentId,
@@ -394,7 +475,7 @@ public class ScorocodeSdk {
             public void onResponse(Call<ResponseCodes> call, Response<ResponseCodes> response) {
                 if(response != null && response.body() != null) {
                     ResponseCodes responseCodes = response.body();
-                    if(responseSuccseed(responseCodes)) {
+                    if(responseSucceed(responseCodes)) {
                         callbackUploadFile.onDocumentUploaded();
                     } else {
                         callbackUploadFile.onDocumentUploadFailed(responseCodes.getErrCode(), responseCodes.getErrMsg());
@@ -411,6 +492,13 @@ public class ScorocodeSdk {
         });
     }
 
+    /**
+     * get link on file from collection
+     * @param collectionName name of collection with file
+     * @param fieldName name of the field where file stored
+     * @param docId id of document where file stored
+     * @param fileName name of the file
+     */
     public static String getFileLink(
             @NonNull String collectionName,
             @NonNull String fieldName,
@@ -421,6 +509,14 @@ public class ScorocodeSdk {
         return getFileCallback.request().url().url().toString();
     }
 
+    /**
+     * delete file from document of collection
+     * @param collectionName name of collection which contain file
+     * @param docId id of document which contain file
+     * @param fieldName name of field in which file stored
+     * @param fileName name of file to remove
+     * @param callbackDeleteFile callback which will be invoked after request
+     */
     public static void deleteFile(
             @NonNull String collectionName,
             @NonNull String docId,
@@ -434,7 +530,7 @@ public class ScorocodeSdk {
             public void onResponse(Call<ResponseCodes> call, Response<ResponseCodes> response) {
                 if(response != null && response.body() != null) {
                     ResponseCodes responseCodes = response.body();
-                    if(responseSuccseed(responseCodes)) {
+                    if(responseSucceed(responseCodes)) {
                         callbackDeleteFile.onDocumentDeleted();
                     } else {
                         callbackDeleteFile.onDetelionFailed(responseCodes.getErrCode(), responseCodes.getErrMsg());
@@ -451,6 +547,13 @@ public class ScorocodeSdk {
         });
     }
 
+    /**
+     * send email to one or more users
+     * @param collectionName name of collection which contain user (must be USERS of ROLES)
+     * @param query query to find users
+     * @param msg message to send to user
+     * @param callbackSendEmail callback which will be invoked after request
+     */
     public static void sendEmail(
             @NonNull String collectionName,
             @Nullable Query query,
@@ -463,7 +566,7 @@ public class ScorocodeSdk {
             public void onResponse(Call<ResponseCodes> call, Response<ResponseCodes> response) {
                 if(response != null && response.body() != null) {
                     ResponseCodes responseCodes = response.body();
-                    if(responseSuccseed(responseCodes)) {
+                    if(responseSucceed(responseCodes)) {
                         callbackSendEmail.onEmailSend();
                     } else {
                         callbackSendEmail.onEmailSendFailed(responseCodes.getErrCode(), responseCodes.getErrMsg());
@@ -480,6 +583,13 @@ public class ScorocodeSdk {
         });
     }
 
+    /**
+     * send push to one or more users
+     * @param collectionName name of collection which contain user (must be USERS of ROLES)
+     * @param query query to find users
+     * @param msg message to send to user
+     * @param callbackSendPush callback which will be invoked after request
+     */
     public static void sendPush(
             @NonNull String collectionName,
             @Nullable Query query,
@@ -492,7 +602,7 @@ public class ScorocodeSdk {
             public void onResponse(Call<ResponseCodes> call, Response<ResponseCodes> response) {
                 if(response != null && response.body() != null) {
                     ResponseCodes responseCodes = response.body();
-                    if(responseSuccseed(responseCodes)) {
+                    if(responseSucceed(responseCodes)) {
                         callbackSendPush.onPushSended();
                     } else {
 
@@ -510,6 +620,13 @@ public class ScorocodeSdk {
         });
     }
 
+    /**
+     * send sms to one or more users
+     * @param collectionName name of collection which contain user (must be USERS of ROLES)
+     * @param query query to find users
+     * @param msg message to send to user
+     * @param callbackSendSms callback which will be invoked after request
+     */
     public static void sendSms(
             @NonNull String collectionName,
             @Nullable Query query,
@@ -522,7 +639,7 @@ public class ScorocodeSdk {
             public void onResponse(Call<ResponseCodes> call, Response<ResponseCodes> response) {
                 if(response != null && response.body() != null) {
                     ResponseCodes responseCodes = response.body();
-                    if(responseSuccseed(responseCodes)) {
+                    if(responseSucceed(responseCodes)) {
                         callbackSendSms.onSmsSended();
                     } else {
                         callbackSendSms.onSmsSendFailed(responseCodes.getErrCode(), responseCodes.getErrMsg());
@@ -539,6 +656,12 @@ public class ScorocodeSdk {
         });
     }
 
+    /**
+     * run script in server
+     * @param scriptId id of script to run
+     * @param dataPoolForScript parameter for script
+     * @param callbackSendScript callback which will be invoked after request
+     */
     public static void runScript(
             @NonNull String scriptId,
             @Nullable HashMap<String, Object> dataPoolForScript,
@@ -550,7 +673,7 @@ public class ScorocodeSdk {
             public void onResponse(Call<ResponseCodes> call, Response<ResponseCodes> response) {
                 if(response != null && response.body() != null) {
                     ResponseCodes responseCodes = response.body();
-                    if(responseSuccseed(responseCodes)) {
+                    if(responseSucceed(responseCodes)) {
                         callbackSendScript.onScriptSended();
                     } else {
                         callbackSendScript.onScriptSendFailed(responseCodes.getErrCode(), responseCodes.getErrMsg());
@@ -568,13 +691,16 @@ public class ScorocodeSdk {
     }
 
     private static ScorocodeApi getScorocodeApi() {
-        return getRetrofit().create(ScorocodeApi.class);
+        if(scorocodeApiInstance == null) {
+            scorocodeApiInstance = getRetrofit().create(ScorocodeApi.class);
+            return scorocodeApiInstance;
+        } else {
+            return scorocodeApiInstance;
+        }
     }
 
     @NonNull
     private static Retrofit getRetrofit() {
-        if(retrofitInstance == null) {
-
             OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
             HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -587,18 +713,18 @@ public class ScorocodeSdk {
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
-        } else {
-            return retrofitInstance;
-        }
     }
 
+    /**
+     * set session id inside sdk
+     */
     public static void setSessionId(String sessionId) {
         if(stateHolder != null) {
             stateHolder.setSessionId(sessionId);
         }
     }
 
-    private static boolean responseSuccseed(ResponseCodes responseCodes) {
+    private static boolean responseSucceed(ResponseCodes responseCodes) {
         return !responseCodes.isError();
     }
 
