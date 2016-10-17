@@ -8,9 +8,9 @@ import java.util.HashMap;
 
 public class MessagePush {
     private String text;
-    private HashMap<String, String> data;
+    private HashMap<String, Object> data;
 
-    public MessagePush(String text, HashMap<String, String> data) {
+    public MessagePush(String text, HashMap<String, Object> data) {
         this.text = text;
         this.data = data;
     }
@@ -23,11 +23,11 @@ public class MessagePush {
         this.text = text;
     }
 
-    public HashMap<String, String> getData() {
+    public HashMap<String, Object> getData() {
         return data;
     }
 
-    public void setData(HashMap<String, String> data) {
+    public void setData(HashMap<String, Object> data) {
         this.data = data;
     }
 }

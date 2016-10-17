@@ -30,8 +30,8 @@ import ru.profit_group.scorocode_sdk.Callbacks.CallbackUploadFile;
 import ru.profit_group.scorocode_sdk.Requests.messages.MessageEmail;
 import ru.profit_group.scorocode_sdk.Requests.messages.MessagePush;
 import ru.profit_group.scorocode_sdk.Requests.messages.MessageSms;
-import ru.profit_group.scorocode_sdk.scorocode_objects.CollectionName;
 import ru.profit_group.scorocode_sdk.scorocode_objects.Document;
+import ru.profit_group.scorocode_sdk.scorocode_objects.DocumentInfo;
 import ru.profit_group.scorocode_sdk.scorocode_objects.Message;
 import ru.profit_group.scorocode_sdk.scorocode_objects.Query;
 import ru.profit_group.scorocode_sdk.scorocode_objects.RegexOptions;
@@ -46,6 +46,7 @@ import ru.profit_group.scorocode_sdk.Responses.statistic.ResponseAppStatistic;
 import ru.profit_group.scorocode_sdk.Responses.user.ResponseLogin;
 import ru.profit_group.scorocode_sdk.ScorocodeSdk;
 import ru.profit_group.scorocode_sdk.scorocode_objects.Update;
+import ru.profit_group.scorocode_sdk.scorocode_objects.UpdateInfo;
 import ru.profit_group.scorocode_sdk.scorocode_objects.User;
 
 public class TestActivity extends AppCompatActivity {
@@ -61,9 +62,9 @@ public class TestActivity extends AppCompatActivity {
     private static final String COLLECTION_NAME = "mycollection";
     public static final String MASTER_KEY = "383499df2748bb4560745d5da67f5e41";
 
-    private HashMap<String, String> _doc;
+    private DocumentInfo _doc;
     private Query _query;
-    private HashMap<String, HashMap<String, Object>> _doc_set;
+    private UpdateInfo updateInfo;
     private String _documentId;
     private String _fieldName;
     private String _fileName;
@@ -93,10 +94,10 @@ public class TestActivity extends AppCompatActivity {
     }
 
     private void setTestDocSetRequest() {
-        _doc_set = new HashMap<>();
+        updateInfo = new UpdateInfo();
         HashMap<String, Object> request = new HashMap<>();
         request.put("exampleField", "Сегодня 2011 июня, и это день рождения Мюриэл! Мюриэл сейчас 105. С днём рождения, Мюриэл!");
-        _doc_set.put("$set", request);
+        updateInfo.put("$set", request);
     }
 
     private void setTestQuery() {
@@ -105,7 +106,7 @@ public class TestActivity extends AppCompatActivity {
     }
 
     private void setTestDoc() {
-        _doc = new HashMap<>();
+        _doc = new DocumentInfo();
         _doc.put("exampleField", "Сегодня 18 июня, и это день рождения Мюриэл! Мюриэл сейчас 20. С днём рождения, Мюриэл!");
         _doc.put("anotherExampleField", "Не знаю, что и сказать. Когда-то я хотел быть астрофизиком. К сожалению, это правда.");
     }
@@ -144,17 +145,17 @@ public class TestActivity extends AppCompatActivity {
                             testCountDocument();
                             testUploadFile();
                             testGetFileLink();
-                            testDeleteFile(); // TODO - serverside error
+                            testDeleteFile(); // TODO - server side error
                             testSendEmail();
                             testSendSms();
                             testSendPush();
                             testSendScript();*/
 
-//                            testUserClass(); //FULLY TESTED
-//                            testDocumentClass(); //FULLY TESTED
+                            testUserClass(); //FULLY TESTED
+                            testDocumentClass(); //FULLY TESTED
 //                            testQueryClass();//FULLY TESTED
 //                        testMessageClass();//FULLY TESTED
-                        testScriptClass();//FULLY TESTED
+//                        testScriptClass();//FULLY TESTED
 
                     }
 
@@ -169,12 +170,11 @@ public class TestActivity extends AppCompatActivity {
 
     private void testMessageClass() {
         Message message = new Message();
-        CollectionName collectionName = CollectionName.USERS;
-        Query query = new Query(collectionName.getCollectionName());
+        Query query = new Query("USERS");
         query.equalTo("_id", "XukL1FrVoL");
 
         MessageEmail messageEmail = new MessageEmail("Peter", "Any subject", "Any text");
-        message.sendEmail(messageEmail, collectionName, null, new CallbackSendEmail() {
+        message.sendEmail(messageEmail, null, new CallbackSendEmail() {
             @Override
             public void onEmailSend() {
                 Log.d("","");
@@ -188,7 +188,7 @@ public class TestActivity extends AppCompatActivity {
 
 
         MessagePush messagePush = new MessagePush("Any text", null);
-        message.sendPush(messagePush, collectionName, null, new CallbackSendPush() {
+        message.sendPush(messagePush, null, new CallbackSendPush() {
             @Override
             public void onPushSended() {
                 Log.d("","");
@@ -201,7 +201,7 @@ public class TestActivity extends AppCompatActivity {
         });
 
         MessageSms messageSms = new MessageSms("Hello world");
-        message.sendSms(messageSms, collectionName, null, new CallbackSendSms() {
+        message.sendSms(messageSms, null, new CallbackSendSms() {
             @Override
             public void onSmsSended() {
                 Log.d("","");
@@ -216,7 +216,7 @@ public class TestActivity extends AppCompatActivity {
     }
 
     private void testQueryClass() {
-//        testQueryClassFindDocument();
+        testQueryClassFindDocument();
 //        testQueryClassRemoveDocument();
 //        testQueryClassCountDocument();
 //        testQueryClassUpdateDocument();
@@ -284,7 +284,7 @@ public class TestActivity extends AppCompatActivity {
 //        query.and("number3", queryAdditional);
         query.findDocuments(new CallbackFindDocument() {
             @Override
-            public void onDocumentFound(List<String> documentsIds) {
+            public void onDocumentFound(List<DocumentInfo> documentInfos) {
                 Log.d("","");
             }
 
@@ -303,7 +303,7 @@ public class TestActivity extends AppCompatActivity {
 
         query1.findDocuments(new CallbackFindDocument() {
             @Override
-            public void onDocumentFound(List<String> documentsIds) {
+            public void onDocumentFound(List<DocumentInfo> documentInfos) {
                 Log.d("","");
             }
 
@@ -321,7 +321,7 @@ public class TestActivity extends AppCompatActivity {
 
         query.findDocuments(new CallbackFindDocument() {
             @Override
-            public void onDocumentFound(List<String> documentsIds) {
+            public void onDocumentFound(List<DocumentInfo> documentInfos) {
                 Log.d("", "");
             }
 
@@ -392,9 +392,14 @@ public class TestActivity extends AppCompatActivity {
         Query query = new Query(COLLECTION_NAME);
         query.equalTo("_id","W9vrMS9SuW");
 
+        List<String> fieldsForSearch = new ArrayList<>();
+        fieldsForSearch.add("exampleField");
+        fieldsForSearch.add("number3");
+        query.setFieldsForSearch(fieldsForSearch);
+
         query.findDocuments(new CallbackFindDocument() {
             @Override
-            public void onDocumentFound(List<String> documentsIds) {
+            public void onDocumentFound(List<DocumentInfo> documentInfos) {
                 Log.d("","");
             }
 
@@ -418,7 +423,7 @@ public class TestActivity extends AppCompatActivity {
         final Document document = new Document(COLLECTION_NAME);
         document.getDocumentById("7BOlVr1Acp", new CallbackFindDocument() {
             @Override
-            public void onDocumentFound(List<String> documentsIds) {
+            public void onDocumentFound(List<DocumentInfo> documentInfos) {
                 Log.d(TAG, "");
                 document.removeDocument(new CallbackRemoveDocument() {
                     @Override
@@ -444,7 +449,7 @@ public class TestActivity extends AppCompatActivity {
         final Document document = new Document(COLLECTION_NAME);
         document.getDocumentById("nV0p50CDKq", new CallbackFindDocument() {
             @Override
-            public void onDocumentFound(List<String> documentsIds) {
+            public void onDocumentFound(List<DocumentInfo> documentInfos) {
                 document.removeFile("test", "any", new CallbackDeleteFile() {
                     @Override
                     public void onDocumentDeleted() {
@@ -469,7 +474,7 @@ public class TestActivity extends AppCompatActivity {
         final Document document = new Document(COLLECTION_NAME);
         document.getDocumentById("nV0p50CDKq", new CallbackFindDocument() {
             @Override
-            public void onDocumentFound(List<String> documentsIds) {
+            public void onDocumentFound(List<DocumentInfo> documentInfos) {
                 document.uploadFile("test", "any.txt", Base64.encodeToString("hello world".getBytes(), Base64.DEFAULT), new CallbackUploadFile() {
                     @Override
                     public void onDocumentUploaded() {
@@ -494,27 +499,27 @@ public class TestActivity extends AppCompatActivity {
         final Document document = new Document(COLLECTION_NAME);
         document.getDocumentById("KH3JCojAyT", new CallbackFindDocument() {
             @Override
-            public void onDocumentFound(List<String> documentsIds) {
-                List<Object> objectses = new ArrayList<>();
-                objectses.add(1);
-                objectses.add(2);
+            public void onDocumentFound(List<DocumentInfo> documentInfos) {
+                List<Object> objects = new ArrayList<>();
+                objects.add(1);
+                objects.add(2);
 
                 document
                         .updateDocument()
                         .push("array1", 1)
-                        .pull("array2", 3)
-                        .pullAll("array3", objectses)
-                        .addToSet("array4", 7)
-                        .popFirst("arrayForPopFirts")
-                        .popLast("arrayForPopLast")
-                        .set("exampleField", "random Any1")
-                        .set("anotherExampleField", "random Any2")
-                        .inc("numberField", 2)
-                        .currentDate("date1")
-                        .currentDate("date2")
-                        .mul("numberForMulTest", 3)
-                        .min("number2", 10)
-                        .max("number3", 10)
+//                        .pull("array2", 3)
+//                        .pullAll("array3", objects)
+//                        .addToSet("array4", 7)
+//                        .popFirst("arrayForPopFirts")
+//                        .popLast("arrayForPopLast")
+//                        .set("exampleField", "random Any1")
+//                        .set("anotherExampleField", "random Any2")
+//                        .inc("numberField", 2)
+//                        .currentDate("date1")
+//                        .currentDate("date2")
+//                        .mul("numberForMulTest", 3)
+//                        .min("number2", 10)
+//                        .max("number3", 10)
                 ;
 
                 document.saveDocument(new CallbackDocumentSaved() {
@@ -542,7 +547,7 @@ public class TestActivity extends AppCompatActivity {
         final Document documentWithFile = new Document(COLLECTION_NAME);
         documentWithFile.getDocumentById("nV0p50CDKq", new CallbackFindDocument() {
             @Override
-            public void onDocumentFound(List<String> documentsIds) {
+            public void onDocumentFound(List<DocumentInfo> documentInfos) {
                 String fileLink = documentWithFile.getFileLink("test", "file.txt");
             }
 
@@ -613,7 +618,7 @@ public class TestActivity extends AppCompatActivity {
         doc.setField("testField", "test1");
         doc.setField("anotherTestField", "test2");
 
-        user.register("anyperson111", "anyperson111@gmail.com", "test111", doc.getDocumentContent(), new CallbackRegisterUser() {
+        user.register("anyperson1111", "anyperson1111@gmail.com", "test1111", doc.getDocumentContent(), new CallbackRegisterUser() {
             @Override
             public void onRegisterSucceed() {
                 Log.d(TAG,"");
@@ -673,7 +678,7 @@ public class TestActivity extends AppCompatActivity {
     }
 
     private void testUpdateDocument() {
-        ScorocodeSdk.updateDocument(COLLECTION_NAME, _query, _doc_set, 1, new CallbackUpdateDocument() {
+        ScorocodeSdk.updateDocument(COLLECTION_NAME, _query, updateInfo, 1, new CallbackUpdateDocument() {
             @Override
             public void onUpdateSucceed(ResponseUpdate responseUpdate) {
                 Log.d(TAG, "SUCCESS");
@@ -690,7 +695,7 @@ public class TestActivity extends AppCompatActivity {
         HashMap<String, String> updateQuery = new HashMap<>();
         updateQuery.put("_id", "lThEkcUoDZ");
 
-        ScorocodeSdk.updateDocumentById(COLLECTION_NAME, updateQuery, _doc_set, new CallbackUpdateDocumentById() {
+        ScorocodeSdk.updateDocumentById(COLLECTION_NAME, updateQuery, updateInfo, new CallbackUpdateDocumentById() {
             @Override
             public void onUpdateByIdSucceed(ResponseUpdateById requestUpdateById) {
                 Log.d(TAG, "SUCCESS");
@@ -712,7 +717,7 @@ public class TestActivity extends AppCompatActivity {
 
         ScorocodeSdk.findDocument(COLLECTION_NAME, _query, sort, fieldsList, 10, null, new CallbackFindDocument() {
             @Override
-            public void onDocumentFound(List<String> documentsIds) {
+            public void onDocumentFound(List<DocumentInfo> documentInfos) {
                 Log.d(TAG, "SUCCESS");
             }
 
@@ -809,7 +814,7 @@ public class TestActivity extends AppCompatActivity {
     }
 
     private void testSendPush() {
-        HashMap<String, String> data = new HashMap<>();
+        HashMap<String, Object> data = new HashMap<>();
         data.put("key1", "data1");
         data.put("key2", "data2");
         String collection = "users"; //users or roles
