@@ -6,3 +6,6 @@
 .DS_Store
 /build
 /captures
+app
+/scorocode_sdk/src/test
+/scorocode_sdk/src/androidTest

@@ -662,7 +662,7 @@ public class TestActivity extends AppCompatActivity {
 
     private void testRemoveDocument() {
         Query query = new Query(COLLECTION_NAME);
-        query.equalTo("exampleField", "Сегодня 2010 июня, и это день рождения Мюриэл! Мюриэл сейчас 105. С днём рождения, Мюриэл!");
+        query.equalTo("_id", "vFPzvFAen2");
 
         ScorocodeSdk.removeDocument(COLLECTION_NAME, query, 1, new CallbackRemoveDocument() {
             @Override
@@ -678,7 +678,13 @@ public class TestActivity extends AppCompatActivity {
     }
 
     private void testUpdateDocument() {
-        ScorocodeSdk.updateDocument(COLLECTION_NAME, _query, updateInfo, 1, new CallbackUpdateDocument() {
+        Query query = new Query(COLLECTION_NAME);
+        query.equalTo("_id", "vWsqeUa4Ov");
+
+        Update update = new Update();
+        update.set("exampleField", "testtest");
+
+        ScorocodeSdk.updateDocument(COLLECTION_NAME, query, update.getUpdateInfo(), 1, new CallbackUpdateDocument() {
             @Override
             public void onUpdateSucceed(ResponseUpdate responseUpdate) {
                 Log.d(TAG, "SUCCESS");
