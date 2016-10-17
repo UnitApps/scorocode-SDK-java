@@ -16,40 +16,28 @@ import ru.profit_group.scorocode_sdk.ScorocodeSdk;
 
 public class Message {
 
-    public void sendEmail(MessageEmail messageEmail, CollectionName collectionName, Query query, CallbackSendEmail callback) throws IllegalStateException {
-        ScorocodeSdk.sendEmail(collectionName.getCollectionName(), query, messageEmail, callback);
-    }
-
-    public void sendEmail(MessageEmail messageEmail, CollectionName collectionName, CallbackSendEmail callback) throws IllegalStateException {
-        ScorocodeSdk.sendEmail(collectionName.getCollectionName(), null, messageEmail, callback);
+    public void sendEmail(MessageEmail messageEmail, Query query, CallbackSendEmail callback) throws IllegalStateException {
+        ScorocodeSdk.sendEmail(query.getCollectionName(), query, messageEmail, callback);
     }
 
     public void sendEmail(MessageEmail messageEmail, CallbackSendEmail callback) throws IllegalStateException {
-        ScorocodeSdk.sendEmail(CollectionName.USERS.getCollectionName(), null, messageEmail, callback);
+        ScorocodeSdk.sendEmail("users", null, messageEmail, callback);
     }
 
-    public void sendPush(MessagePush messagePush, CollectionName collectionName, Query query, CallbackSendPush callback) throws IllegalStateException {
-        ScorocodeSdk.sendPush(collectionName.getCollectionName(), query, messagePush, callback);
-    }
-
-    public void sendPush(MessagePush messagePush, CollectionName collectionName, CallbackSendPush callback) throws IllegalStateException {
-        ScorocodeSdk.sendPush(collectionName.getCollectionName(), null, messagePush, callback);
+    public void sendPush(MessagePush messagePush, Query query, CallbackSendPush callback) throws IllegalStateException {
+        ScorocodeSdk.sendPush(query.getCollectionName(), query, messagePush, callback);
     }
 
     public void sendPush(MessagePush messagePush, CallbackSendPush callback) throws IllegalStateException {
-        ScorocodeSdk.sendPush(CollectionName.USERS.getCollectionName(), null, messagePush, callback);
+        ScorocodeSdk.sendPush("users", null, messagePush, callback);
     }
 
-    public void sendSms(MessageSms messageSms, CollectionName collectionName, Query query, CallbackSendSms callback) throws IllegalStateException {
-        ScorocodeSdk.sendSms(collectionName.getCollectionName(), query, messageSms, callback);
-    }
-
-    public void sendSms(MessageSms messageSms, CollectionName collectionName, CallbackSendSms callback) throws IllegalStateException {
-        ScorocodeSdk.sendSms(collectionName.getCollectionName(), null, messageSms, callback);
+    public void sendSms(MessageSms messageSms, Query query, CallbackSendSms callback) throws IllegalStateException {
+        ScorocodeSdk.sendSms(query.getCollectionName(), query, messageSms, callback);
     }
 
     public void sendSms(MessageSms messageSms, CallbackSendSms callback) throws IllegalStateException {
-        ScorocodeSdk.sendSms(CollectionName.USERS.getCollectionName(), null, messageSms, callback);
+        ScorocodeSdk.sendSms("users", null, messageSms, callback);
     }
 
 }

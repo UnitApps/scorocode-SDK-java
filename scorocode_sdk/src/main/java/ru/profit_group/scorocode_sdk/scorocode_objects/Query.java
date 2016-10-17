@@ -126,7 +126,6 @@ public class Query  {
     }
 
     public Query contains(String field, String regEx, RegexOptions options) {
-        //TODO change add
         HashMap<String, Object> operationMap = new HashMap<>();
         operationMap.put("$regex", regEx);
         operationMap.put("$options", options.getRegexOptions());
@@ -136,7 +135,6 @@ public class Query  {
     }
 
     public Query startsWith(String field, String regEx, RegexOptions options) {
-        //TODO change add
         HashMap<String, Object> operationMap = new HashMap<>();
         operationMap.put("$regex", "^" + regEx);
         operationMap.put("$options", options.getRegexOptions());
@@ -146,8 +144,6 @@ public class Query  {
     }
 
     public Query endsWith(String field, String regEx, RegexOptions options) {
-        //TODO change add
-
         HashMap<String, Object> operationMap = new HashMap<>();
         operationMap.put("$regex", regEx + "$");
         operationMap.put("$options", options.getRegexOptions());
@@ -246,5 +242,9 @@ public class Query  {
 
     public void setFieldsForSearch(List<String> fields) {
         fieldIds = fields;
+    }
+
+    public String getCollectionName() {
+        return collectionName;
     }
 }
