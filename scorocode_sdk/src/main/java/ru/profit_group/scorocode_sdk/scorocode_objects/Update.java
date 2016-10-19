@@ -76,7 +76,7 @@ public class Update {
         return this;
     }
 
-    public HashMap<String, Object> getRecord(String key, Object value) {
+    private HashMap<String, Object> getRecord(String key, Object value) {
         HashMap<String, Object> record = new HashMap<>();
         record.put(key, value);
         return record;
@@ -86,7 +86,7 @@ public class Update {
         return updateInfo;
     }
 
-    public enum ItemToRemovePosition {
+    private enum ItemToRemovePosition {
         FIRST(-1), LAST(1);
 
         int position;

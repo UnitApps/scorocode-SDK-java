@@ -1,29 +1,5 @@
 apply plugin: 'com.android.library'
 
-ext {
-    bintrayRepo = 'maven'
-    bintrayName = 'scorocode-sdk-java'
-
-    publishedGroupId = 'com.profitgroup.scorocode'
-    libraryName = 'Scorocode-sdk'
-    artifact = 'Scorocode'
-
-    libraryDescription = 'Backend as a service platform'
-
-    siteUrl = 'https://scorocode.ru/'
-    gitUrl = 'https://github.com/Scorocode/scorocode-SDK-java'
-
-    libraryVersion = '1.0.0'
-
-    developerId = 'peterstaranchuk'
-    developerName = 'Peter Staranchuk'
-    developerEmail = 'petr.staranchuk@gmail.com'
-
-    licenseName = 'MIT'
-    licenseUrl = 'https://opensource.org/licenses/MIT'
-    allLicenses = ["MIT"]
-}
-
 android {
     compileSdkVersion 24
     buildToolsVersion "24.0.2"
@@ -32,7 +8,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 24
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -64,3 +40,4 @@ dependencies {
     compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
     compile group: 'org.mongodb', name: 'bson', version: '2.5.1'
 }
+
