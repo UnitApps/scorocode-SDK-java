@@ -10,24 +10,26 @@ public class ScorocodeSdkStateHolder {
     private String fileKey;
     private String messageKey;
     private String scriptKey;
+    private String webSocket;
 
     private String sessionId;
 
-    public ScorocodeSdkStateHolder(String applicationId, String clientKey, String masterKey, String fileKey, String messageKey, String scriptKey) {
+    public ScorocodeSdkStateHolder(String applicationId, String clientKey, String masterKey, String fileKey, String messageKey, String scriptKey, String webSocket) {
         this.applicationId = applicationId;
         this.clientKey = clientKey;
         this.masterKey = masterKey;
         this.fileKey = fileKey;
         this.messageKey = messageKey;
         this.scriptKey = scriptKey;
+        this.webSocket = webSocket;
     }
 
     public String getApplicationId() {
-        return applicationId; //TODO add exception if null
+        return applicationId;
     }
 
     public String getClientKey() {
-        return clientKey; //TODO add exception if null
+        return clientKey;
     }
 
     public String getMasterKey() {
@@ -56,6 +58,10 @@ public class ScorocodeSdkStateHolder {
 
     public String getMasterOrScriptKey() {
         return masterKey != null? masterKey : scriptKey;
+    }
+
+    public String getWebSocket() {
+        return webSocket;
     }
 
     public void setSessionId(String sessionId) {

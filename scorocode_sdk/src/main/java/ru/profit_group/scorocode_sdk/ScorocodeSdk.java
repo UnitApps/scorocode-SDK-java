@@ -87,16 +87,17 @@ public class ScorocodeSdk {
             @Nullable String masterKey,
             @Nullable String fileKey,
             @Nullable String messageKey,
-            @Nullable String scriptKey) {
+            @Nullable String scriptKey,
+            @Nullable String webSocket) {
 
-        stateHolder = new ScorocodeSdkStateHolder(applicationId, clientKey, masterKey, fileKey, messageKey, scriptKey);
+        stateHolder = new ScorocodeSdkStateHolder(applicationId, clientKey, masterKey, fileKey, messageKey, scriptKey, webSocket);
     }
 
     /**
      * Init Scorocode sdk with Keys
      */
     public static void initWith(@NonNull String applicationId, @NonNull String clientKey) {
-        initWith(applicationId, clientKey, null, null, null, null);
+        initWith(applicationId, clientKey, null, null, null, null, null);
     }
 
     public static void getApplicationStatistic(
@@ -380,7 +381,7 @@ public class ScorocodeSdk {
      * @param collectionName name of collection where document will be searching
      * @param query query to find document
      * @param sort parameter to sort returned document
-     * @param fieldsNamesToFind field's names which will be returned with document; //TODO add logic
+     * @param fieldsNamesToFind field's names which will be returned with document;
      * @param limit max number of documents which request return
      * @param skip number of documents which method skip in search
      * @param callbackFindDocument callback which will be invoked after request
@@ -664,7 +665,7 @@ public class ScorocodeSdk {
      */
     public static void runScript(
             @NonNull String scriptId,
-            @Nullable HashMap<String, Object> dataPoolForScript,
+            @Nullable Object dataPoolForScript,
             @NonNull final CallbackSendScript callbackSendScript) {
 
         Call<ResponseCodes> sendScriptTask = getScorocodeApi().sendScriptTask(new RequestSendScriptTask(stateHolder, scriptId, dataPoolForScript));

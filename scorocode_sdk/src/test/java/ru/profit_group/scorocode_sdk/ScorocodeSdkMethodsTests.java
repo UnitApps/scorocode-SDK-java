@@ -25,7 +25,7 @@ public class ScorocodeSdkMethodsTests {
 
     @Before
     public void setUp() throws Exception {
-        ScorocodeSdk.initWith(APP_ID, CLIENT_KEY, MASTER_KEY, null, null, null);
+        ScorocodeSdk.initWith(APP_ID, CLIENT_KEY, MASTER_KEY, null, null, null, null);
     }
 
     @Test
