@@ -13,7 +13,7 @@ import ru.profit_group.scorocode_sdk.ScorocodeSdk;
 
 public class Script {
 
-    public void runScript(String scriptId, HashMap<String, Object> dataPoolForScript, CallbackSendScript callbackRunScript) {
+    public void runScript(String scriptId, Object dataPoolForScript, CallbackSendScript callbackRunScript) {
         ScorocodeSdk.runScript(scriptId, dataPoolForScript, callbackRunScript);
     }
 
