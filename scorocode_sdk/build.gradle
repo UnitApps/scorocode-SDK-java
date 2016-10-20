@@ -1,4 +1,9 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+
+// This is the library version used when deploying the artifact
+version = "1.0.0"
 
 android {
     compileSdkVersion 24
@@ -35,9 +40,151 @@ dependencies {
 
     compile 'com.squareup.okhttp3:logging-interceptor:3.3.1'
 
-    compile 'io.reactivex:rxjava:1.1.6'
-    compile 'io.reactivex:rxandroid:1.2.1'
     compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
     compile group: 'org.mongodb', name: 'bson', version: '2.5.1'
 }
 
+def siteUrl = 'https://scorocode.ru/'      // Homepage URL of the library
+def gitUrl = 'https://github.com/Scorocode/scorocode-SDK-java.git'   // Git repository URL
+group = "ru.prof_itgroup"                                          // Maven Group ID for the artifact
+
+install {
+    repositories.mavenInstaller {
+        // This generates POM.xml with proper parameters
+        pom {
+            project {
+                packaging 'aar'
+
+                // Add your description here
+                name 'ru.prof_itgroup:scorocode_sdk'
+                description = 'Backend as a service cloud platform'
+                url siteUrl
+
+                // Set your license
+                licenses {
+                    license {
+                        name 'MIT License'
+                        url 'https://opensource.org/licenses/MIT'
+                    }
+                }
+                developers {
+                    developer {
+                        id 'peterptaranchuk'
+                        name 'Peter Staranchuk'
+                        email 'petr.staranchuk@gmail.com'
+                    }
+                }
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
+                }
+            }
+        }
+    }
+}
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+// https://github.com/bintray/gradle-bintray-plugin
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+
+    configurations = ['archives']
+    pkg {
+        repo = "ru.prof_itgroup"
+        // it is the name that appears in bintray when logged
+        name = "ru.prof-itgroup:scorocode_sdk"
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        licenses = ["MIT"]
+        publish = true
+        version {
+            gpg {
+                sign = true //Determines whether to GPG sign the files. The default is false
+                passphrase = properties.getProperty("bintray.gpg.password") //Optional. The passphrase for GPG signing'
+            }
+        }
+    }
+}
+
+//==================================
+
+//Properties properties = new Properties()
+//properties.load(project.rootProject.file('local.properties').newDataInputStream())
+//
+//bintray {
+//    user = properties.getProperty('bintray.user')
+//    key = properties.getProperty('bintray.apikey')
+//
+//    configurations = ['published', 'archives']
+//
+//    dryRun = false
+//    publish = true
+//
+//    pkg {
+//        repo = 'maven'
+//        name = 'scorocode_sdk'
+//
+//        desc = 'This repository contains a library that aims to provide a custom searchable interface for android applications'
+//
+//        websiteUrl = 'https://scorocode.ru/'
+//        issueTrackerUrl = 'https://github.com/Scorocode/scorocode-SDK-java/issues'
+//        vcsUrl = 'https://github.com/Scorocode/scorocode-SDK-java.git'
+//
+//        licenses = ['MIT']
+//        labels = ['android', 'scorocode', 'backend', 'BaaS']
+//        publicDownloadNumbers = true
+//
+//        version {
+//            name = '1.0'
+//            desc = 'First version of Scorocode backend as a service cloud platform'
+//            vcsTag = '1.0'
+//        }
+//    }
+//}
+//
+//ext {
+//    bintrayRepo = 'maven'
+//    bintrayName = 'scorocode_sdk'
+//
+//    publishedGroupId = 'ru.prof_itgroup'
+//    libraryName = 'scorocode_sdl'
+//    artifact = 'scorocode_sdl'
+//
+//    libraryDescription = 'Backend as a service cloud platform'
+//
+//    siteUrl = 'https://github.com/Scorocode/scorocode-SDK-java'
+//    gitUrl = 'https://github.com/Scorocode/scorocode-SDK-java.git'
+//
+//    libraryVersion = '1.0'
+//
+//    developerId = 'peterstaranchuk'
+//    developerName = 'Peter Staranchuk'
+//    developerEmail = 'petr.staranchuk@gmail.com'
+//
+//    licenseName = 'MIT'
+//    licenseUrl = 'https://opensource.org/licenses/MIT'
+//    allLicenses = ["MIT"]
+//}
