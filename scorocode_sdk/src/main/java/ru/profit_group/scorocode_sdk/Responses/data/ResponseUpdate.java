@@ -12,16 +12,6 @@ import ru.profit_group.scorocode_sdk.Responses.ResponseCodes;
  */
 
 public class ResponseUpdate extends ResponseCodes{
-//    private HashMap<String,Object> result;
-//
-//    public HashMap<String, Object> getResult() {
-//        return result;
-//    }
-//
-//    public void setResult(HashMap<String, Object> result) {
-//        this.result = result;
-//    }
-
     private Result result;
 
 
@@ -33,7 +23,7 @@ public class ResponseUpdate extends ResponseCodes{
         this.result = result;
     }
 
-    private class Result {
+    public class Result {
         private int count;
         private List<String> docs;
 //        private Map<String, Object> additionalProperties = new HashMap<String, Object>();

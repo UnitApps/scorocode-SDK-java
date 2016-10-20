@@ -18,7 +18,7 @@ public class ResponseRemove extends ResponseCodes {
         this.result = result;
     }
 
-    private class Result {
+    public class Result {
         private int count;
         private List<String> docs;
 
