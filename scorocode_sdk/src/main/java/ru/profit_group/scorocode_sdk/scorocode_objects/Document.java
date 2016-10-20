@@ -100,7 +100,7 @@ public class Document {
         return _docToInsert.get(field);
     }
 
-    public void setField(String field, String value) {
+    public void setField(String field, Object value) {
         _docToInsert.put(field, value);
     }
 
