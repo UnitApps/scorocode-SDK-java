@@ -3,6 +3,7 @@ package ru.profit_group.scorocode_sdk.scorocode_objects;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Peter Staranchuk on 10/7/16
@@ -55,8 +56,10 @@ public class Update {
         return this;
     }
 
-    public Update currentDate(String field) {
-        addUpdateInfoRule(field, "$currentDate", "timestamp");
+    public Update setCurrentDate(String field) {
+        Map<String, String> value = new HashMap<>();
+        value.put("$type", "date");
+        addUpdateInfoRule(field, "$currentDate", value);
         return this;
     }
 
