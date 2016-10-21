@@ -19,9 +19,9 @@ public class ResponseAppStatistic extends ResponseCodes{
     }
 
     private class Result {
-        public long dataSize;
-        public long filesSize;
-        public long indexSize;
+        public long dataSize;  // Размер данных приложения, в байтах
+        public long filesSize;  // Размер файлов приложения, в байтах
+        public long indexSize; // "Размер" индексов приложения, в байтах
         public double store;
     }
 }
