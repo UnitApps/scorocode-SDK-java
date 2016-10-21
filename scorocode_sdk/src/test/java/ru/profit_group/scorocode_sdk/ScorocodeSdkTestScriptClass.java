@@ -19,7 +19,7 @@ import static ru.profit_group.scorocode_sdk.ScorocodeTestHelper.MASTER_KEY;
 import static ru.profit_group.scorocode_sdk.ScorocodeTestHelper.printError;
 
 /**
- * Created by peterstaranchuk on 10/21/16.
+ * Created by Peter Staranchuk on 10/21/16
  */
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)

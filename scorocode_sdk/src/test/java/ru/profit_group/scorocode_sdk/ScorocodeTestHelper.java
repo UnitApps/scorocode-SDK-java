@@ -16,6 +16,7 @@ public class ScorocodeTestHelper {
     public static final String NUMBER_FIELD_1 = "numberField1";
     public static final String TEXT_FIELD_1 = "textField1";
     public static final String DATE_FIELD_1 = "dateField1";
+    public static final String ARRAY_FIELD_1 = "arrayField1";
 
     static void printError(String message, String errorCode, String errorMessage) {
         fail(message + " Error Code: " + errorCode + " Error message: " + errorMessage);

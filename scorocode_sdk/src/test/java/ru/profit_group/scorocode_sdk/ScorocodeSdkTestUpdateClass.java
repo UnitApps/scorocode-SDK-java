@@ -36,8 +36,6 @@ import static ru.profit_group.scorocode_sdk.ScorocodeTestHelper.printError;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ScorocodeSdkTestUpdateClass {
 
-    public static final String ARRAY_FIELD_1 = "arrayField1";
-
     @BeforeClass
     public static void setUp() throws Exception {
         ScorocodeSdk.initWith(APP_ID, CLIENT_KEY, MASTER_KEY, null, null, null, null);
@@ -296,8 +294,8 @@ public class ScorocodeSdkTestUpdateClass {
             }
         };
 
-        update.push(ARRAY_FIELD_1, 3);
-        query.updateDocument(new Update().push(ARRAY_FIELD_1, 3), callbackUpdateDocument);
+        update.push(ScorocodeTestHelper.ARRAY_FIELD_1, 3);
+        query.updateDocument(new Update().push(ScorocodeTestHelper.ARRAY_FIELD_1, 3), callbackUpdateDocument);
 
         countDownLatch.await();
     }
@@ -321,7 +319,7 @@ public class ScorocodeSdkTestUpdateClass {
             }
         };
 
-        query.updateDocument(new Update().push(ARRAY_FIELD_1, -3), callbackUpdateDocument);
+        query.updateDocument(new Update().push(ScorocodeTestHelper.ARRAY_FIELD_1, -3), callbackUpdateDocument);
 
         countDownLatch.await();
     }
@@ -330,7 +328,7 @@ public class ScorocodeSdkTestUpdateClass {
     @Test
     public void test11PopFirstFromArrayTest() throws InterruptedException {
         Update update = new Update();
-        update.popFirst(ARRAY_FIELD_1);
+        update.popFirst(ScorocodeTestHelper.ARRAY_FIELD_1);
 
         Query query = new Query(TEST_COLLECTION_NAME);
 
@@ -354,7 +352,7 @@ public class ScorocodeSdkTestUpdateClass {
     @Test
     public void test12PopLastFromArrayTest() throws InterruptedException {
         Update update = new Update();
-        update.popLast(ARRAY_FIELD_1);
+        update.popLast(ScorocodeTestHelper.ARRAY_FIELD_1);
 
         Query query = new Query(TEST_COLLECTION_NAME);
 
@@ -378,7 +376,7 @@ public class ScorocodeSdkTestUpdateClass {
     @Test
     public void test13PullValueTest() throws InterruptedException {
         Update update = new Update();
-        update.pull(ARRAY_FIELD_1, -3);
+        update.pull(ScorocodeTestHelper.ARRAY_FIELD_1, -3);
 
         Query query = new Query(TEST_COLLECTION_NAME);
 
@@ -407,7 +405,7 @@ public class ScorocodeSdkTestUpdateClass {
         numbers.add(2);
         numbers.add(3);
 
-        update.pullAll(ARRAY_FIELD_1, numbers);
+        update.pullAll(ScorocodeTestHelper.ARRAY_FIELD_1, numbers);
 
         Query query = new Query(TEST_COLLECTION_NAME);
 
