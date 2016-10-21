@@ -3,7 +3,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
 // This is the library version used when deploying the artifact
-version = "1.0.0"
+version = "1.0.1"
 
 android {
     compileSdkVersion 24
@@ -13,7 +13,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 24
         versionCode 1
-        versionName "1.0.0"
+        versionName "1.0.1"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -46,6 +46,8 @@ dependencies {
 
     compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
     compile group: 'org.mongodb', name: 'bson', version: '2.5.1'
+
+    compile group: 'commons-codec', name: 'commons-codec', version: '1.9'
 }
 
 def siteUrl = 'https://scorocode.ru/'      // Homepage URL of the library
