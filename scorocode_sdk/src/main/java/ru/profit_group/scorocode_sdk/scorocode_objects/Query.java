@@ -137,19 +137,30 @@ public class Query  {
     public Query startsWith(String field, String string, RegexOptions options) {
         HashMap<String, Object> operationMap = new HashMap<>();
         operationMap.put("$regex", "^" + string);
-        operationMap.put("$options", options.getRegexOptions());
-
+        if(options != null) {
+            operationMap.put("$options", options.getRegexOptions());
+        }
         queryInfo.put(field, operationMap);
         return this;
+    }
+
+    public Query startsWith(String field, String string) {
+        return startsWith(field, string, null);
     }
 
     public Query endsWith(String field, String string, RegexOptions options) {
         HashMap<String, Object> operationMap = new HashMap<>();
         operationMap.put("$regex", string + "$");
-        operationMap.put("$options", options.getRegexOptions());
+        if(options != null) {
+            operationMap.put("$options", options.getRegexOptions());
+        }
 
         queryInfo.put(field, operationMap);
         return this;
+    }
+
+    public Query endsWith(String field, String string) {
+        return endsWith(field,string,null);
     }
 
     public Query and(String field, Query query) {
