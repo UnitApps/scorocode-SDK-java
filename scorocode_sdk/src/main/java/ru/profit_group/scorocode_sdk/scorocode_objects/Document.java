@@ -1,5 +1,7 @@
 package ru.profit_group.scorocode_sdk.scorocode_objects;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.Base64;
 import org.bson.BSON;
 import org.bson.BSONObject;
 
@@ -124,7 +126,7 @@ public class Document {
     public static List<DocumentInfo> decodeDocumentsList(String base64data) {
 
         try {
-            byte[] bson = android.util.Base64.decode(base64data, android.util.Base64.DEFAULT);
+            byte[] bson = Base64.decodeBase64(base64data);
             BSONObject bsonObject = BSON.decode(bson);
 
             HashMap<Integer, HashMap<String, String>> documentMap = (HashMap<Integer, HashMap<String, String>>) bsonObject.toMap();
