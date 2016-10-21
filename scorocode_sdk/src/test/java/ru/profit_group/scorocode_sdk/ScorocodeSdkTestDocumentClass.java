@@ -14,6 +14,7 @@ import java.util.concurrent.CountDownLatch;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackDeleteFile;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackDocumentSaved;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackFindDocument;
+import ru.profit_group.scorocode_sdk.Callbacks.CallbackGetDocumentById;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackRemoveDocument;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackUploadFile;
 import ru.profit_group.scorocode_sdk.Responses.data.ResponseRemove;
@@ -25,17 +26,15 @@ import static org.junit.Assert.*;
 import static ru.profit_group.scorocode_sdk.ScorocodeTestHelper.APP_ID;
 import static ru.profit_group.scorocode_sdk.ScorocodeTestHelper.CLIENT_KEY;
 import static ru.profit_group.scorocode_sdk.ScorocodeTestHelper.MASTER_KEY;
+import static ru.profit_group.scorocode_sdk.ScorocodeTestHelper.printError;
 
 /**
  * Created by Peter Staranchuk on 10/20/16
  */
 
 
-@FixMethodOrder(MethodSorters.DEFAULT)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ScorocodeSdkTestDocumentClass {
-
-    private static final String NUMBER_FIELD_1 = "numberField1";
-    private static final String TEXT_FIELD_1 = "textField1";
 
     private static final String FIELD_FOR_REMOVE_TEST = "field for remove test";
     private static final String FIELD_FOR_SEARCH_BY_ID = "field for search by id";
@@ -50,12 +49,12 @@ public class ScorocodeSdkTestDocumentClass {
         FILE_FIELD_NAME = "fileField1";
         fileName = "file.txt";
 
-        addDocument(TEXT_FIELD_1, FIELD_FOR_REMOVE_TEST);
-        addDocument(TEXT_FIELD_1, FIELD_FOR_SEARCH_BY_ID);
-        addDocument(TEXT_FIELD_1, FIELD_FOR_SEARCH_BY_ID);
-        addDocument(TEXT_FIELD_1, FIELD_FOR_SEARCH_BY_ID);
-        addDocument(TEXT_FIELD_1, FIELD_FOR_SEARCH_BY_ID);
-        addDocument(TEXT_FIELD_1, FIELD_FOR_SEARCH_BY_ID);
+        addDocument(ScorocodeTestHelper.TEXT_FIELD_1, FIELD_FOR_REMOVE_TEST);
+        addDocument(ScorocodeTestHelper.TEXT_FIELD_1, FIELD_FOR_SEARCH_BY_ID);
+        addDocument(ScorocodeTestHelper.TEXT_FIELD_1, FIELD_FOR_SEARCH_BY_ID);
+        addDocument(ScorocodeTestHelper.TEXT_FIELD_1, FIELD_FOR_SEARCH_BY_ID);
+        addDocument(ScorocodeTestHelper.TEXT_FIELD_1, FIELD_FOR_SEARCH_BY_ID);
+        addDocument(ScorocodeTestHelper.TEXT_FIELD_1, FIELD_FOR_SEARCH_BY_ID);
 
     }
 
@@ -76,10 +75,10 @@ public class ScorocodeSdkTestDocumentClass {
     }
 
     @Test
-    public void testDocumentClassUploadNewFile() throws InterruptedException {
+    public void test1DocumentClassUploadNewFile() throws InterruptedException {
         final Document document = new Document(ScorocodeTestHelper.TEST_COLLECTION_NAME);
-        document.setField(NUMBER_FIELD_1, 1);
-        document.setField(TEXT_FIELD_1, "any text");
+        document.setField(ScorocodeTestHelper.NUMBER_FIELD_1, 1);
+        document.setField(ScorocodeTestHelper.TEXT_FIELD_1, "any text");
 
         final CountDownLatch signal = new CountDownLatch(1);
         document.saveDocument(new CallbackDocumentSaved() {
@@ -90,9 +89,7 @@ public class ScorocodeSdkTestDocumentClass {
 
             @Override
             public void onDocumentSaveFailed(String errorCode, String errorMessage) {
-                fail("метод не смог выполнить сохранение документа.");
-                assertNotEquals(null, errorCode);
-                assertNotEquals(null, errorMessage);
+                printError("метод не смог выполнить сохранение документа.", errorCode, errorMessage);
                 signal.countDown();
             }
         });
@@ -101,9 +98,9 @@ public class ScorocodeSdkTestDocumentClass {
     }
 
     @Test
-    public void testUpdateDocument() throws InterruptedException {
+    public void test2UpdateDocument() throws InterruptedException {
         Query query = new Query(ScorocodeTestHelper.TEST_COLLECTION_NAME);
-        query.equalTo(TEXT_FIELD_1, FIELD_FOR_SEARCH_BY_ID);
+        query.equalTo(ScorocodeTestHelper.TEXT_FIELD_1, FIELD_FOR_SEARCH_BY_ID);
 
         final CountDownLatch signal = new CountDownLatch(1);
 
@@ -111,11 +108,11 @@ public class ScorocodeSdkTestDocumentClass {
             @Override
             public void onDocumentFound(List<DocumentInfo> documentInfos) {
                 final Document document = new Document(ScorocodeTestHelper.TEST_COLLECTION_NAME);
-                document.getDocumentById(documentInfos.get(0).getId(), new CallbackFindDocument() {
+                document.getDocumentById(documentInfos.get(0).getId(), new CallbackGetDocumentById() {
                     @Override
-                    public void onDocumentFound(List<DocumentInfo> documentInfos) {
+                    public void onDocumentFound(DocumentInfo documentInfos) {
                         document.updateDocument()
-                                .set(TEXT_FIELD_1, NEW_TEST_VALUE);
+                                .set(ScorocodeTestHelper.TEXT_FIELD_1, NEW_TEST_VALUE);
 
                         document.saveDocument(new CallbackDocumentSaved() {
                             @Override
@@ -125,7 +122,7 @@ public class ScorocodeSdkTestDocumentClass {
 
                             @Override
                             public void onDocumentSaveFailed(String errorCode, String errorMessage) {
-                                fail("ошибка при сохранении документа");
+                                printError("ошибка при сохранении документа", errorCode, errorMessage);
                                 signal.countDown();
                             }
                         });
@@ -133,7 +130,7 @@ public class ScorocodeSdkTestDocumentClass {
 
                     @Override
                     public void onDocumentNotFound(String errorCode, String errorMessage) {
-                        fail("документ не был найден");
+                        printError("документ не был найден", errorCode, errorMessage);
                         signal.countDown();
                     }
                 });
@@ -141,7 +138,7 @@ public class ScorocodeSdkTestDocumentClass {
 
             @Override
             public void onDocumentNotFound(String errorCode, String errorMessage) {
-                fail("документ не был найден");
+                printError("документ не был найден", errorCode, errorMessage);
                 signal.countDown();
             }
         });
@@ -150,9 +147,9 @@ public class ScorocodeSdkTestDocumentClass {
     }
 
     @Test
-    public void testRemoveDocument() throws InterruptedException {
+    public void test3RemoveDocument() throws InterruptedException {
         Query query = new Query(ScorocodeTestHelper.TEST_COLLECTION_NAME);
-        query.equalTo(TEXT_FIELD_1, FIELD_FOR_REMOVE_TEST);
+        query.equalTo(ScorocodeTestHelper.TEXT_FIELD_1, FIELD_FOR_REMOVE_TEST);
         query.setLimit(1);
 
         final CountDownLatch signal = new CountDownLatch(1);
@@ -167,9 +164,9 @@ public class ScorocodeSdkTestDocumentClass {
                         "метод сохранения документа saveDocument(...)", documentInfos.size(), 1);
 
                 final Document document = new Document(ScorocodeTestHelper.TEST_COLLECTION_NAME);
-                document.getDocumentById(documentInfos.get(0).getId(), new CallbackFindDocument() {
+                document.getDocumentById(documentInfos.get(0).getId(), new CallbackGetDocumentById() {
                     @Override
-                    public void onDocumentFound(List<DocumentInfo> documentInfos) {
+                    public void onDocumentFound(DocumentInfo documentInfos) {
                         document.removeDocument(new CallbackRemoveDocument() {
                             @Override
                             public void onRemoveSucceed(ResponseRemove responseRemove) {
@@ -181,7 +178,7 @@ public class ScorocodeSdkTestDocumentClass {
 
                             @Override
                             public void onRemoveFailed(String errorCode, String errorMessage) {
-                                fail("документ не был удален.");
+                                printError("документ не был удален", errorCode, errorMessage);
                                 signal.countDown();
                             }
                         });
@@ -207,27 +204,27 @@ public class ScorocodeSdkTestDocumentClass {
     }
 
     @Test
-    public void testFieldSetAndGetMethods() {
+    public void test4FieldSetAndGetMethods() {
         Document document = new Document(ScorocodeTestHelper.TEST_COLLECTION_NAME);
 
         String testValue1 = "VALUE1";
-        document.setField(TEXT_FIELD_1, testValue1);
-        String value1 = (String) document.getField(TEXT_FIELD_1);
+        document.setField(ScorocodeTestHelper.TEXT_FIELD_1, testValue1);
+        String value1 = (String) document.getField(ScorocodeTestHelper.TEXT_FIELD_1);
         assertEquals("Не удалось установить поле документа. Возможно метод setField поврежден", testValue1, value1);
 
         Integer testValue2 = 1;
-        document.setField(TEXT_FIELD_1, testValue2);
-        Integer value2 = (Integer) document.getField(TEXT_FIELD_1);
+        document.setField(ScorocodeTestHelper.TEXT_FIELD_1, testValue2);
+        Integer value2 = (Integer) document.getField(ScorocodeTestHelper.TEXT_FIELD_1);
         assertEquals("Не удалось установить поле документа. Возможно метод setField поврежден", testValue2, value2);
     }
 
     @Test
-    public void testUploadFile() throws InterruptedException {
+    public void test5UploadFile() throws InterruptedException {
         final byte[] binaryData = "Hello world".getBytes();
         final String contentInBase64 = Base64.encodeBase64String(binaryData);
 
         Query query = new Query(ScorocodeTestHelper.TEST_COLLECTION_NAME);
-        query.equalTo(TEXT_FIELD_1, FIELD_FOR_SEARCH_BY_ID);
+        query.equalTo(ScorocodeTestHelper.TEXT_FIELD_1, FIELD_FOR_SEARCH_BY_ID);
 
         final CountDownLatch signal = new CountDownLatch(1);
         query.findDocuments(new CallbackFindDocument() {
@@ -236,9 +233,9 @@ public class ScorocodeSdkTestDocumentClass {
                 assertNotNull("не удалось получить ни одного документа", documentInfos);
                 assertNotEquals("не удалось найти документ", 0, documentInfos.size());
                 final Document document = new Document(ScorocodeTestHelper.TEST_COLLECTION_NAME);
-                document.getDocumentById(documentInfos.get(0).getId(), new CallbackFindDocument() {
+                document.getDocumentById(documentInfos.get(0).getId(), new CallbackGetDocumentById() {
                     @Override
-                    public void onDocumentFound(List<DocumentInfo> documentInfos) {
+                    public void onDocumentFound(DocumentInfo documentInfo) {
                         document.uploadFile(FILE_FIELD_NAME, fileName, contentInBase64, new CallbackUploadFile() {
                             @Override
                             public void onDocumentUploaded() {
@@ -273,9 +270,9 @@ public class ScorocodeSdkTestDocumentClass {
     }
 
     @Test
-    public void testGetFileLink() throws InterruptedException {
+    public void test6GetFileLink() throws InterruptedException {
         Query query = new Query(ScorocodeTestHelper.TEST_COLLECTION_NAME);
-        query.equalTo(TEXT_FIELD_1, FIELD_FOR_SEARCH_BY_ID);
+        query.equalTo(ScorocodeTestHelper.TEXT_FIELD_1, FIELD_FOR_SEARCH_BY_ID);
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 
@@ -285,9 +282,9 @@ public class ScorocodeSdkTestDocumentClass {
                 testDocumentList(documentInfos);
 
                 final Document document = new Document(ScorocodeTestHelper.TEST_COLLECTION_NAME);
-                document.getDocumentById(documentInfos.get(0).getId(), new CallbackFindDocument() {
+                document.getDocumentById(documentInfos.get(0).getId(), new CallbackGetDocumentById() {
                     @Override
-                    public void onDocumentFound(List<DocumentInfo> documentInfos) {
+                    public void onDocumentFound(DocumentInfo documentInfo) {
                         String fileLink = document.getFileLink(FILE_FIELD_NAME, fileName);
                         assertNotNull("не удалось получить ссылку на файл", fileLink);
                         countDownLatch.countDown();
@@ -313,7 +310,7 @@ public class ScorocodeSdkTestDocumentClass {
     }
 
     @Test @Ignore
-    public void testRemoveFile() throws InterruptedException {
+    public void test7RemoveFile() throws InterruptedException {
         Query query = new Query(ScorocodeTestHelper.TEST_COLLECTION_NAME);
         query.equalTo(FILE_FIELD_NAME, fileName);
 
@@ -324,9 +321,9 @@ public class ScorocodeSdkTestDocumentClass {
             public void onDocumentFound(List<DocumentInfo> documentInfos) {
                 testDocumentList(documentInfos);
                 final Document document = new Document(ScorocodeTestHelper.TEST_COLLECTION_NAME);
-                document.getDocumentById(documentInfos.get(0).getId(), new CallbackFindDocument() {
+                document.getDocumentById(documentInfos.get(0).getId(), new CallbackGetDocumentById() {
                     @Override
-                    public void onDocumentFound(List<DocumentInfo> documentInfos) {
+                    public void onDocumentFound(DocumentInfo documentInfo) {
                         document.removeFile(FILE_FIELD_NAME, fileName, new CallbackDeleteFile() {
                             @Override
                             public void onDocumentDeleted() {

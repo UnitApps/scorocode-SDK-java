@@ -4,11 +4,15 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
+import ru.profit_group.scorocode_sdk.Callbacks.CallbackFindDocument;
+import ru.profit_group.scorocode_sdk.Callbacks.CallbackGetDocumentById;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackLoginUser;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackLogoutUser;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackRegisterUser;
@@ -18,6 +22,7 @@ import ru.profit_group.scorocode_sdk.Responses.data.ResponseRemove;
 import ru.profit_group.scorocode_sdk.Responses.data.ResponseUpdate;
 import ru.profit_group.scorocode_sdk.Responses.user.ResponseLogin;
 import ru.profit_group.scorocode_sdk.scorocode_objects.Document;
+import ru.profit_group.scorocode_sdk.scorocode_objects.DocumentInfo;
 import ru.profit_group.scorocode_sdk.scorocode_objects.Query;
 import ru.profit_group.scorocode_sdk.scorocode_objects.Update;
 import ru.profit_group.scorocode_sdk.scorocode_objects.User;
@@ -29,13 +34,14 @@ import static org.junit.Assert.fail;
 import static ru.profit_group.scorocode_sdk.ScorocodeTestHelper.APP_ID;
 import static ru.profit_group.scorocode_sdk.ScorocodeTestHelper.CLIENT_KEY;
 import static ru.profit_group.scorocode_sdk.ScorocodeTestHelper.MASTER_KEY;
+import static ru.profit_group.scorocode_sdk.ScorocodeTestHelper.TEST_COLLECTION_NAME;
 import static ru.profit_group.scorocode_sdk.ScorocodeTestHelper.printError;
 
 /**
  * Created by Peter Staranchuk on 10/21/16
  */
 
-@FixMethodOrder(MethodSorters.JVM)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ScorocodeSdkTestUserClass {
 
     public static final String TEST_USER_NAME = "testUserName1";
@@ -66,7 +72,7 @@ public class ScorocodeSdkTestUserClass {
     }
 
     @Test
-    public void testUserRegisterWithDocument() throws InterruptedException {
+    public void test1UserRegisterWithDocument() throws InterruptedException {
         User user = new User();
 
         Document document = new Document("USERS");
@@ -91,46 +97,7 @@ public class ScorocodeSdkTestUserClass {
     }
 
     @Test
-    public void testUserRegisterWithoutDocument() throws InterruptedException {
-        User user = new User();
-
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
-
-        user.register(TEST_USER_NAME+"asd", "aghj"+TEST_USER_EMAIL, TEST_USER_PASSWORD, null, new CallbackRegisterUser() {
-            @Override
-            public void onRegisterSucceed() {
-
-                Query query = new Query("users");
-                query.equalTo("email", "aghj"+TEST_USER_EMAIL);
-
-                Update update = new Update();
-                update.set("testUser", true);
-
-                query.updateDocument(update, new CallbackUpdateDocument() {
-                    @Override
-                    public void onUpdateSucceed(ResponseUpdate responseUpdate) {
-                        countDownLatch.countDown();
-                    }
-
-                    @Override
-                    public void onUpdateFailed(String errorCode, String errorMessage) {
-                        countDownLatch.countDown();
-                    }
-                });
-            }
-
-            @Override
-            public void onRegisterFailed(String errorCode, String errorMessage) {
-                printError("не удалось зарегистрировать тестового пользователя", errorCode, errorMessage);
-                countDownLatch.countDown();
-            }
-        });
-
-        countDownLatch.await();
-    }
-
-    @Test
-    public void testUserLogin() throws InterruptedException {
+    public void test2UserLogin() throws InterruptedException {
         assertNull("SessionId уже был установлен. Условия теста не выполняются", ScorocodeSdk.getSessionId());
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
@@ -154,7 +121,7 @@ public class ScorocodeSdkTestUserClass {
     }
 
     @Test
-    public void testUserLogout() throws InterruptedException {
+    public void test3UserLogout() throws InterruptedException {
         assertNotNull("sessionId не был установлен", ScorocodeSdk.getSessionId());
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
