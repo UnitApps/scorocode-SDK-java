@@ -101,7 +101,7 @@ public class ScorocodeSdk {
     }
 
     public static void getApplicationStatistic(
-            @NonNull final CallbackApplicationStatistic callbackApplicationStatistic) throws IOException {
+            @NonNull final CallbackApplicationStatistic callbackApplicationStatistic) {
 
         Call<ResponseAppStatistic> appStatisticCall = getScorocodeApi().getAppStatistic(new RequestStatistic(stateHolder));
         appStatisticCall.enqueue(new Callback<ResponseAppStatistic>() {
@@ -183,7 +183,12 @@ public class ScorocodeSdk {
                 if(response != null && response.body() != null) {
                     ResponseLogin responseLogin = response.body();
                     if(responseSucceed(responseLogin)) {
-                        callbackLogin.onLoginSucceed(responseLogin);
+                        if(responseLogin.getResult() != null) {
+                            ScorocodeSdk.setSessionId(responseLogin.getResult().getSessionId());
+                            callbackLogin.onLoginSucceed(responseLogin);
+                        } else {
+                            callbackLogin.onLoginFailed(ERROR_CODE_GENERAL, ERROR_MESSAGE_GENERAL);
+                        }
                     } else {
                         callbackLogin.onLoginFailed(responseLogin.getErrCode(), responseLogin.getErrMsg());
                     }
@@ -704,7 +709,7 @@ public class ScorocodeSdk {
     private static Retrofit getRetrofit() {
             OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
             HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.NONE);
             clientBuilder.addInterceptor(loggingInterceptor);
             clientBuilder.followRedirects(false);
 
@@ -723,6 +728,17 @@ public class ScorocodeSdk {
         if(stateHolder != null) {
             stateHolder.setSessionId(sessionId);
         }
+    }
+
+    public static String getSessionId() {
+        if (stateHolder != null) {
+            if (stateHolder.getSessionId() != null) {
+                String sessionIdCopy = new String(stateHolder.getSessionId()); //return copy of sessionId;
+                return sessionIdCopy;
+            }
+        }
+
+        return null;
     }
 
     private static boolean responseSucceed(ResponseCodes responseCodes) {
