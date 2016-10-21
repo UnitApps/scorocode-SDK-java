@@ -13,6 +13,7 @@ import java.util.Objects;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackDeleteFile;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackDocumentSaved;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackFindDocument;
+import ru.profit_group.scorocode_sdk.Callbacks.CallbackGetDocumentById;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackInsert;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackRemoveDocument;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackUpdateDocumentById;
@@ -41,7 +42,7 @@ public class Document {
         return _docToInsert;
     }
 
-    public void getDocumentById(final String documentId, final CallbackFindDocument callbackFindDocument) {
+    public void getDocumentById(final String documentId, final CallbackGetDocumentById callbackGetDocumentById) {
         Query query = new Query(collectionName);
         query.equalTo("_id", documentId);
 
@@ -49,13 +50,15 @@ public class Document {
             @Override
             public void onDocumentFound(List<DocumentInfo> documentInfos) {
                 _documentId = documentId;
-                callbackFindDocument.onDocumentFound(documentInfos);
+                if(documentInfos != null && documentInfos.size() > 0) {
+                    callbackGetDocumentById.onDocumentFound(documentInfos.get(0));
+                }
             }
 
             @Override
             public void onDocumentNotFound(String errorCode, String errorMessage) {
                 _documentId = null;
-                callbackFindDocument.onDocumentNotFound(errorCode, errorMessage);
+                callbackGetDocumentById.onDocumentNotFound(errorCode, errorMessage);
             }
         });
     }
