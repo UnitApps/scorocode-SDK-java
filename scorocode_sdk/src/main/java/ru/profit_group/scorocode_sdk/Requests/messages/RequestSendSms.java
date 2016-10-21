@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 
 import ru.profit_group.scorocode_sdk.ScorocodeSdk;
 import ru.profit_group.scorocode_sdk.scorocode_objects.Query;
+import ru.profit_group.scorocode_sdk.scorocode_objects.QueryInfo;
 import ru.profit_group.scorocode_sdk.scorocode_objects.ScorocodeSdkStateHolder;
 
 /**
@@ -17,7 +18,7 @@ public class RequestSendSms {
     private String acc;
     private String sess;
     private String coll;
-    private Query query;
+    private QueryInfo query;
     private MessageSms msg;
 
     public RequestSendSms(
@@ -31,7 +32,9 @@ public class RequestSendSms {
         this.acc = stateHolder.getMasterOrMessageKey();
         this.sess = stateHolder.getSessionId();
         this.coll = coll;
-        this.query = query;
+        if(query != null) {
+            this.query = query.getQueryInfo();
+        }
         this.msg = msg;
     }
 
@@ -55,7 +58,7 @@ public class RequestSendSms {
         return coll;
     }
 
-    public Query getQuery() {
+    public QueryInfo getQuery() {
         return query;
     }
 

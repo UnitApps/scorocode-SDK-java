@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import ru.profit_group.scorocode_sdk.scorocode_objects.Query;
+import ru.profit_group.scorocode_sdk.scorocode_objects.QueryInfo;
 import ru.profit_group.scorocode_sdk.scorocode_objects.ScorocodeSdkStateHolder;
 
 /**
@@ -16,7 +17,7 @@ public class RequestSendEmail {
     private String acc;
     private String sess;
     private String coll;
-    private Query query;
+    private QueryInfo query;
     private MessageEmail msg;
 
     public RequestSendEmail(
@@ -30,7 +31,9 @@ public class RequestSendEmail {
         this.acc = stateHolder.getMasterOrMessageKey();
         this.sess = stateHolder.getSessionId();
         this.coll = coll;
-        this.query = query;
+        if (query != null) {
+            this.query = query.getQueryInfo();
+        }
         this.msg = msg;
     }
 
@@ -54,7 +57,7 @@ public class RequestSendEmail {
         return coll;
     }
 
-    public Query getQuery() {
+    public QueryInfo getQuery() {
         return query;
     }
 

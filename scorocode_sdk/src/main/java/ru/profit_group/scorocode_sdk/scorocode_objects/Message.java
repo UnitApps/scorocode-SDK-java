@@ -17,7 +17,8 @@ import ru.profit_group.scorocode_sdk.ScorocodeSdk;
 public class Message {
 
     public void sendEmail(MessageEmail messageEmail, Query query, CallbackSendEmail callback) throws IllegalStateException {
-        ScorocodeSdk.sendEmail(query.getCollectionName(), query, messageEmail, callback);
+        String coll = query.getCollectionName();
+        ScorocodeSdk.sendEmail(coll, query, messageEmail, callback);
     }
 
     public void sendEmail(MessageEmail messageEmail, CallbackSendEmail callback) throws IllegalStateException {
