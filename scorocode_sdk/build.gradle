@@ -3,7 +3,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
 // This is the library version used when deploying the artifact
-version = "1.0.1"
+version = "1.0.3"
 
 android {
     compileSdkVersion 24
@@ -13,7 +13,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 24
         versionCode 1
-        versionName "1.0.1"
+        versionName "1.0.3"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -52,7 +52,7 @@ dependencies {
 
 def siteUrl = 'https://scorocode.ru/'      // Homepage URL of the library
 def gitUrl = 'https://github.com/Scorocode/scorocode-SDK-java.git'   // Git repository URL
-group = "ru.prof_itgroup"                                          // Maven Group ID for the artifact
+group = "ru.prof-itgroup"                                          // Maven Group ID for the artifact
 
 install {
     repositories.mavenInstaller {
@@ -62,7 +62,7 @@ install {
                 packaging 'aar'
 
                 // Add your description here
-                name 'ru.prof_itgroup:scorocode_sdk'
+                name 'ru.prof-itgroup:scorocode_sdk'
                 description = 'Backend as a service cloud platform'
                 url siteUrl
 
@@ -119,7 +119,7 @@ bintray {
 
     configurations = ['archives']
     pkg {
-        repo = "ru.prof_itgroup"
+        repo = "ru.prof-itgroup"
         // it is the name that appears in bintray when logged
         name = "ru.prof-itgroup:scorocode_sdk"
         websiteUrl = siteUrl

@@ -129,7 +129,8 @@ public class Document {
     public static List<DocumentInfo> decodeDocumentsList(String base64data) {
 
         try {
-            byte[] bson = Base64.decodeBase64(base64data);
+//            byte[] bson = Base64.decodeBase64(base64data); //for unit testing
+            byte[] bson = android.util.Base64.decode(base64data, android.util.Base64.DEFAULT);
             BSONObject bsonObject = BSON.decode(bson);
 
             HashMap<Integer, HashMap<String, String>> documentMap = (HashMap<Integer, HashMap<String, String>>) bsonObject.toMap();
