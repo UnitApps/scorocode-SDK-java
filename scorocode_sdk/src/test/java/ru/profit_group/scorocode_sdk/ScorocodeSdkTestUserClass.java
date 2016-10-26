@@ -102,10 +102,11 @@ public class ScorocodeSdkTestUserClass {
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        User user = new User();
+        final User user = new User();
         user.login(TEST_USER_EMAIL, TEST_USER_PASSWORD, new CallbackLoginUser() {
             @Override
             public void onLoginSucceed(ResponseLogin responseLogin) {
+                DocumentInfo documentInfo = user.getDocumentContent();
                 assertNotNull("sessionId не был установлен", ScorocodeSdk.getSessionId());
                 countDownLatch.countDown();
             }

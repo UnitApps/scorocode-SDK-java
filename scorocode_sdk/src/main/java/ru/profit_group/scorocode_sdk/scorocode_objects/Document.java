@@ -1,14 +1,11 @@
 package ru.profit_group.scorocode_sdk.scorocode_objects;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.binary.Base64;
 import org.bson.BSON;
 import org.bson.BSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackDeleteFile;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackDocumentSaved;
@@ -27,19 +24,19 @@ import ru.profit_group.scorocode_sdk.ScorocodeSdk;
  */
 
 public class Document {
-    private String collectionName;
-    private String _documentId;
-    private DocumentInfo _docToInsert;
-    private Update _update;
+    protected String collectionName;
+    protected String documentId;
+    protected DocumentInfo documentContent;
+    protected Update update;
 
     public Document(String collectionName) {
         this.collectionName = collectionName;
-        _docToInsert = new DocumentInfo();
-        _update = new Update();
+        documentContent = new DocumentInfo();
+        update = new Update();
     }
 
     public DocumentInfo getDocumentContent() {
-        return _docToInsert;
+        return documentContent;
     }
 
     public void getDocumentById(final String documentId, final CallbackGetDocumentById callbackGetDocumentById) {
@@ -49,25 +46,28 @@ public class Document {
         ScorocodeSdk.findDocument(collectionName, query, null, null, null, null, new CallbackFindDocument() {
             @Override
             public void onDocumentFound(List<DocumentInfo> documentInfos) {
-                _documentId = documentId;
+                Document.this.documentId = documentId;
                 if(documentInfos != null && documentInfos.size() > 0) {
+                    documentContent = documentInfos.get(0);
                     callbackGetDocumentById.onDocumentFound(documentInfos.get(0));
                 }
             }
 
             @Override
             public void onDocumentNotFound(String errorCode, String errorMessage) {
-                _documentId = null;
+                Document.this.documentId = null;
                 callbackGetDocumentById.onDocumentNotFound(errorCode, errorMessage);
             }
         });
     }
 
     public void saveDocument(final CallbackDocumentSaved callbackDocumentSaved) {
-        if(_documentId == null) {
-            ScorocodeSdk.insertDocument(collectionName, _docToInsert, new CallbackInsert() {
+        if(documentId == null) {
+            ScorocodeSdk.insertDocument(collectionName, documentContent, new CallbackInsert() {
                 @Override
                 public void onInsertSucceed(ResponseInsert responseInsert) {
+                    documentContent = responseInsert.getResult();
+                    documentId = documentContent.getId();
                     callbackDocumentSaved.onDocumentSaved();
                 }
 
@@ -78,11 +78,13 @@ public class Document {
             });
         } else {
             HashMap<String, String> query = new HashMap<>();
-            query.put("_id", _documentId);
+            query.put("_id", documentId);
 
-            ScorocodeSdk.updateDocumentById(collectionName, query, _update.getUpdateInfo(), new CallbackUpdateDocumentById() {
+            ScorocodeSdk.updateDocumentById(collectionName, query, update.getUpdateInfo(), new CallbackUpdateDocumentById() {
                 @Override
                 public void onUpdateByIdSucceed(ResponseUpdateById requestUpdateById) {
+                    documentContent = requestUpdateById.getResult();
+                    documentId = documentContent.getId();
                     callbackDocumentSaved.onDocumentSaved();
                 }
 
@@ -96,41 +98,40 @@ public class Document {
 
     public void removeDocument(CallbackRemoveDocument callback) {
         Query query = new Query(collectionName);
-        query.equalTo("_id", _documentId);
+        query.equalTo("_id", documentId);
 
         ScorocodeSdk.removeDocument(collectionName, query, null, callback);
     }
 
     public Object getField(String field) {
-        return _docToInsert.get(field);
+        return documentContent.get(field);
     }
 
     public void setField(String field, Object value) {
-        _docToInsert.put(field, value);
+        documentContent.put(field, value);
     }
 
     public void uploadFile(String fieldName, String fileName, String contenToUploadInBase64, CallbackUploadFile callback) {
         ScorocodeSdk.uploadFile(collectionName,
-                _documentId, fieldName, fileName, contenToUploadInBase64, callback);
+                documentId, fieldName, fileName, contenToUploadInBase64, callback);
     }
 
     public String getFileLink(String fieldName, String fileName) {
-        return ScorocodeSdk.getFileLink(collectionName, fieldName, _documentId, fileName);
+        return ScorocodeSdk.getFileLink(collectionName, fieldName, documentId, fileName);
     }
 
     public void removeFile(String fieldName, String fileName, CallbackDeleteFile callback) {
-        ScorocodeSdk.deleteFile(collectionName, _documentId, fieldName, fileName, callback);
+        ScorocodeSdk.deleteFile(collectionName, documentId, fieldName, fileName, callback);
     }
 
     public Update updateDocument() {
-        return _update;
+        return update;
     }
 
     public static List<DocumentInfo> decodeDocumentsList(String base64data) {
 
         try {
-//            byte[] bson = Base64.decodeBase64(base64data); //for unit testing
-            byte[] bson = android.util.Base64.decode(base64data, android.util.Base64.DEFAULT);
+            byte[] bson = ru.profit_group.scorocode_sdk.scorocode_objects.Base64.decode(base64data);
             BSONObject bsonObject = BSON.decode(bson);
 
             HashMap<Integer, HashMap<String, String>> documentMap = (HashMap<Integer, HashMap<String, String>>) bsonObject.toMap();

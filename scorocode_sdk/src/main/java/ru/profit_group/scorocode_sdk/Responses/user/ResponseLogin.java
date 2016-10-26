@@ -1,6 +1,7 @@
 package ru.profit_group.scorocode_sdk.Responses.user;
 
 import ru.profit_group.scorocode_sdk.Responses.ResponseCodes;
+import ru.profit_group.scorocode_sdk.scorocode_objects.DocumentInfo;
 
 /**
  * Created by Peter Staranchuk on 5/10/16
@@ -18,7 +19,7 @@ public class ResponseLogin extends ResponseCodes {
 
     public class Result {
          String sessionId;
-         UserData user;
+         DocumentInfo user;
 
         public String getSessionId() {
             return sessionId;
@@ -28,11 +29,11 @@ public class ResponseLogin extends ResponseCodes {
             this.sessionId = sessionId;
         }
 
-        public UserData getUser() {
+        public DocumentInfo getUserInfo() {
             return user;
         }
 
-        public void setUser(UserData user) {
+        public void setUser(DocumentInfo user) {
             this.user = user;
         }
     }
