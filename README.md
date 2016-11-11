@@ -1,8 +1,22 @@
 SDK предоставляет доступ к платформе Scorocode для построения приложений,<br>
 основанных на Java / Android. Подробности на нашем сайте: https://scorocode.ru
 
-В настоящее время подключить Sdk можно скачав проект и добавив его как модуль к проекту.
-В скором времени проект будет включен в репозитории jCenter и появится возможность подключить его через gradle.
+Подключить библиотеку к проекту можно при помощи Gradle добавив в dependencies:
+```java
+
+dependencies {
+   compile 'ru.prof-itgroup:scorocode_sdk:1.0.19-beta'
+}
+
+```
+
+Убедитесь, что gradle ищет библиотеки в рекомендуемом Google репозитории jcenter (который включает в себя библиотеки maven):
+```java
+
+repositories {
+   jcenter()
+}
+```
 
 Пример использования: <br>
 ```java
@@ -21,7 +35,7 @@ user.register("any_username", "any_user_email@email.com", "any_user_password", n
             }
         });
 
-2. Зарегeстрировать пользователя и добавить дополнительную информацию о нем в коллекцию userInfos.
+2. Зарегистрировать пользователя и добавить дополнительную информацию о нем в коллекцию userInfos.
 
 Document documentAboutUser = new Document("userInfos");
 documentAboutUser.setField("city", "Moscow");
