@@ -1,9 +1,14 @@
 package ru.profit_group.scorocode_sdk;
 
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringDef;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 
@@ -19,6 +24,7 @@ import ru.profit_group.scorocode_sdk.Callbacks.CallbackApplicationStatistic;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackCountDocument;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackDeleteFile;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackFindDocument;
+import ru.profit_group.scorocode_sdk.Callbacks.CallbackGetFile;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackInsert;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackLoginUser;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackLogoutUser;
@@ -65,6 +71,8 @@ import ru.profit_group.scorocode_sdk.Responses.data.ResponseRemove;
 import ru.profit_group.scorocode_sdk.Responses.data.ResponseUpdate;
 import ru.profit_group.scorocode_sdk.Responses.data.ResponseUpdateById;
 import ru.profit_group.scorocode_sdk.scorocode_objects.UpdateInfo;
+import rx.Observable;
+import rx.Subscriber;
 
 /**
  * Created by Peter Staranchuk on 5/10/16
@@ -694,6 +702,56 @@ public class ScorocodeSdk {
                 callbackSendScript.onScriptSendFailed(ERROR_CODE_GENERAL, t.getMessage());
             }
         });
+    }
+
+    public static void getFileContent(String collectionName, final String fieldName, String documentId, String fileName, final CallbackGetFile callbackGetFile) {
+        final String fileLink = getFileLink(collectionName, fieldName, documentId, fileName);
+
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... params) {
+                if(fileLink == null) {
+                    return null;
+                }
+
+                try {
+                    return readUrl(fileLink);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(String fileContent) {
+                super.onPostExecute(fileContent);
+
+                if(fileContent != null) {
+                    callbackGetFile.onSucceed(fileContent);
+                } else {
+                    callbackGetFile.onFailed(ERROR_CODE_GENERAL, ERROR_MESSAGE_GENERAL);
+                }
+            }
+        }.execute();
+
+    }
+
+    private static String readUrl(String urlString) throws Exception {
+        BufferedReader reader = null;
+        try {
+            URL url = new URL(urlString);
+            reader = new BufferedReader(new InputStreamReader(url.openStream()));
+            StringBuffer buffer = new StringBuffer();
+            int read;
+            char[] chars = new char[1024];
+            while ((read = reader.read(chars)) != -1)
+                buffer.append(chars, 0, read);
+
+            return buffer.toString();
+        } finally {
+            if (reader != null)
+                reader.close();
+        }
     }
 
     private static ScorocodeApi getScorocodeApi() {

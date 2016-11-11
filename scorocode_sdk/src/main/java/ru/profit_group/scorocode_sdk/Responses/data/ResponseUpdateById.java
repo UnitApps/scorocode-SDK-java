@@ -9,13 +9,13 @@ import ru.profit_group.scorocode_sdk.scorocode_objects.DocumentInfo;
  * Created by Peter Staranchuk on 5/10/16
  */
 public class ResponseUpdateById extends ResponseCodes{
-    private DocumentInfo result;
+    private HashMap<String, Object> result;
 
     public DocumentInfo getResult() {
-        return result;
+        return new DocumentInfo(result);
     }
 
-    public void setResult(DocumentInfo result) {
+    public void setResult(HashMap<String, Object> result) {
         this.result = result;
     }
 

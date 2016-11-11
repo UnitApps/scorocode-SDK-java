@@ -11,19 +11,23 @@ import ru.profit_group.scorocode_sdk.scorocode_objects.ScorocodeSdkStateHolder;
 public class RequestRegisterUser {
     private String app;
     private String cli;
+    private String acc;
     private String username;
     private String email;
     private String password;
-    private DocumentInfo doc;
+    private HashMap<String, Object> doc;
 
 
     public RequestRegisterUser(ScorocodeSdkStateHolder stateHolder, String username, String email, String password, DocumentInfo  doc) {
         this.app = stateHolder.getApplicationId();
         this.cli = stateHolder.getClientKey();
-        this.username = username;
+        this.acc = stateHolder.getMasterKey();
         this.email = email;
+        this.username = username;
         this.password = password;
-        this.doc = doc;
+        if(doc != null) {
+            this.doc = doc.getContent();
+        }
     }
 
     public RequestRegisterUser(ScorocodeSdkStateHolder stateHolder, String username, String email, String password) {
@@ -52,8 +56,12 @@ public class RequestRegisterUser {
 
     public DocumentInfo getDocumentInfo() {
         if(doc == null) {
-            return new DocumentInfo();
+            return new DocumentInfo(null);
         }
-        return doc;
+        return new DocumentInfo(doc);
+    }
+
+    public String getAcc() {
+        return acc;
     }
 }

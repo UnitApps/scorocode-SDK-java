@@ -1,5 +1,7 @@
 package ru.profit_group.scorocode_sdk.scorocode_objects;
 
+import java.io.Serializable;
+
 import retrofit2.Callback;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackSendEmail;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackSendPush;
@@ -14,7 +16,7 @@ import ru.profit_group.scorocode_sdk.ScorocodeSdk;
  * Created by Peter Staranchuk on 10/7/16
  */
 
-public class Message {
+public class Message implements Serializable {
 
     public void sendEmail(MessageEmail messageEmail, Query query, CallbackSendEmail callback) throws IllegalStateException {
         String coll = query.getCollectionName();

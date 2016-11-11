@@ -15,6 +15,7 @@ import ru.profit_group.scorocode_sdk.Callbacks.CallbackDeleteFile;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackDocumentSaved;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackFindDocument;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackGetDocumentById;
+import ru.profit_group.scorocode_sdk.Callbacks.CallbackGetFile;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackRemoveDocument;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackUploadFile;
 import ru.profit_group.scorocode_sdk.Responses.data.ResponseRemove;
@@ -26,6 +27,7 @@ import static org.junit.Assert.*;
 import static ru.profit_group.scorocode_sdk.ScorocodeTestHelper.APP_ID;
 import static ru.profit_group.scorocode_sdk.ScorocodeTestHelper.CLIENT_KEY;
 import static ru.profit_group.scorocode_sdk.ScorocodeTestHelper.MASTER_KEY;
+import static ru.profit_group.scorocode_sdk.ScorocodeTestHelper.TEST_COLLECTION_NAME;
 import static ru.profit_group.scorocode_sdk.ScorocodeTestHelper.printError;
 
 /**
@@ -310,7 +312,53 @@ public class ScorocodeSdkTestDocumentClass {
     }
 
     @Test @Ignore
-    public void test7RemoveFile() throws InterruptedException {
+    public void test7GetFileContent() throws InterruptedException {
+        Query query = new Query(ScorocodeTestHelper.TEST_COLLECTION_NAME);
+        query.equalTo(FILE_FIELD_NAME, fileName);
+
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+
+        query.findDocuments(new CallbackFindDocument() {
+            @Override
+            public void onDocumentFound(List<DocumentInfo> documentInfos) {
+                final Document document = new Document(TEST_COLLECTION_NAME);
+                document.getDocumentById(documentInfos.get(0).getId(), new CallbackGetDocumentById() {
+                    @Override
+                    public void onDocumentFound(DocumentInfo documentInfo) {
+                        document.getFileContent(FILE_FIELD_NAME, fileName, new CallbackGetFile() {
+                            @Override
+                            public void onSucceed(String fileContent) {
+                                countDownLatch.countDown();
+                            }
+
+                            @Override
+                            public void onFailed(String errorCode, String errorMessage) {
+                                printError("не удалось получить контент файла", errorCode, errorMessage);
+                                countDownLatch.countDown();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onDocumentNotFound(String errorCode, String errorMessage) {
+                        printError("не удалось найти документ с файлом", errorCode, errorMessage);
+                        countDownLatch.countDown();
+                    }
+                });
+            }
+
+            @Override
+            public void onDocumentNotFound(String errorCode, String errorMessage) {
+                printError("не удалось найти документ с файлом", errorCode, errorMessage);
+                countDownLatch.countDown();
+            }
+        });
+
+        countDownLatch.await();
+    }
+
+    @Test
+    public void test8RemoveFile() throws InterruptedException {
         Query query = new Query(ScorocodeTestHelper.TEST_COLLECTION_NAME);
         query.equalTo(FILE_FIELD_NAME, fileName);
 
@@ -378,5 +426,6 @@ public class ScorocodeSdkTestDocumentClass {
             }
         });
     }
+
 
 }

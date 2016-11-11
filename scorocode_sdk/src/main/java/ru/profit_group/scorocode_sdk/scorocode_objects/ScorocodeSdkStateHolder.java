@@ -25,10 +25,16 @@ public class ScorocodeSdkStateHolder {
     }
 
     public String getApplicationId() {
+        if(applicationId == null) {
+            throw new RuntimeException("you must initialize Scorocode SDK first. User init(...) method of ScorocodeSdk class.");
+        }
         return applicationId;
     }
 
     public String getClientKey() {
+        if(clientKey == null) {
+            throw new RuntimeException("you must initialize Scorocode SDK first. User init(...) method of ScorocodeSdk class.");
+        }
         return clientKey;
     }
 

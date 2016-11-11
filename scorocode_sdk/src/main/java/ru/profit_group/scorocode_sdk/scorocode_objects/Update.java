@@ -51,7 +51,7 @@ public class Update {
         return this;
     }
 
-    public Update inc(String field, Integer increaseValue) {
+    public Update inc(String field, Object increaseValue) {
         addUpdateInfoRule(field, "$inc", increaseValue);
         return this;
     }
@@ -64,17 +64,17 @@ public class Update {
     }
 
     //multiply value by number
-    public Update mul(String field, Integer value) {
+    public Update mul(String field, Object value) {
         addUpdateInfoRule(field, "$mul", value);
         return this;
     }
 
-    public Update min(String field, Integer valueToCompare) {
+    public Update min(String field, Object valueToCompare) {
         addUpdateInfoRule(field, "$min", valueToCompare);
         return this;
     }
 
-    public Update max(String field, Integer valueToCompare) {
+    public Update max(String field, Object valueToCompare) {
         addUpdateInfoRule(field, "$max", valueToCompare);
         return this;
     }

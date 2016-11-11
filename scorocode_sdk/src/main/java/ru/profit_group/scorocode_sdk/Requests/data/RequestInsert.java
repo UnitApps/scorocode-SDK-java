@@ -17,7 +17,7 @@ public class RequestInsert {
     private String acc;
     private String sess;
     private String coll;
-    private DocumentInfo doc;
+    private HashMap<String, Object> doc;
 
     public RequestInsert(
             @NonNull ScorocodeSdkStateHolder stateHolder,
@@ -28,7 +28,7 @@ public class RequestInsert {
         this.acc = stateHolder.getMasterKey();
         this.sess = stateHolder.getSessionId();
         this.coll = collectionName;
-        this.doc = doc;
+        this.doc = doc.getFields();
     }
 
     public String getApp() {
@@ -52,6 +52,6 @@ public class RequestInsert {
     }
 
     public DocumentInfo getDoc() {
-        return doc;
+        return new DocumentInfo(doc);
     }
 }

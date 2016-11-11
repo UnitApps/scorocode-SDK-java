@@ -11,6 +11,7 @@ import ru.profit_group.scorocode_sdk.Callbacks.CallbackDeleteFile;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackDocumentSaved;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackFindDocument;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackGetDocumentById;
+import ru.profit_group.scorocode_sdk.Callbacks.CallbackGetFile;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackInsert;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackRemoveDocument;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackUpdateDocumentById;
@@ -31,7 +32,7 @@ public class Document {
 
     public Document(String collectionName) {
         this.collectionName = collectionName;
-        documentContent = new DocumentInfo();
+        documentContent = new DocumentInfo(null);
         update = new Update();
     }
 
@@ -86,6 +87,9 @@ public class Document {
                     documentContent = requestUpdateById.getResult();
                     documentId = documentContent.getId();
                     callbackDocumentSaved.onDocumentSaved();
+                    if(update != null && update.getUpdateInfo() != null) {
+                        update.getUpdateInfo().clear();
+                    }
                 }
 
                 @Override
@@ -119,6 +123,20 @@ public class Document {
     public String getFileLink(String fieldName, String fileName) {
         return ScorocodeSdk.getFileLink(collectionName, fieldName, documentId, fileName);
     }
+
+    public void getFileContent(String fieldName, String fileName, final CallbackGetFile callbackGetFile) {
+        ScorocodeSdk.getFileContent(collectionName, fieldName, documentId, fileName, new CallbackGetFile() {
+            @Override
+            public void onSucceed(String fileContent) {
+               callbackGetFile.onSucceed(fileContent);
+            }
+
+            @Override
+            public void onFailed(String errorCode, String errorMessage) {
+                callbackGetFile.onFailed(errorCode, errorMessage);
+            }
+        });
+    };
 
     public void removeFile(String fieldName, String fileName, CallbackDeleteFile callback) {
         ScorocodeSdk.deleteFile(collectionName, documentId, fieldName, fileName, callback);

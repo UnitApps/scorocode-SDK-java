@@ -95,22 +95,22 @@ public class Query  {
         return this;
     }
 
-    public Query greaterThan(String field, Integer value) {
+    public Query greaterThan(String field, Object value) {
         addQueryRule(field, "$gt", value);
         return this;
     }
 
-    public Query greaterThenOrEqualTo(String field, Integer value) {
+    public Query greaterThenOrEqualTo(String field, Object value) {
         addQueryRule(field, "$gte", value);
         return this;
     }
 
-    public Query lessThan(String field, Integer value) {
+    public Query lessThan(String field, Object value) {
         addQueryRule(field, "$lt", value);
         return this;
     }
 
-    public Query lessThanOrEqualTo(String field, Integer value) {
+    public Query lessThanOrEqualTo(String field, Object value) {
         addQueryRule(field, "$lte", value);
         return this;
     }

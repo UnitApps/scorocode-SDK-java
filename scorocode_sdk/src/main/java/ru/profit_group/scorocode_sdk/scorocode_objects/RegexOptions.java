@@ -1,9 +1,11 @@
 package ru.profit_group.scorocode_sdk.scorocode_objects;
 
+import java.io.Serializable;
+
 /**
  * Created by Peter Staranchuk on 10/13/16
  */
-public class RegexOptions {
+public class RegexOptions implements Serializable {
     private String options;
 
     public RegexOptions() {
