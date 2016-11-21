@@ -32,7 +32,9 @@ public class RequestRemove {
         this.acc = stateHolder.getMasterKey();
         this.sess = stateHolder.getSessionId();
         this.coll = collectionName;
-        this.query = query.getQueryInfo().getInfo();
+        if(query != null) {
+            this.query = query.getQueryInfo().getInfo();
+        }
         this.limit = limit;
     }
 }

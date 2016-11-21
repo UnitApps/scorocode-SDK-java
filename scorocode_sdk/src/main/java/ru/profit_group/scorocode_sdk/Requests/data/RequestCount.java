@@ -30,6 +30,8 @@ public class RequestCount {
         this.acc = stateHolder.getMasterKey();
         this.sess = stateHolder.getSessionId();
         this.coll = coll;
-        this.query = query.getQueryInfo().getInfo();
+        if(query != null) {
+            this.query = query.getQueryInfo().getInfo();
+        }
     }
 }
