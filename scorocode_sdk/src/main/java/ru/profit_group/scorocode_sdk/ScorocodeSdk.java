@@ -3,23 +3,12 @@ package ru.profit_group.scorocode_sdk;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringDef;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.util.HashMap;
 import java.util.List;
 
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackApplicationStatistic;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackCountDocument;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackDeleteFile;
@@ -40,11 +29,15 @@ import ru.profit_group.scorocode_sdk.Callbacks.CallbackUploadFile;
 import ru.profit_group.scorocode_sdk.Requests.messages.MessageEmail;
 import ru.profit_group.scorocode_sdk.Requests.messages.MessagePush;
 import ru.profit_group.scorocode_sdk.Requests.messages.MessageSms;
+import ru.profit_group.scorocode_sdk.dagger2_components.DaggerScorocodeApiComponent;
+import ru.profit_group.scorocode_sdk.dagger2_components.ScorocodeApiComponent;
 import ru.profit_group.scorocode_sdk.scorocode_objects.Document;
 import ru.profit_group.scorocode_sdk.scorocode_objects.DocumentInfo;
+import ru.profit_group.scorocode_sdk.scorocode_objects.NetworkHelper;
 import ru.profit_group.scorocode_sdk.scorocode_objects.Query;
+import ru.profit_group.scorocode_sdk.scorocode_objects.QueryInfo;
 import ru.profit_group.scorocode_sdk.scorocode_objects.ScorocodeSdkStateHolder;
-import ru.profit_group.scorocode_sdk.scorocode_objects.Sort;
+import ru.profit_group.scorocode_sdk.scorocode_objects.SortInfo;
 import ru.profit_group.scorocode_sdk.Requests.data.RequestCount;
 import ru.profit_group.scorocode_sdk.Requests.data.RequestFind;
 import ru.profit_group.scorocode_sdk.Requests.data.RequestInsert;
@@ -71,21 +64,17 @@ import ru.profit_group.scorocode_sdk.Responses.data.ResponseRemove;
 import ru.profit_group.scorocode_sdk.Responses.data.ResponseUpdate;
 import ru.profit_group.scorocode_sdk.Responses.data.ResponseUpdateById;
 import ru.profit_group.scorocode_sdk.scorocode_objects.UpdateInfo;
-import rx.Observable;
-import rx.Subscriber;
 
 /**
  * Created by Peter Staranchuk on 5/10/16
  */
 public class ScorocodeSdk {
 
-    private static final String BASE_URL = "https://api.scorocode.ru";
     public static final String ERROR_MESSAGE_GENERAL = "server not answered on request";
     public static final String ERROR_CODE_GENERAL = "-1";
 
     private static ScorocodeSdkStateHolder stateHolder;
-    private static ScorocodeApi scorocodeApiInstance; //Singleton
-
+    private static ScorocodeApiComponent scorocodeApiComponent;
     /**
      * Init Scorocode sdk with Keys
      */
@@ -98,6 +87,7 @@ public class ScorocodeSdk {
             @Nullable String scriptKey,
             @Nullable String webSocket) {
 
+        scorocodeApiComponent = DaggerScorocodeApiComponent.builder().build();
         stateHolder = new ScorocodeSdkStateHolder(applicationId, clientKey, masterKey, fileKey, messageKey, scriptKey, webSocket);
     }
 
@@ -117,7 +107,7 @@ public class ScorocodeSdk {
             public void onResponse(Call<ResponseAppStatistic> call, Response<ResponseAppStatistic> response) {
                 if(response != null && response.body() != null) {
                     ResponseAppStatistic responseAppStatistic = response.body();
-                    if(responseSucceed(responseAppStatistic)) {
+                    if(NetworkHelper.isResponseSucceed(responseAppStatistic)) {
                         callbackApplicationStatistic.onRequestSucceed(responseAppStatistic);
                     } else {
                         callbackApplicationStatistic.onRequestFailed(responseAppStatistic.getErrCode(), responseAppStatistic.getErrMsg());
@@ -155,7 +145,7 @@ public class ScorocodeSdk {
             public void onResponse(Call<ResponseCodes> call, Response<ResponseCodes> response) {
                 if(response != null && response.body() != null) {
                     ResponseCodes responseCodes = response.body();
-                    if(responseSucceed(responseCodes)) {
+                    if(NetworkHelper.isResponseSucceed(responseCodes)) {
                         callbackRegisterUser.onRegisterSucceed();
                     } else {
                         callbackRegisterUser.onRegisterFailed(responseCodes.getErrCode(), responseCodes.getErrMsg());
@@ -190,7 +180,7 @@ public class ScorocodeSdk {
             public void onResponse(Call<ResponseLogin> call, Response<ResponseLogin> response) {
                 if(response != null && response.body() != null) {
                     ResponseLogin responseLogin = response.body();
-                    if(responseSucceed(responseLogin)) {
+                    if(NetworkHelper.isResponseSucceed(responseLogin)) {
                         if(responseLogin.getResult() != null) {
                             ScorocodeSdk.setSessionId(responseLogin.getResult().getSessionId());
                             callbackLogin.onLoginSucceed(responseLogin);
@@ -226,7 +216,7 @@ public class ScorocodeSdk {
             public void onResponse(Call<ResponseCodes> call, Response<ResponseCodes> response) {
                 if(response != null && response.body() != null) {
                     ResponseCodes responseCodes = response.body();
-                    if(responseSucceed(responseCodes)) {
+                    if(NetworkHelper.isResponseSucceed(responseCodes)) {
                         callbackLogout.onLogoutSucceed();
                         ScorocodeSdk.setSessionId(null);
                     } else {
@@ -261,7 +251,7 @@ public class ScorocodeSdk {
             public void onResponse(Call<ResponseInsert> call, Response<ResponseInsert> response) {
                 if(response != null && response.body() != null) {
                     ResponseInsert responseInsert = response.body();
-                    if(responseSucceed(responseInsert)) {
+                    if(NetworkHelper.isResponseSucceed(responseInsert)) {
                         callbackInsert.onInsertSucceed(responseInsert);
                     } else {
                         callbackInsert.onInsertFailed(responseInsert.getErrCode(), responseInsert.getErrMsg());
@@ -297,7 +287,7 @@ public class ScorocodeSdk {
             public void onResponse(Call<ResponseRemove> call, Response<ResponseRemove> response) {
                 if(response != null && response.body() != null) {
                     ResponseRemove responseRemove = response.body();
-                    if(responseSucceed(responseRemove)) {
+                    if(NetworkHelper.isResponseSucceed(responseRemove)) {
                         callbackRemoveDocument.onRemoveSucceed(responseRemove);
                     } else {
                         callbackRemoveDocument.onRemoveFailed(responseRemove.getErrCode(), responseRemove.getErrMsg());
@@ -336,7 +326,7 @@ public class ScorocodeSdk {
             public void onResponse(Call<ResponseUpdate> call, Response<ResponseUpdate> response) {
                 if(response != null && response.body() != null) {
                     ResponseUpdate responseUpdate = response.body();
-                    if(responseSucceed(responseUpdate)) {
+                    if(NetworkHelper.isResponseSucceed(responseUpdate)) {
                         callbackUpdateDocument.onUpdateSucceed(responseUpdate);
                     } else {
                         callbackUpdateDocument.onUpdateFailed(responseUpdate.getErrCode(), responseUpdate.getErrMsg());
@@ -362,7 +352,7 @@ public class ScorocodeSdk {
      */
     public static void updateDocumentById(
             @NonNull String collectionName,
-            @NonNull HashMap<String, String> query,
+            @NonNull QueryInfo query,
             @NonNull UpdateInfo updateInfo,
             @NonNull final CallbackUpdateDocumentById callbackUpdateDocumentById) {
 
@@ -372,7 +362,7 @@ public class ScorocodeSdk {
             public void onResponse(Call<ResponseUpdateById> call, Response<ResponseUpdateById> response) {
                 if(response != null && response.body() != null) {
                     ResponseUpdateById responseUpdateById = response.body();
-                    if(responseSucceed(responseUpdateById)) {
+                    if(NetworkHelper.isResponseSucceed(responseUpdateById)) {
                         callbackUpdateDocumentById.onUpdateByIdSucceed(responseUpdateById);
                     } else {
                         callbackUpdateDocumentById.onUpdateByIdFailed(responseUpdateById.getErrCode(), responseUpdateById.getErrMsg());
@@ -402,7 +392,7 @@ public class ScorocodeSdk {
     public static void findDocument(
             @NonNull String collectionName,
             @Nullable Query query,
-            @Nullable Sort sort,
+            @Nullable SortInfo sort,
             @Nullable List<String> fieldsNamesToFind,
             @Nullable Integer limit,
             @Nullable Integer skip,
@@ -414,7 +404,7 @@ public class ScorocodeSdk {
             public void onResponse(Call<ResponseString> call, Response<ResponseString> response) {
                 if(response != null && response.body() != null) {
                     ResponseString responseFindDocument = response.body();
-                    if(responseSucceed(responseFindDocument)) {
+                    if(NetworkHelper.isResponseSucceed(responseFindDocument)) {
                         String base64data = response.body().getResult();
                         callbackFindDocument.onDocumentFound(Document.decodeDocumentsList(base64data));
                     } else {
@@ -449,7 +439,7 @@ public class ScorocodeSdk {
             public void onResponse(Call<ResponseCount> call, Response<ResponseCount> response) {
                 if(response != null && response.body() != null) {
                     ResponseCount responseCount = response.body();
-                    if(responseSucceed(responseCount)) {
+                    if(NetworkHelper.isResponseSucceed(responseCount)) {
                         callbackCountDocument.onDocumentsCounted(responseCount);
                     } else {
                         callbackCountDocument.onCountFailed(responseCount.getErrCode(), responseCount.getErrMsg());
@@ -489,7 +479,7 @@ public class ScorocodeSdk {
             public void onResponse(Call<ResponseCodes> call, Response<ResponseCodes> response) {
                 if(response != null && response.body() != null) {
                     ResponseCodes responseCodes = response.body();
-                    if(responseSucceed(responseCodes)) {
+                    if(NetworkHelper.isResponseSucceed(responseCodes)) {
                         callbackUploadFile.onDocumentUploaded();
                     } else {
                         callbackUploadFile.onDocumentUploadFailed(responseCodes.getErrCode(), responseCodes.getErrMsg());
@@ -544,7 +534,7 @@ public class ScorocodeSdk {
             public void onResponse(Call<ResponseCodes> call, Response<ResponseCodes> response) {
                 if(response != null && response.body() != null) {
                     ResponseCodes responseCodes = response.body();
-                    if(responseSucceed(responseCodes)) {
+                    if(NetworkHelper.isResponseSucceed(responseCodes)) {
                         callbackDeleteFile.onDocumentDeleted();
                     } else {
                         callbackDeleteFile.onDetelionFailed(responseCodes.getErrCode(), responseCodes.getErrMsg());
@@ -580,7 +570,7 @@ public class ScorocodeSdk {
             public void onResponse(Call<ResponseCodes> call, Response<ResponseCodes> response) {
                 if(response != null && response.body() != null) {
                     ResponseCodes responseCodes = response.body();
-                    if(responseSucceed(responseCodes)) {
+                    if(NetworkHelper.isResponseSucceed(responseCodes)) {
                         callbackSendEmail.onEmailSend();
                     } else {
                         callbackSendEmail.onEmailSendFailed(responseCodes.getErrCode(), responseCodes.getErrMsg());
@@ -616,7 +606,7 @@ public class ScorocodeSdk {
             public void onResponse(Call<ResponseCodes> call, Response<ResponseCodes> response) {
                 if(response != null && response.body() != null) {
                     ResponseCodes responseCodes = response.body();
-                    if(responseSucceed(responseCodes)) {
+                    if(NetworkHelper.isResponseSucceed(responseCodes)) {
                         callbackSendPush.onPushSended();
                     } else {
 
@@ -653,7 +643,7 @@ public class ScorocodeSdk {
             public void onResponse(Call<ResponseCodes> call, Response<ResponseCodes> response) {
                 if(response != null && response.body() != null) {
                     ResponseCodes responseCodes = response.body();
-                    if(responseSucceed(responseCodes)) {
+                    if(NetworkHelper.isResponseSucceed(responseCodes)) {
                         callbackSendSms.onSmsSended();
                     } else {
                         callbackSendSms.onSmsSendFailed(responseCodes.getErrCode(), responseCodes.getErrMsg());
@@ -687,7 +677,7 @@ public class ScorocodeSdk {
             public void onResponse(Call<ResponseCodes> call, Response<ResponseCodes> response) {
                 if(response != null && response.body() != null) {
                     ResponseCodes responseCodes = response.body();
-                    if(responseSucceed(responseCodes)) {
+                    if(NetworkHelper.isResponseSucceed(responseCodes)) {
                         callbackSendScript.onScriptSended();
                     } else {
                         callbackSendScript.onScriptSendFailed(responseCodes.getErrCode(), responseCodes.getErrMsg());
@@ -715,7 +705,7 @@ public class ScorocodeSdk {
                 }
 
                 try {
-                    return readUrl(fileLink);
+                    return NetworkHelper.readUrl(fileLink);
                 } catch (Exception e) {
                     e.printStackTrace();
                     return null;
@@ -736,47 +726,8 @@ public class ScorocodeSdk {
 
     }
 
-    private static String readUrl(String urlString) throws Exception {
-        BufferedReader reader = null;
-        try {
-            URL url = new URL(urlString);
-            reader = new BufferedReader(new InputStreamReader(url.openStream()));
-            StringBuffer buffer = new StringBuffer();
-            int read;
-            char[] chars = new char[1024];
-            while ((read = reader.read(chars)) != -1)
-                buffer.append(chars, 0, read);
-
-            return buffer.toString();
-        } finally {
-            if (reader != null)
-                reader.close();
-        }
-    }
-
     private static ScorocodeApi getScorocodeApi() {
-        if(scorocodeApiInstance == null) {
-            scorocodeApiInstance = getRetrofit().create(ScorocodeApi.class);
-            return scorocodeApiInstance;
-        } else {
-            return scorocodeApiInstance;
-        }
-    }
-
-    @NonNull
-    private static Retrofit getRetrofit() {
-            OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
-            HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.NONE);
-            clientBuilder.addInterceptor(loggingInterceptor);
-            clientBuilder.followRedirects(false);
-
-            return new Retrofit.Builder()
-                    .baseUrl(BASE_URL)
-                    .client(clientBuilder.build())
-                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
+        return scorocodeApiComponent.getScorocodeApi();
     }
 
     /**
@@ -797,10 +748,6 @@ public class ScorocodeSdk {
         }
 
         return null;
-    }
-
-    private static boolean responseSucceed(ResponseCodes responseCodes) {
-        return !responseCodes.isError();
     }
 
 }
