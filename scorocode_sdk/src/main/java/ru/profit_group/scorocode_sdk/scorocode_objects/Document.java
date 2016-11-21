@@ -3,6 +3,7 @@ package ru.profit_group.scorocode_sdk.scorocode_objects;
 import org.bson.BSON;
 import org.bson.BSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +25,7 @@ import ru.profit_group.scorocode_sdk.ScorocodeSdk;
  * Created by Peter Staranchuk on 10/6/16
  */
 
-public class Document {
+public class Document implements Serializable {
     protected String collectionName;
     protected String documentId;
     protected DocumentInfo documentContent;
@@ -78,17 +79,17 @@ public class Document {
                 }
             });
         } else {
-            HashMap<String, String> query = new HashMap<>();
-            query.put("_id", documentId);
+            QueryInfo queryInfo = new QueryInfo();
+            queryInfo.getInfo().put("_id", documentId);
 
-            ScorocodeSdk.updateDocumentById(collectionName, query, update.getUpdateInfo(), new CallbackUpdateDocumentById() {
+            ScorocodeSdk.updateDocumentById(collectionName, queryInfo, update.getUpdateInfo(), new CallbackUpdateDocumentById() {
                 @Override
                 public void onUpdateByIdSucceed(ResponseUpdateById requestUpdateById) {
                     documentContent = requestUpdateById.getResult();
                     documentId = documentContent.getId();
                     callbackDocumentSaved.onDocumentSaved();
                     if(update != null && update.getUpdateInfo() != null) {
-                        update.getUpdateInfo().clear();
+                        update.getUpdateInfo().getInfo().clear();
                     }
                 }
 
