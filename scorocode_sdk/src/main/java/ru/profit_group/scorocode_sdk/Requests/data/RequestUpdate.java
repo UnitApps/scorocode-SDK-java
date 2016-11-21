@@ -4,10 +4,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import ru.profit_group.scorocode_sdk.scorocode_objects.Query;
 import ru.profit_group.scorocode_sdk.scorocode_objects.QueryInfo;
 import ru.profit_group.scorocode_sdk.scorocode_objects.ScorocodeSdkStateHolder;
+import ru.profit_group.scorocode_sdk.scorocode_objects.UpdateInfo;
 
 /**
  * Created by Peter Staranchuk on 5/10/16
@@ -18,15 +20,15 @@ public class RequestUpdate {
     private String acc;
     private String sess;
     private String coll;
-    private QueryInfo query;
-    private HashMap<String, HashMap<String, Object>> doc;
+    private Map<String, Object> query;
+    private Map<String, HashMap<String, Object>> doc;
     private Integer limit;
 
     public RequestUpdate(
             @NonNull ScorocodeSdkStateHolder stateHolder,
             @NonNull String collectionName,
             @Nullable Query query,
-            @NonNull HashMap<String, HashMap<String, Object>> doc,
+            @NonNull UpdateInfo doc,
             @Nullable Integer limit) {
 
         this.app = stateHolder.getApplicationId();
@@ -34,40 +36,10 @@ public class RequestUpdate {
         this.acc = stateHolder.getMasterKey();
         this.sess = stateHolder.getSessionId();
         this.coll = collectionName;
-        this.query = query.getQueryInfo();
-        this.doc = doc;
+        if(query != null) {
+            this.query = query.getQueryInfo().getInfo();
+        }
+        this.doc = doc.getInfo();
         this.limit = limit;
-    }
-
-    public String getApp() {
-        return app;
-    }
-
-    public String getCli() {
-        return cli;
-    }
-
-    public String getAcc() {
-        return acc;
-    }
-
-    public String getSess() {
-        return sess;
-    }
-
-    public String getColl() {
-        return coll;
-    }
-
-    public QueryInfo getQuery() {
-        return query;
-    }
-
-    public HashMap<String, HashMap<String, Object>> getDoc() {
-        return doc;
-    }
-
-    public Integer getLimit() {
-        return limit;
     }
 }

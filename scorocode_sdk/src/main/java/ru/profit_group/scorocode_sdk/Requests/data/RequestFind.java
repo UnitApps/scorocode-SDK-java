@@ -4,13 +4,12 @@ package ru.profit_group.scorocode_sdk.Requests.data;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import ru.profit_group.scorocode_sdk.scorocode_objects.Query;
-import ru.profit_group.scorocode_sdk.scorocode_objects.QueryInfo;
 import ru.profit_group.scorocode_sdk.scorocode_objects.ScorocodeSdkStateHolder;
-import ru.profit_group.scorocode_sdk.scorocode_objects.Sort;
+import ru.profit_group.scorocode_sdk.scorocode_objects.SortInfo;
 
 /**
  * Created by Peter Staranchuk on 5/10/16
@@ -21,8 +20,8 @@ public class RequestFind {
     private String acc;
     private String sess;
     private String coll;
-    private QueryInfo query;
-    private HashMap<String, Integer> sort;
+    private Map<String, Object> query;
+    private Map<String, Integer> sort;
     private List<String> fields;
     private Integer limit;
     private Integer skip;
@@ -31,7 +30,7 @@ public class RequestFind {
             @NonNull ScorocodeSdkStateHolder stateHolder,
             @NonNull String coll,
             @Nullable Query query,
-            @Nullable Sort sort,
+            @Nullable SortInfo sort,
             @Nullable List<String> fields,
             @Nullable Integer limit,
             @Nullable Integer skip) {
@@ -41,50 +40,14 @@ public class RequestFind {
         this.acc = stateHolder.getMasterKey();
         this.sess = stateHolder.getSessionId();
         this.coll = coll;
-        this.query = query.getQueryInfo();
-        this.sort = sort;
+        if(query != null) {
+            this.query = query.getQueryInfo().getInfo();
+        }
+        if(sort != null) {
+            this.sort = sort.getInfo();
+        }
         this.fields = fields;
         this.limit = limit;
         this.skip = skip;
-    }
-
-    public String getApp() {
-        return app;
-    }
-
-    public String getCli() {
-        return cli;
-    }
-
-    public String getAcc() {
-        return acc;
-    }
-
-    public String getSess() {
-        return sess;
-    }
-
-    public String getColl() {
-        return coll;
-    }
-
-    public QueryInfo getQuery() {
-        return query;
-    }
-
-    public HashMap<String, Integer> getSort() {
-        return sort;
-    }
-
-    public List<String> getFields() {
-        return fields;
-    }
-
-    public Integer getLimit() {
-        return limit;
-    }
-
-    public Integer getSkip() {
-        return skip;
     }
 }

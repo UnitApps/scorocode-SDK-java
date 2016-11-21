@@ -29,28 +29,4 @@ public class RequestSendScriptTask {
         this.script = scriptId;
         this.pool = dataPoolForScript;
     }
-
-    public String getApp() {
-        return app;
-    }
-
-    public String getCli() {
-        return cli;
-    }
-
-    public String getAcc() {
-        return acc;
-    }
-
-    public String getSess() {
-        return sess;
-    }
-
-    public String getScript() {
-        return script;
-    }
-
-    public Object getPool() {
-        return pool;
-    }
 }

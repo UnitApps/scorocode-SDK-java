@@ -34,36 +34,4 @@ public class RequestFile {
         this.field = field;
         this.file = file;
     }
-
-    public String getApp() {
-        return app;
-    }
-
-    public String getCli() {
-        return cli;
-    }
-
-    public String getAcc() {
-        return acc;
-    }
-
-    public String getSess() {
-        return sess;
-    }
-
-    public String getColl() {
-        return coll;
-    }
-
-    public String getDocId() {
-        return docId;
-    }
-
-    public String getField() {
-        return field;
-    }
-
-    public String getFile() {
-        return file;
-    }
 }

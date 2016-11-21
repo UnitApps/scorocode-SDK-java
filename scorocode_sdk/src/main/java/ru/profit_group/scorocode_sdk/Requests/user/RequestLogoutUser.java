@@ -15,16 +15,4 @@ public class RequestLogoutUser {
         this.cli = stateHolder.getClientKey();
         this.sess = stateHolder.getSessionId();
     }
-
-    public String getApp() {
-        return app;
-    }
-
-    public String getCli() {
-        return cli;
-    }
-
-    public String getSess() {
-        return sess;
-    }
 }

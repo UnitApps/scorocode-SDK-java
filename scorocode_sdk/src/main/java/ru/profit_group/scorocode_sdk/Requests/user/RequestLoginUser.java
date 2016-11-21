@@ -17,20 +17,4 @@ public class RequestLoginUser {
         this.email = email;
         this.password = password;
     }
-
-    public String getApp() {
-        return app;
-    }
-
-    public String getCli() {
-        return cli;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
 }
