@@ -16,16 +16,4 @@ public class RequestStatistic {
         this.cli = stateHolder.getClientKey();
         this.acc = stateHolder.getMasterKey();
     }
-
-    public String getApp() {
-        return app;
-    }
-
-    public String getCli() {
-        return cli;
-    }
-
-    public String getAcc() {
-        return acc;
-    }
 }

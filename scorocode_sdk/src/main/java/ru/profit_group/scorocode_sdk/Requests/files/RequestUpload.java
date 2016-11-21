@@ -37,40 +37,4 @@ public class RequestUpload {
         this.file = file;
         this.content = content;
     }
-
-    public String getApp() {
-        return app;
-    }
-
-    public String getCli() {
-        return cli;
-    }
-
-    public String getAcc() {
-        return acc;
-    }
-
-    public String getSess() {
-        return sess;
-    }
-
-    public String getColl() {
-        return coll;
-    }
-
-    public String getDocId() {
-        return docId;
-    }
-
-    public String getField() {
-        return field;
-    }
-
-    public String getFile() {
-        return file;
-    }
-
-    public String getContent() {
-        return content;
-    }
 }

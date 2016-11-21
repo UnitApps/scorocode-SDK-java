@@ -4,8 +4,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.util.HashMap;
+import java.util.Map;
 
+import ru.profit_group.scorocode_sdk.scorocode_objects.QueryInfo;
 import ru.profit_group.scorocode_sdk.scorocode_objects.ScorocodeSdkStateHolder;
+import ru.profit_group.scorocode_sdk.scorocode_objects.UpdateInfo;
 
 /**
  * Created by Peter Staranchuk on 5/10/16
@@ -16,48 +19,20 @@ public class RequestUpdateById {
     private String acc;
     private String sess;
     private String coll;
-    private HashMap<String, String> query;
-    private HashMap<String, HashMap<String,Object>> doc;
+    private Map<String, Object> query;
+    private Map<String, HashMap<String,Object>> doc;
 
     public RequestUpdateById(
             @NonNull ScorocodeSdkStateHolder stateHolder,
             @NonNull String collectionName,
-            @NonNull HashMap<String, String> query,
-            @NonNull HashMap<String, HashMap<String, Object>> doc) {
+            @NonNull QueryInfo query,
+            @NonNull UpdateInfo doc) {
         this.app = stateHolder.getApplicationId();
         this.cli = stateHolder.getClientKey();
         this.acc = stateHolder.getMasterKey();
         this.sess = stateHolder.getSessionId();
         this.coll = collectionName;
-        this.query = query;
-        this.doc = doc;
-    }
-
-    public String getApp() {
-        return app;
-    }
-
-    public String getCli() {
-        return cli;
-    }
-
-    public String getAcc() {
-        return acc;
-    }
-
-    public String getSess() {
-        return sess;
-    }
-
-    public String getColl() {
-        return coll;
-    }
-
-    public HashMap<String, String> getQuery() {
-        return query;
-    }
-
-    public HashMap<String, HashMap<String, Object>> getDoc() {
-        return doc;
+        this.query = query.getInfo();
+        this.doc = doc.getInfo();
     }
 }

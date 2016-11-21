@@ -17,7 +17,6 @@ public class RequestRegisterUser {
     private String password;
     private HashMap<String, Object> doc;
 
-
     public RequestRegisterUser(ScorocodeSdkStateHolder stateHolder, String username, String email, String password, DocumentInfo  doc) {
         this.app = stateHolder.getApplicationId();
         this.cli = stateHolder.getClientKey();
@@ -34,34 +33,4 @@ public class RequestRegisterUser {
         this(stateHolder, username, email, password, null);
     }
 
-    public String getApp() {
-        return app;
-    }
-
-    public String getCli() {
-        return cli;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public DocumentInfo getDocumentInfo() {
-        if(doc == null) {
-            return new DocumentInfo(null);
-        }
-        return new DocumentInfo(doc);
-    }
-
-    public String getAcc() {
-        return acc;
-    }
 }

@@ -1,9 +1,11 @@
 package ru.profit_group.scorocode_sdk.scorocode_objects;
 
+import java.io.Serializable;
+
 /**
  * Created by Peter Staranchuk on 10/11/16
  */
-public class ScorocodeSdkStateHolder {
+public class ScorocodeSdkStateHolder implements Serializable {
     private String applicationId;
     private String clientKey;
     private String masterKey;

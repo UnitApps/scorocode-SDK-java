@@ -3,6 +3,8 @@ package ru.profit_group.scorocode_sdk.Requests.data;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import java.util.Map;
+
 import ru.profit_group.scorocode_sdk.scorocode_objects.Query;
 import ru.profit_group.scorocode_sdk.scorocode_objects.QueryInfo;
 import ru.profit_group.scorocode_sdk.scorocode_objects.ScorocodeSdkStateHolder;
@@ -17,7 +19,7 @@ public class RequestCount {
     private String acc;
     private String sess;
     private String coll;
-    private QueryInfo query;
+    private Map<String, Object> query;
 
     public RequestCount(
             @NonNull ScorocodeSdkStateHolder stateHolder,
@@ -28,30 +30,8 @@ public class RequestCount {
         this.acc = stateHolder.getMasterKey();
         this.sess = stateHolder.getSessionId();
         this.coll = coll;
-        this.query = query.getQueryInfo();
-    }
-
-    public String getApp() {
-        return app;
-    }
-
-    public String getCli() {
-        return cli;
-    }
-
-    public String getAcc() {
-        return acc;
-    }
-
-    public String getSess() {
-        return sess;
-    }
-
-    public String getColl() {
-        return coll;
-    }
-
-    public QueryInfo getQuery() {
-        return query;
+        if(query != null) {
+            this.query = query.getQueryInfo().getInfo();
+        }
     }
 }

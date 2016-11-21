@@ -1,5 +1,6 @@
 package ru.profit_group.scorocode_sdk.scorocode_objects;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -9,8 +10,8 @@ import java.util.Map;
  * Created by Peter Staranchuk on 10/7/16
  */
 
-public class Update {
-    UpdateInfo updateInfo;
+public class Update implements Serializable {
+    private UpdateInfo updateInfo;
 
     public Update() {
         updateInfo = new UpdateInfo();
@@ -105,10 +106,10 @@ public class Update {
     }
 
     private void addUpdateInfoRule(String field, String operation, Object value) {
-        if(updateInfo.containsKey(operation)) {
-            updateInfo.get(operation).put(field, value);
+        if(updateInfo.getInfo().containsKey(operation)) {
+            updateInfo.getInfo().get(operation).put(field, value);
         } else {
-            updateInfo.put(operation, getRecord(field, value));
+            updateInfo.getInfo().put(operation, getRecord(field, value));
         }
     }
 }

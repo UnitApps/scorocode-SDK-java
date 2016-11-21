@@ -3,6 +3,8 @@ package ru.profit_group.scorocode_sdk.Requests.messages;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import java.util.Map;
+
 import ru.profit_group.scorocode_sdk.scorocode_objects.Query;
 import ru.profit_group.scorocode_sdk.scorocode_objects.QueryInfo;
 import ru.profit_group.scorocode_sdk.scorocode_objects.ScorocodeSdkStateHolder;
@@ -17,7 +19,7 @@ public class RequestSendPush {
     private String acc;
     private String sess;
     private String coll;
-    private QueryInfo query;
+    private Map<String, Object> query;
     private MessagePush msg;
 
     public RequestSendPush(
@@ -32,36 +34,8 @@ public class RequestSendPush {
         this.sess = stateHolder.getSessionId();
         this.coll = coll;
         if(query != null) {
-            this.query = query.getQueryInfo();
+            this.query = query.getQueryInfo().getInfo();
         }
         this.msg = msg;
-    }
-
-    public String getApp() {
-        return app;
-    }
-
-    public String getCli() {
-        return cli;
-    }
-
-    public String getAcc() {
-        return acc;
-    }
-
-    public String getSess() {
-        return sess;
-    }
-
-    public String getColl() {
-        return coll;
-    }
-
-    public QueryInfo getQuery() {
-        return query;
-    }
-
-    public MessagePush getMsg() {
-        return msg;
     }
 }

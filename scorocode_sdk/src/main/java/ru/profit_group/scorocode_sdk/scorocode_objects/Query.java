@@ -3,39 +3,33 @@ package ru.profit_group.scorocode_sdk.scorocode_objects;
 import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
-import com.google.gson.internal.LinkedHashTreeMap;
-import com.google.gson.internal.LinkedTreeMap;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import retrofit2.Callback;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackCountDocument;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackFindDocument;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackRemoveDocument;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackUpdateDocument;
-import ru.profit_group.scorocode_sdk.Responses.data.ResponseCount;
-import ru.profit_group.scorocode_sdk.Responses.data.ResponseRemove;
-import ru.profit_group.scorocode_sdk.Responses.data.ResponseUpdate;
 import ru.profit_group.scorocode_sdk.ScorocodeSdk;
 
 /**
  * Created by Peter Staranchuk on 25/09/16
  */
-public class Query  {
+public class Query implements Serializable {
 
     private String collectionName;
     private Integer limit;
     private Integer skip;
-    private Sort sort;
+    private SortInfo sort;
     private List<String> fieldIds;
     private QueryInfo queryInfo;
 
     public Query(String collectionName) {
         this.collectionName = collectionName;
-        this.sort = new Sort();
+        this.sort = new SortInfo();
         this.queryInfo = new QueryInfo();
     }
 
@@ -130,7 +124,7 @@ public class Query  {
         operationMap.put("$regex", regEx);
         operationMap.put("$options", options.getRegexOptions());
 
-        queryInfo.put(field, operationMap);
+        queryInfo.getInfo().put(field, operationMap);
         return this;
     }
 
@@ -140,7 +134,7 @@ public class Query  {
         if(options != null) {
             operationMap.put("$options", options.getRegexOptions());
         }
-        queryInfo.put(field, operationMap);
+        queryInfo.getInfo().put(field, operationMap);
         return this;
     }
 
@@ -155,7 +149,7 @@ public class Query  {
             operationMap.put("$options", options.getRegexOptions());
         }
 
-        queryInfo.put(field, operationMap);
+        queryInfo.getInfo().put(field, operationMap);
         return this;
     }
 
@@ -166,8 +160,8 @@ public class Query  {
     public Query and(String field, Query query) {
         try {
             List<HashMap<String, HashMap<String, Object>>> list = new ArrayList<>();
-            HashMap<String, Object> queryParam1 = (HashMap<String, Object>) query.getQueryInfo().get(field);
-            HashMap<String, Object> queryParam2 = (HashMap<String, Object>) queryInfo.get(field);
+            HashMap<String, Object> queryParam1 = (HashMap<String, Object>) query.getQueryInfo().getInfo().get(field);
+            HashMap<String, Object> queryParam2 = (HashMap<String, Object>) queryInfo.getInfo().get(field);
 
             HashMap<String, HashMap<String, Object>> parameter1 = new HashMap<>();
             parameter1.put(field, queryParam1);
@@ -178,8 +172,8 @@ public class Query  {
             list.add(parameter1);
             list.add(parameter2);
 
-            queryInfo.remove(field);
-            queryInfo.put("$and", list);
+            queryInfo.getInfo().remove(field);
+            queryInfo.getInfo().put("$and", list);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -189,8 +183,8 @@ public class Query  {
     public Query or(String field, Query query) {
         try {
             List<HashMap<String, HashMap<String, Object>>> list = new ArrayList<>();
-            HashMap<String, Object> queryParam1 = (HashMap<String, Object>) query.getQueryInfo().get(field);
-            HashMap<String, Object> queryParam2 = (HashMap<String, Object>) queryInfo.get(field);
+            HashMap<String, Object> queryParam1 = (HashMap<String, Object>) query.getQueryInfo().getInfo().get(field);
+            HashMap<String, Object> queryParam2 = (HashMap<String, Object>) queryInfo.getInfo().get(field);
 
             HashMap<String, HashMap<String, Object>> parameter1 = new HashMap<>();
             parameter1.put(field, queryParam1);
@@ -201,8 +195,8 @@ public class Query  {
             list.add(parameter1);
             list.add(parameter2);
 
-            queryInfo.remove(field);
-            queryInfo.put("$or", list);
+            queryInfo.getInfo().remove(field);
+            queryInfo.getInfo().put("$or", list);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -220,35 +214,39 @@ public class Query  {
         Gson gson = new Gson();
         QueryInfo query = gson.fromJson(json, QueryInfo.class);
         reset();
-        queryInfo.putAll(query);
+        queryInfo.getInfo().putAll(query.getInfo());
     }
 
     private void addQueryRule(String field, String operation, Object value) {
-        HashMap<String, Object> element = (HashMap<String, Object>) queryInfo.get(field);
+        HashMap<String, Object> element = (HashMap<String, Object>) queryInfo.getInfo().get(field);
 
-        if(queryInfo.containsKey(field)) {
+        if(queryInfo.getInfo().containsKey(field)) {
             element.put(operation, value);
         } else {
-            queryInfo.put(field, getRecord(value, operation));
+            queryInfo.getInfo().put(field, getRecord(value, operation));
         }
     }
 
+    @NonNull
     public QueryInfo getQueryInfo() {
+        if(queryInfo == null) {
+            return new QueryInfo();
+        }
         return queryInfo;
     }
 
     public void reset() {
-        queryInfo.clear();
+        queryInfo.getInfo().clear();
         sort = null;
         fieldIds = null;
     }
 
     public void ascending(String field) {
-        sort.put(field, 1);
+        sort.setAscendingFor(field);
     }
 
     public void descending(String field) {
-        sort.put(field, -1);
+        sort.setDescendingFor(field);
     }
 
     public void setFieldsForSearch(List<String> fields) {

@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import ru.profit_group.scorocode_sdk.scorocode_objects.Query;
 import ru.profit_group.scorocode_sdk.scorocode_objects.QueryInfo;
@@ -18,7 +19,7 @@ public class RequestRemove {
     private String acc;
     private String sess;
     private String coll;
-    private QueryInfo query;
+    private Map<String, Object> query;
     private Integer limit;
 
     public RequestRemove(
@@ -31,35 +32,9 @@ public class RequestRemove {
         this.acc = stateHolder.getMasterKey();
         this.sess = stateHolder.getSessionId();
         this.coll = collectionName;
-        this.query = query.getQueryInfo();
+        if(query != null) {
+            this.query = query.getQueryInfo().getInfo();
+        }
         this.limit = limit;
-    }
-
-    public String getApp() {
-        return app;
-    }
-
-    public String getCli() {
-        return cli;
-    }
-
-    public String getAcc() {
-        return acc;
-    }
-
-    public String getSess() {
-        return sess;
-    }
-
-    public String getColl() {
-        return coll;
-    }
-
-    public QueryInfo getQuery() {
-        return query;
-    }
-
-    public Integer getLimit() {
-        return limit;
     }
 }

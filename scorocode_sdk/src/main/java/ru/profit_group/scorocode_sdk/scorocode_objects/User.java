@@ -1,5 +1,7 @@
 package ru.profit_group.scorocode_sdk.scorocode_objects;
 
+import java.io.Serializable;
+
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackLoginUser;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackLogoutUser;
 import ru.profit_group.scorocode_sdk.Callbacks.CallbackRegisterUser;
@@ -10,7 +12,7 @@ import ru.profit_group.scorocode_sdk.ScorocodeSdk;
  * Created by Peter Staranchuk on 10/7/16
  */
 
-public class User extends Document{
+public class User extends Document implements Serializable {
 
     public User() {
         super("users");

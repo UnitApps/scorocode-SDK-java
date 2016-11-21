@@ -1,6 +1,8 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.neenbedankt.android-apt'
+
 
 // This is the library version used when deploying the artifact
 version = "1.0.19-beta"
@@ -38,15 +40,22 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.2.1'
     testCompile 'junit:junit:4.12'
 
+    //Network
     compile 'com.google.code.gson:gson:2.6.2'
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
-
     compile 'com.squareup.okhttp3:logging-interceptor:3.3.1'
-
     compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
+
+    //MongoDB
     compile group: 'org.mongodb', name: 'bson', version: '2.5.1'
 
+    //Dagger
+    apt 'com.google.dagger:dagger-compiler:2.7'
+    compile 'com.google.dagger:dagger:2.7'
+    provided 'javax.annotation:jsr250-api:1.0'
+
+    //Apache common codecs
     compile group: 'commons-codec', name: 'commons-codec', version: '1.9'
 }
 

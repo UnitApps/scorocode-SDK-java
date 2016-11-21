@@ -30,28 +30,4 @@ public class RequestInsert {
         this.coll = collectionName;
         this.doc = doc.getFields();
     }
-
-    public String getApp() {
-        return app;
-    }
-
-    public String getCli() {
-        return cli;
-    }
-
-    public String getAcc() {
-        return acc;
-    }
-
-    public String getSess() {
-        return sess;
-    }
-
-    public String getColl() {
-        return coll;
-    }
-
-    public DocumentInfo getDoc() {
-        return new DocumentInfo(doc);
-    }
 }
