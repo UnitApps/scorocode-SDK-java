@@ -20,7 +20,7 @@ repositories {
 
 Пример использования: <br>
 ```java
-1. Зарегистрировать нового пользователя:
+// 1. Зарегистрировать нового пользователя:
 
 User user = new User();
 user.register("any_username", "any_user_email@email.com", "any_user_password", new CallbackRegisterUser() {
@@ -35,7 +35,7 @@ user.register("any_username", "any_user_email@email.com", "any_user_password", n
             }
         });
 
-2. Зарегистрировать пользователя и добавить дополнительную информацию о нем в коллекцию userInfos.
+// 2. Зарегистрировать пользователя и добавить дополнительную информацию о нем в коллекцию userInfos.
 
 Document documentAboutUser = new Document("userInfos");
 documentAboutUser.setField("city", "Moscow");
@@ -54,8 +54,8 @@ documentAboutUser.getDocumentContent(), new CallbackRegisterUser() {
             }
         });
 
-3. Пример работы с документами (на примере заказа интернет магазина):
-3.1 Создать новый документ с данными о заказе:
+// 3. Пример работы с документами (на примере заказа интернет магазина):
+// 3.1 Создать новый документ с данными о заказе:
 
 Document newOrder = new Document("orders");
 newOrder.setField("orderId", "Jsdsncd732");
@@ -74,7 +74,7 @@ newOrder.saveDocument(new CallbackDocumentSaved() {
             }
         });
 
-3.2 Найти информацию о всех неотправленных заказах.
+// 3.2 Найти информацию о всех неотправленных заказах.
 
 Query query = new Query("orders");
 query.equalTo("isOrderSend", false);
